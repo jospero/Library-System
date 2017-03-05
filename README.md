@@ -1,6 +1,4 @@
 #**CSC 429 LIBRARY SYSTEM**
-###TODO
-- [ ] Adding of database configuration
 
 ###TUTORIAL
 [GITHUB PULL REQUEST TUTORIAL](https://www.youtube.com/watch?v=oFYyTZwMyAg)
