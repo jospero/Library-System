@@ -7,6 +7,9 @@ public class ViewFactory {
 
 	public static View createView(String viewName, IModel model)
 	{
+			if(viewName.equals("LoginView")){
+				return new LoginView(model);
+			}
 			return null;
 	}
 

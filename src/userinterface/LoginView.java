@@ -1,0 +1,111 @@
+package userinterface;
+
+import impresario.IModel;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
+
+import java.util.Properties;
+
+/**
+ * Created by Sammytech on 3/4/17.
+ */
+
+
+
+public class LoginView extends View{
+    private TextField bannerId;
+    private PasswordField password;
+
+    public LoginView(IModel model) {
+        super(model, "LoginView");
+        this.getStylesheets().add("resources/css/login.css");
+        VBox container = new VBox();
+        container.setPadding(new Insets(40));
+        container.setSpacing(15);
+        HBox title = TitleView.createTitle("Brockport EOP Library");
+
+        container.setId("login");
+        container.setPrefWidth(450);
+
+
+        //  Fields
+        VBox fields = new VBox();
+        fields.setSpacing(10);
+        //  BannerId
+        Label userLabel = new Label("BannerId");
+
+        bannerId = new TextField();
+        bannerId.setPromptText("BannerId");
+        bannerId.setId("bannerIdtf");
+        bannerId.getStyleClass().add("textfield");
+        bannerId.setPadding(new Insets(10,0, 10,40));
+        bannerId.setPrefHeight(40);
+        fields.getChildren().addAll(userLabel, bannerId);
+
+        // Password
+        Label passwordLabel = new Label("Password");
+
+        password = new PasswordField();
+        password.setPromptText("Password");
+        password.getStyleClass().add("textfield");
+        password.setId("passwordtf");
+        password.setPadding(new Insets(10,0, 10,40));
+        password.setPrefHeight(40);
+        fields.getChildren().addAll(passwordLabel, password);
+
+        container.getChildren().addAll(title, fields);
+        // Login Button
+        HBox buttonContainer = new HBox();
+        buttonContainer.setPrefHeight(60);
+        buttonContainer.setPadding(new Insets(10,0,0,0));
+        Button loginButton = new Button("Login");
+        loginButton.setMaxWidth(Double.MAX_VALUE);
+        loginButton.setPrefWidth(buttonContainer.getPrefWidth());
+        loginButton.setMaxHeight(buttonContainer.getPrefHeight());
+        HBox.setHgrow(loginButton, Priority.ALWAYS);
+//        loginButton.setPadding(new Insets(10,0,10,0));
+        loginButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                processLogin();
+            }
+        });
+        buttonContainer.getChildren().add(loginButton);
+        container.getChildren().add(buttonContainer);
+
+        getChildren().add(container);
+    }
+
+    private void processLogin() {
+        boolean validField = validateLogin();
+        if(validField){
+            String bannerId_str = bannerId.getText();
+            String password_str = password.getText();
+            Properties loginProp = new Properties();
+            loginProp.setProperty("BannerId", bannerId_str);
+            loginProp.setProperty("Password", password_str);
+            myModel.stateChangeRequest("processLogin", loginProp);
+            System.out.println("something happend");
+        }
+        System.out.println("NOthing happend");
+    }
+
+    private boolean validateLogin(){
+        String bannerId_str = bannerId.getText();
+        String password_str = password.getText();
+        if(bannerId_str.isEmpty() || password_str.isEmpty())
+            return false;
+        return true;
+    }
+
+    @Override
+    public void updateState(String key, Object value) {
+
+    }
+}
