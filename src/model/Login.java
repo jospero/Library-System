@@ -1,6 +1,9 @@
 package model;
 
 import event.Event;
+import exception.InvalidLoginException;
+import exception.InvalidPrimaryKeyException;
+import exception.PasswordMismatchException;
 import impresario.IModel;
 import impresario.IView;
 import impresario.ModelRegistry;
@@ -24,11 +27,13 @@ public class Login implements IView, IModel {
     private Properties dependencies;
     private ModelRegistry myRegistry;
 
-//	private AccountHolder myAccountHolder;
+	private Worker myWorker;
 
     // GUI Components
     private Hashtable<String, Scene> myViews;
     private Stage myStage;
+
+    private String loginErrorMessage = "";
 
     // constructor for this class
     //----------------------------------------------------------
@@ -57,12 +62,13 @@ public class Login implements IView, IModel {
     private void setDependencies()
     {
         dependencies = new Properties();
+        dependencies.setProperty("ProcessLogin", "LoginError");
         myRegistry.setDependencies(dependencies);
     }
 
     private void createAndShowLoginView()
     {
-        Scene currentScene = (Scene)myViews.get("LoginView");
+        Scene currentScene = myViews.get("LoginView");
 
         if (currentScene == null)
         {
@@ -78,27 +84,71 @@ public class Login implements IView, IModel {
 
     @Override
     public void updateState(String key, Object value) {
-
+        stateChangeRequest(key, value);
     }
 
     @Override
     public Object getState(String key) {
-        return null;
+        if(key.equals("LoginError")){
+            return loginErrorMessage;
+        }
+        return "";
     }
 
     @Override
     public void subscribe(String key, IView subscriber) {
-
+        myRegistry.subscribe(key, subscriber);
     }
 
     @Override
     public void unSubscribe(String key, IView subscriber) {
-
+        myRegistry.unSubscribe(key, subscriber);
     }
 
     @Override
     public void stateChangeRequest(String key, Object value) {
+        if(key.equals("ProcessLogin")){
+            if (value != null)
+            {
+                loginErrorMessage = "";
 
+                boolean flag = loginWorker((Properties)value);
+                if (flag == true)
+                {
+                    createAndShowMainView();
+                } else {
+                    myRegistry.updateSubscribers(key, this);
+                }
+
+            }
+        }
+
+    }
+
+    private void createAndShowMainView() {
+        Main main = new Main(myWorker);
+        main.subscribe("Logout", this);
+        main.createAndShowView();
+
+    }
+
+    /**
+     * Login Worker corresponding to bannerId and password.
+     */
+    //----------------------------------------------------------
+    public boolean loginWorker(Properties props)
+    {
+        try
+        {
+            myWorker = new Worker(props);
+            System.out.println("Account Holder: " + myWorker.getState("Password") + " successfully logged in");
+            return true;
+        }
+        catch (InvalidLoginException ex)
+        {
+            loginErrorMessage = "ERROR: " + ex.getMessage();
+            return false;
+        }
     }
 
     //-----------------------------------------------------------------------------

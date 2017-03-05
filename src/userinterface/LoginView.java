@@ -21,6 +21,7 @@ import java.util.Properties;
 public class LoginView extends View{
     private TextField bannerId;
     private PasswordField password;
+    private MessageView statusLog;
 
     public LoginView(IModel model) {
         super(model, "LoginView");
@@ -79,7 +80,12 @@ public class LoginView extends View{
         buttonContainer.getChildren().add(loginButton);
         container.getChildren().add(buttonContainer);
 
+        // MessageView
+        container.getChildren().add(createStatusLog("             "));
+
         getChildren().add(container);
+
+        myModel.subscribe("LoginError", this);
     }
 
     private void processLogin() {
@@ -90,10 +96,9 @@ public class LoginView extends View{
             Properties loginProp = new Properties();
             loginProp.setProperty("BannerId", bannerId_str);
             loginProp.setProperty("Password", password_str);
-            myModel.stateChangeRequest("processLogin", loginProp);
-            System.out.println("something happend");
+            myModel.stateChangeRequest("ProcessLogin", loginProp);
         }
-        System.out.println("NOthing happend");
+
     }
 
     private boolean validateLogin(){
@@ -106,6 +111,36 @@ public class LoginView extends View{
 
     @Override
     public void updateState(String key, Object value) {
+//        System.out.println(key + " : " + value);
+        if(key.equals("LoginError")){
+            displayErrorMessage((String) value);
+        }
+    }
+    // Create the status log field
+    //-------------------------------------------------------------
+    private MessageView createStatusLog(String initialMessage)
+    {
 
+        statusLog = new MessageView(initialMessage);
+
+        return statusLog;
+    }
+
+    /**
+     * Display error message
+     */
+    //----------------------------------------------------------
+    public void displayErrorMessage(String message)
+    {
+        statusLog.displayErrorMessage(message);
+    }
+
+    /**
+     * Clear error message
+     */
+    //----------------------------------------------------------
+    public void clearErrorMessage()
+    {
+        statusLog.clearErrorMessage();
     }
 }

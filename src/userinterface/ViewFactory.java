@@ -9,6 +9,8 @@ public class ViewFactory {
 	{
 			if(viewName.equals("LoginView")){
 				return new LoginView(model);
+			} else if(viewName.equals("MainView")){
+				return new MainView(model);
 			}
 			return null;
 	}
