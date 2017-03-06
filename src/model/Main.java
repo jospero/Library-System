@@ -21,12 +21,13 @@ public class Main implements IView, IModel {
     protected Scene mainScene;
 
     protected Stage myStage;
-//    protected Hashtable<String, Scene> myViews;
+    protected Hashtable<String, View> myViews;
+    private View currentView;
     private Worker myWorker;
 
     public Main(Worker worker){
         myStage = MainStageContainer.getInstance();
-//        myViews = new Hashtable<String, Scene>();
+        myViews = new Hashtable<String, View>();
         myWorker = worker;
 
         myRegistry = new ModelRegistry("Main");
@@ -44,31 +45,55 @@ public class Main implements IView, IModel {
     }
     @Override
     public void updateState(String key, Object value) {
-
+        stateChangeRequest(key, value);
     }
 
     @Override
     public Object getState(String key) {
+        if(key.equals("ChangeView")){
+            return currentView;
+        } else if(key.equals("Worker")){
+            return myWorker;
+        }
         return null;
     }
 
     @Override
     public void subscribe(String key, IView subscriber) {
-
+        myRegistry.subscribe(key, subscriber);
     }
 
     @Override
     public void unSubscribe(String key, IView subscriber) {
-
+        myRegistry.unSubscribe(key, subscriber);
     }
 
     @Override
     public void stateChangeRequest(String key, Object value) {
+        if(key.equals("AddBook")){
+            Book book = new Book(new Properties());
+            book.subscribe("ViewCancelled", this);
+            //            myViews.put("AddBookView", addBookView);
+            currentView = ViewFactory.createView("AddBookView", book);
+            System.out.println("ChangeView on subscribers");
+            myRegistry.updateSubscribers("ChangeView", this);
+        } else if (key.equals("AddWorker")) {
+//            Worker worker = new Worker();
+
+        } else if (key.equals("AddStudentBorrower")){
+            StudentBorrower studentBorrower = new StudentBorrower( new Properties());
+            currentView  = ViewFactory.createView("AddStudentBorrowerView", studentBorrower);
+            myRegistry.updateSubscribers("ChangeView", this);
+        } else if (key.equals("Welcome") || key.equals("ViewCancelled")) {
+            currentView = ViewFactory.createView("WelcomeView", myWorker);
+            myRegistry.updateSubscribers("ChangeView", this);
+        }
 
     }
 
     public void createAndShowView() {
         if(mainScene == null) {
+            currentView = ViewFactory.createView("WelcomeView", myWorker);
             View mainView = ViewFactory.createView("MainView", this);
             mainScene = new Scene(mainView);
         }
@@ -85,6 +110,7 @@ public class Main implements IView, IModel {
             return;
         }
 
+        myStage.setTitle("Brockport EOP Libary");
         myStage.setScene(newScene);
         myStage.sizeToScene();
 

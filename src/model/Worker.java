@@ -41,7 +41,7 @@ public class Worker extends EntityBase implements IView {
                 persistentState = new Properties();
 
                 Enumeration allKeys = retrievedCustomerData.propertyNames();
-                while (allKeys.hasMoreElements() == true)
+                while (allKeys.hasMoreElements() )
                 {
                     String nextKey = (String)allKeys.nextElement();
                     String nextValue = retrievedCustomerData.getProperty(nextKey);

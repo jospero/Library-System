@@ -56,7 +56,9 @@ public class Login implements IView, IModel {
 
         // Set up the initial view
         createAndShowLoginView();
+//        createAndShowMainView();
     }
+
 
     //-----------------------------------------------------------------------------------
     private void setDependencies()
