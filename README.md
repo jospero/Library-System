@@ -5,7 +5,6 @@
 - [ ] Views for each Add functionality
 - [ ] Renaming of database fields in StudentBorrower class
 - [ ] Worker class 
-Testing github integration with slack
 
 ###TUTORIAL
 [GITHUB PULL REQUEST TUTORIAL](https://www.youtube.com/watch?v=oFYyTZwMyAg)
