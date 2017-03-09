@@ -53,7 +53,7 @@ public class LoginView extends View{
         Label passwordLabel = new Label("Password");
 
         password = new PasswordField();
-        password.setPromptText("Password");
+        password.setPromptText(messages.getString("login_pass"));
         password.getStyleClass().add("textfield");
         password.setId("passwordtf");
         password.setPadding(new Insets(10,0, 10,40));

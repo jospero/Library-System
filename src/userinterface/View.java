@@ -16,8 +16,10 @@ package userinterface;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.EventObject;
-import javafx.scene.Group;
 
+import common.PropertyFile;
+import javafx.scene.Group;
+import java.util.*;
 // project imports
 import common.StringList;
 import impresario.IView;
@@ -32,8 +34,13 @@ public abstract class View extends Group
 	// private data
 	protected IModel myModel;
 	protected ControlRegistry myRegistry;
-	
-	
+
+	String language ;
+	String country;
+
+
+	Locale currentLocale;
+	ResourceBundle messages;
 	// GUI components
 	
 		
@@ -42,7 +49,19 @@ public abstract class View extends Group
 	public View(IModel model, String classname)
 	{
 		myModel = model;
-		
+		Properties props;
+		props = new PropertyFile("langConfig.ini");
+		if (props != null)
+		{
+			language = props.getProperty("lang");
+			country = props.getProperty("country");
+
+		}
+
+		currentLocale = new Locale(language, country);
+
+		messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
+
 		myRegistry = new ControlRegistry(classname);
 	}
 	
