@@ -96,6 +96,7 @@ public class Book extends EntityBase implements IView {
 	{
 		dependencies = new Properties();
 		dependencies.setProperty("AddBookCancelled","ViewCancelled");
+		dependencies.setProperty("ModifyBookCancelled","ViewCancelled");
         dependencies.setProperty("ProcessNewBook","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}

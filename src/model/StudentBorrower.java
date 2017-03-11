@@ -93,7 +93,7 @@ public class StudentBorrower extends EntityBase implements IView {
 	private void setDependencies()
 	{
 		dependencies = new Properties();
-		dependencies.setProperty("NewPatronCancelled", "ViewCancelled");
+		dependencies.setProperty("AddStudentBorrowerCancelled", "ViewCancelled");
 		dependencies.setProperty("ProcessNewPatron","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}

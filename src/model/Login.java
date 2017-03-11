@@ -140,6 +140,7 @@ public class Login implements IView, IModel {
     //----------------------------------------------------------
     public boolean loginWorker(Properties props)
     {
+
         try
         {
             myWorker = new Worker(props);

@@ -41,10 +41,18 @@ public class Main implements IView, IModel {
     protected void setDependencies()
     {
         dependencies = new Properties();
+        dependencies.setProperty("AddBook", "ChangeView");
+        dependencies.setProperty("ModifyBook", "ChangeView");
+        dependencies.setProperty("AddStudentBorrower", "ChangeView");
+        dependencies.setProperty("Welcome", "ChangeView");
+        dependencies.setProperty("ViewCancelled", "ChangeView");
+
         myRegistry.setDependencies(dependencies);
     }
     @Override
     public void updateState(String key, Object value) {
+
+        System.out.println("key");
         stateChangeRequest(key, value);
     }
 
@@ -75,19 +83,21 @@ public class Main implements IView, IModel {
             book.subscribe("ViewCancelled", this);
             //            myViews.put("AddBookView", addBookView);
             currentView = ViewFactory.createView("AddBookView", book);
-            System.out.println("ChangeView on subscribers");
-            myRegistry.updateSubscribers("ChangeView", this);
-        } else if (key.equals("AddWorker")) {
-//            Worker worker = new Worker();
-
+//            myRegistry.updateSubscribers("ChangeView", this);
+        } else if (key.equals("ModifyWorker")) {
+            currentView = ViewFactory.createView("ModifyBookView", null);
+//            myRegistry.updateSubscribers("ChangeView");
         } else if (key.equals("AddStudentBorrower")){
             StudentBorrower studentBorrower = new StudentBorrower( new Properties());
+            studentBorrower.subscribe("ViewCancelled", this);
             currentView  = ViewFactory.createView("AddStudentBorrowerView", studentBorrower);
-            myRegistry.updateSubscribers("ChangeView", this);
+//            myRegistry.updateSubscribers("ChangeView", this);
         } else if (key.equals("Welcome") || key.equals("ViewCancelled")) {
             currentView = ViewFactory.createView("WelcomeView", myWorker);
-            myRegistry.updateSubscribers("ChangeView", this);
+//            myRegistry.updateSubscribers("ChangeView", this);
         }
+
+        myRegistry.updateSubscribers(key, this);
 
     }
 

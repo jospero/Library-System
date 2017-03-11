@@ -1,6 +1,9 @@
 package userinterface;
 
 import impresario.IModel;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 /**
@@ -13,6 +16,15 @@ public class AddStudentBorrowerView extends View {
         box.setStyle("-fx-background-color: #ff102b");
 
         box.getChildren().add(TitleView.createTitle("Add New Student Borrower"));
+
+        Button cancel = new Button("Cancel");
+        box.getChildren().add(cancel);
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                myModel.stateChangeRequest("AddStudentBorrowerCancelled", null);
+            }
+        });
 
         getChildren().add(box);
     }

@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 public class MainView extends View {
     private Group mainView;
     private VBox container;
-    private final static int WIDTH = 500;
+
     public MainView(IModel model) {
         super(model, "MainView");
         this.getStylesheets().add("resources/css/common.css");
@@ -37,7 +37,7 @@ public class MainView extends View {
         // --- Menu Book
         Menu menuBook = new Menu("Book");
         MenuItem addBook = new MenuItem("Add Book");
-        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
+        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+B"));
         addBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
@@ -46,11 +46,11 @@ public class MainView extends View {
         });
 
         MenuItem modifyBook = new MenuItem("Modify Book");
-//        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
+        modifyBook.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+B"));
         modifyBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                System.out.println("Modify Book Pressed");
+                myModel.stateChangeRequest("ModifyBook", null);
             }
         });
 

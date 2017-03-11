@@ -13,6 +13,8 @@ public class ViewFactory {
 				return new MainView(model);
 			} else if(viewName.equals("AddBookView")) {
 				return new AddBookView(model);
+			} else if(viewName.equals("ModifyBookView")) {
+				return new ModifyBookView(model);
 			} else if(viewName.equals("AddWorkerView")) {
 				return new AddWorkerView(model);
 			} else if(viewName.equals("AddStudentBorrowerView")) {

@@ -11,6 +11,7 @@ public class WelcomeView extends View {
 
     public WelcomeView(IModel model) {
         super(model, "WelcomeView");
+
         VBox box = new VBox();
         box.setStyle("-fx-background-color: #93ffa8");
         Label label = new Label("Welcome " + myModel.getState("FirstName") + " " + myModel.getState("LastName"));
