@@ -1,10 +1,8 @@
 #**CSC 429 LIBRARY SYSTEM**
 ###TODO
-- [ ] Internalization 
 - [ ] Refactoring of LoginView
-- [ ] Views for each Add functionality
-- [ ] Renaming of database fields in StudentBorrower class
-- [ ] Worker class 
+- [ ] Add functionality for all views
+- [ ] Modify and Delete view for Worker and Student Borrower
 
 ###TUTORIAL
 [GITHUB PULL REQUEST TUTORIAL](https://www.youtube.com/watch?v=oFYyTZwMyAg)
