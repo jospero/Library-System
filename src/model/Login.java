@@ -2,13 +2,10 @@ package model;
 
 import event.Event;
 import exception.InvalidLoginException;
-import exception.InvalidPrimaryKeyException;
-import exception.PasswordMismatchException;
 import impresario.IModel;
 import impresario.IView;
 import impresario.ModelRegistry;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import userinterface.MainStageContainer;
 import userinterface.View;
@@ -27,7 +24,7 @@ public class Login implements IView, IModel {
     private Properties dependencies;
     private ModelRegistry myRegistry;
 
-	private Worker myWorker;
+	private WorkerHolder myWorkerHolder;
 
     // GUI Components
     private Hashtable<String, Scene> myViews;
@@ -128,14 +125,14 @@ public class Login implements IView, IModel {
     }
 
     private void createAndShowMainView() {
-        Main main = new Main(myWorker);
+        Main main = new Main(myWorkerHolder);
         main.subscribe("Logout", this);
         main.createAndShowView();
 
     }
 
     /**
-     * Login Worker corresponding to bannerId and password.
+     * Login WorkerHolder corresponding to bannerId and password.
      */
     //----------------------------------------------------------
     public boolean loginWorker(Properties props)
@@ -143,8 +140,8 @@ public class Login implements IView, IModel {
 
         try
         {
-            myWorker = new Worker(props);
-            System.out.println("Account Holder: " + myWorker.getState("Password") + " successfully logged in");
+            myWorkerHolder = new WorkerHolder(props);
+            System.out.println("Account Holder: " + myWorkerHolder.getState("Password") + " successfully logged in");
             return true;
         }
         catch (InvalidLoginException ex)

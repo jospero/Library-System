@@ -22,7 +22,7 @@ public class TitleView {
         titleText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         titleText.setId("title");
 //        titleText.setStyle("-fx-fill: #FEFEFE;");
-        titleText.setWrappingWidth(300);
+//        titleText.setWrappingWidth(300);
         titleText.setTextAlignment(TextAlignment.CENTER);
 //        titleText.setFill(Color.DARKGREEN);
         container.getChildren().add(titleText);

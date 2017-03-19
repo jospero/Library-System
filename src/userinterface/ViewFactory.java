@@ -15,12 +15,16 @@ public class ViewFactory {
 				return new AddBookView(model);
 			} else if(viewName.equals("ModifyBookView")) {
 				return new ModifyBookView(model);
+			} else if(viewName.equals("BookCollectionView")) {
+				return new BookCollectionView(model);
 			} else if(viewName.equals("AddWorkerView")) {
 				return new AddWorkerView(model);
 			} else if(viewName.equals("AddStudentBorrowerView")) {
 				return new AddStudentBorrowerView(model);
 			} else if(viewName.equals("WelcomeView")){
 				return new WelcomeView(model);
+			}  else if(viewName.equals("SearchBookView")){
+				return new SearchBookView(model);
 			}
 
 			return null;

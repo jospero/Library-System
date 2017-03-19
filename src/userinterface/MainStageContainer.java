@@ -43,7 +43,9 @@ public class MainStageContainer
 	//-----------------------------------------------------------
 	public static void setStage(Stage st, String title)
 	{
-		myInstance = st;
+		if(myInstance == null) {
+			myInstance = st;
+		}
 		myInstance.setTitle(title);
 //		myInstance.setWidth(400);
 //		myInstance.setHeight(400);

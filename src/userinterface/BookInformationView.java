@@ -1,21 +1,17 @@
 package userinterface;
 
 import impresario.IModel;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import model.Book;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Vector;
 
 /**
  * Created by Sammytech on 3/9/17.
@@ -23,16 +19,20 @@ import java.util.HashSet;
 public abstract class BookInformationView extends View {
 
     enum FieldsEnum{
-        BARCODE, TITLE, AUTHOR, DISCIPLINE, PUBLISHER, YEAROFPUB, ISBN, SUGPRICE, NOTES, STATUS
+        BARCODE, TITLE, AUTHOR, DISCIPLINE, PUBLISHER, YEAROFPUB, ISBN, CONDITION, SUGPRICE, NOTES, STATUS
     }
 
     private class Fields{
         Label label = new Label();
-        TextField textField = new TextField();
+        Node field;
     }
     HashMap<FieldsEnum, Fields> fieldsList = new HashMap<>();
     HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
+
     boolean enableFields;
+
+
+
     public BookInformationView(IModel model, boolean enableFields, String classname) {
         super(model, classname);
         this.enableFields = enableFields;
@@ -44,29 +44,49 @@ public abstract class BookInformationView extends View {
         fieldsStr.put(FieldsEnum.PUBLISHER, "PUBLISHER");
         fieldsStr.put(FieldsEnum.YEAROFPUB, "YEAR OF PUBLICATION");
         fieldsStr.put(FieldsEnum.ISBN, "ISBN");
+        fieldsStr.put(FieldsEnum.CONDITION, "CONDITION");
         fieldsStr.put(FieldsEnum.SUGPRICE, "SUGGESTED PRICE");
         fieldsStr.put(FieldsEnum.NOTES, "NOTES");
         fieldsStr.put(FieldsEnum.STATUS, "STATUS");
 
+//        getFieldsString();
     }
 
-    public GridPane getBookInformation(){
+    public final GridPane getBookInformation(){
         GridPane bookInfo = new GridPane();
         bookInfo.setHgap(10);
         bookInfo.setVgap(10);
         bookInfo.setPadding(new Insets(0, 10, 0, 10));
 
         int row = 0;
+        Vector<String> book = ((Book) myModel).getEntryListView();
         for(FieldsEnum fEnum : FieldsEnum.values()){
             if(fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
-                field.textField.setPromptText(str);
-                field.textField.setEditable(enableFields);
+                if(fEnum == FieldsEnum.CONDITION){
+                    field.field = getConditionNode();
+                    if(book.get(row) != null && !book.get(row).isEmpty())
+                        ((ComboBox)field.field).setValue(book.get(row));
+                } else if(fEnum == FieldsEnum.STATUS){
+                    field.field = getStatusNode();
+                    if(book.get(row) != null && !book.get(row).isEmpty())
+                        ((ComboBox)field.field).setValue(book.get(row));
+                } else if(fEnum == FieldsEnum.NOTES) {
+                    TextArea ta = new TextArea();
+                    field.field = ta;
+                } else {
+                    TextField fTF = new TextField();
+                    fTF.setPromptText(str);
+                    fTF.setEditable(enableFields);
+                    if(book.get(row) != null && !book.get(row).isEmpty())
+                        fTF.setText(book.get(row));
+                    field.field = fTF;
+                }
                 fieldsList.put(fEnum, field);
                 bookInfo.add(field.label, 0, row);
-                bookInfo.add(field.textField, 1, row);
+                bookInfo.add(field.field, 1, row);
 //                bookInfo.add(field.label, 0, row);
                 row++;
             }
@@ -76,6 +96,20 @@ public abstract class BookInformationView extends View {
         return bookInfo;
 
 
+    }
+
+    private ComboBox getConditionNode(){
+        ComboBox comboBox = new ComboBox();
+        comboBox.getItems().addAll("Good", "Damaged");
+        comboBox.setValue("Good");
+        return comboBox;
+    }
+
+    private ComboBox getStatusNode(){
+        ComboBox comboBox = new ComboBox();
+        comboBox.getItems().addAll("Active", "Inactive");
+        comboBox.setValue("Active");
+        return comboBox;
     }
 
 }

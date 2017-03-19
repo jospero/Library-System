@@ -59,7 +59,7 @@ public class MainView extends View {
         deleteBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                System.out.println("Delete Book Pressed");
+                myModel.stateChangeRequest("DeleteBook", null);
             }
         });
 
@@ -95,7 +95,7 @@ public class MainView extends View {
 
         // --- Menu Worker
         Menu menuWorker = new Menu("Worker");
-        MenuItem addWorker = new MenuItem("Add Woker");
+        MenuItem addWorker = new MenuItem("Add Worker");
         addWorker.setAccelerator(KeyCombination.keyCombination("Ctrl+W"));
         addWorker.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -136,7 +136,7 @@ public class MainView extends View {
         });
 
         MenuItem modifyStudent = new MenuItem("Modify Student Borrower");
-//        modifyStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
+        modifyStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+S"));
         modifyStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
@@ -145,7 +145,7 @@ public class MainView extends View {
         });
 
         MenuItem deleteStudent = new MenuItem("Delete Student Borrower");
-//        addStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
+        deleteStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+S"));
         deleteStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
@@ -167,7 +167,6 @@ public class MainView extends View {
     @Override
     public void updateState(String key, Object value) {
         if(key.equals("ChangeView")){
-            System.out.println("working");
             swapContentView((View) value);
         }
     }

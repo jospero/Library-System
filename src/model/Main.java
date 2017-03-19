@@ -6,7 +6,10 @@ import impresario.IView;
 import impresario.ModelRegistry;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import userinterface.*;
+import userinterface.MainStageContainer;
+import userinterface.View;
+import userinterface.ViewFactory;
+import userinterface.WindowPosition;
 
 import java.util.Hashtable;
 import java.util.Properties;
@@ -22,13 +25,14 @@ public class Main implements IView, IModel {
 
     protected Stage myStage;
     protected Hashtable<String, View> myViews;
-    private View currentView;
-    private Worker myWorker;
 
-    public Main(Worker worker){
+    private View currentView;
+    private WorkerHolder myWorkerHolder;
+
+    public Main(WorkerHolder workerHolder){
         myStage = MainStageContainer.getInstance();
         myViews = new Hashtable<String, View>();
-        myWorker = worker;
+        myWorkerHolder = workerHolder;
 
         myRegistry = new ModelRegistry("Main");
         if(myRegistry == null)
@@ -42,17 +46,18 @@ public class Main implements IView, IModel {
     {
         dependencies = new Properties();
         dependencies.setProperty("AddBook", "ChangeView");
+        dependencies.setProperty("AddWorker", "ChangeView");
         dependencies.setProperty("ModifyBook", "ChangeView");
+        dependencies.setProperty("DeleteBook", "ChangeView");
         dependencies.setProperty("AddStudentBorrower", "ChangeView");
         dependencies.setProperty("Welcome", "ChangeView");
         dependencies.setProperty("ViewCancelled", "ChangeView");
-
+        dependencies.setProperty("SubViewChange", "ChangeView");
+        dependencies.setProperty("ParentView", "ChangeView");
         myRegistry.setDependencies(dependencies);
     }
     @Override
     public void updateState(String key, Object value) {
-
-        System.out.println("key");
         stateChangeRequest(key, value);
     }
 
@@ -60,8 +65,8 @@ public class Main implements IView, IModel {
     public Object getState(String key) {
         if(key.equals("ChangeView")){
             return currentView;
-        } else if(key.equals("Worker")){
-            return myWorker;
+        } else if(key.equals("WorkerHolder")){
+            return myWorkerHolder;
         }
         return null;
     }
@@ -81,20 +86,38 @@ public class Main implements IView, IModel {
         if(key.equals("AddBook")){
             Book book = new Book(new Properties());
             book.subscribe("ViewCancelled", this);
-            //            myViews.put("AddBookView", addBookView);
             currentView = ViewFactory.createView("AddBookView", book);
-//            myRegistry.updateSubscribers("ChangeView", this);
-        } else if (key.equals("ModifyWorker")) {
-            currentView = ViewFactory.createView("ModifyBookView", null);
-//            myRegistry.updateSubscribers("ChangeView");
+//            myViews.put("AddBookView", currentView);
+        } else if (key.equals("ModifyBook") || key.equals("DeleteBook")) {
+            SearchBook.SearchFor search;
+            if(key.equals("ModifyBook"))
+                search = SearchBook.SearchFor.MODIFY;
+            else
+                search = SearchBook.SearchFor.DELETE;
+            SearchBook searchBook = new SearchBook(search);
+            searchBook.subscribe("SubViewChange", this);
+            searchBook.subscribe("ParentView", this);
+            searchBook.subscribe("ViewCancelled", this);
+            currentView = ViewFactory.createView("SearchBookView", searchBook);
+            myViews.put("SearchBookView", currentView);
+        }else if (key.equals("AddWorker")){
+            System.out.println(key);
+            Worker worker = new Worker( new Properties());
+            worker.subscribe("ViewCancelled", this);
+            currentView  = ViewFactory.createView("AddWorkerView", worker);
+//            myViews.put("AddBookView", currentView);
         } else if (key.equals("AddStudentBorrower")){
             StudentBorrower studentBorrower = new StudentBorrower( new Properties());
             studentBorrower.subscribe("ViewCancelled", this);
             currentView  = ViewFactory.createView("AddStudentBorrowerView", studentBorrower);
-//            myRegistry.updateSubscribers("ChangeView", this);
+//            myViews.put("AddBookView", currentView);
         } else if (key.equals("Welcome") || key.equals("ViewCancelled")) {
-            currentView = ViewFactory.createView("WelcomeView", myWorker);
-//            myRegistry.updateSubscribers("ChangeView", this);
+            currentView = ViewFactory.createView("WelcomeView", myWorkerHolder);
+//            myViews.put("AddBookView", currentView);
+        } else if (key.equals("SubViewChange")){
+            currentView = (View) value;
+        } else if(key.equals("ParentView")){
+            currentView = myViews.get(value);
         }
 
         myRegistry.updateSubscribers(key, this);
@@ -103,7 +126,7 @@ public class Main implements IView, IModel {
 
     public void createAndShowView() {
         if(mainScene == null) {
-            currentView = ViewFactory.createView("WelcomeView", myWorker);
+            currentView = ViewFactory.createView("WelcomeView", myWorkerHolder);
             View mainView = ViewFactory.createView("MainView", this);
             mainScene = new Scene(mainView);
         }
@@ -129,5 +152,8 @@ public class Main implements IView, IModel {
     }
 
 
-
+//    public static Group getMainViewContainer() {
+//
+//
+//    }
 }

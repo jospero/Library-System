@@ -146,11 +146,17 @@ public class Book extends EntityBase implements IView {
 	public Vector<String> getEntryListView()
 	{
 		Vector<String> v = new Vector<String>();
-		v.addElement(persistentState.getProperty("bookId"));
-		v.addElement(persistentState.getProperty("author"));
-		v.addElement(persistentState.getProperty("title"));
-		v.addElement(persistentState.getProperty("pubYear"));
-		v.addElement(persistentState.getProperty("status"));
+		v.addElement(persistentState.getProperty("Barcode"));
+		v.addElement(persistentState.getProperty("Title"));
+		v.addElement(persistentState.getProperty("Discipline"));
+		v.addElement(persistentState.getProperty("Author1"));
+		v.addElement(persistentState.getProperty("Publisher"));
+		v.addElement(persistentState.getProperty("YearOfPublication"));
+		v.addElement(persistentState.getProperty("ISBN"));
+		v.addElement(persistentState.getProperty("Condition"));
+		v.addElement(persistentState.getProperty("SuggestedPrice"));
+		v.addElement(persistentState.getProperty("Notes"));
+		v.addElement(persistentState.getProperty("Status"));
 
 		return v;
 	}
@@ -170,6 +176,7 @@ public class Book extends EntityBase implements IView {
 
             if (nextValue != null)
             {
+            	System.out.println(nextKey + "  " + nextValue);
                 persistentState.setProperty(nextKey, nextValue);
             }
         }
@@ -185,16 +192,16 @@ public class Book extends EntityBase implements IView {
 
 	protected void createAndShowView()
 	{
-		Scene currentScene = myViews.get("NewBookView");
-
-		if (currentScene == null)
-		{
-			// create our initial view
-			View newView = ViewFactory.createView("NewBookView", this);
-			currentScene = new Scene(newView);
-			myViews.put("NewBookView", currentScene);
-		}
-		swapToView(currentScene);
+//		Scene currentScene = myViews.get("NewBookView");
+//
+//		if (currentScene == null)
+//		{
+//			// create our initial view
+//			View newView = ViewFactory.createView("NewBookView", this);
+//			currentScene = new Scene(newView);
+//			myViews.put("NewBookView", currentScene);
+//		}
+//		swapToView(currentScene);
 	}
 
 	@Override

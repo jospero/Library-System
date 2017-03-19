@@ -2,9 +2,6 @@ package model;
 
 import exception.InvalidPrimaryKeyException;
 import impresario.IView;
-import javafx.scene.Scene;
-import userinterface.View;
-import userinterface.ViewFactory;
 
 import java.sql.SQLException;
 import java.util.Enumeration;
@@ -22,11 +19,11 @@ public class StudentBorrower extends EntityBase implements IView {
 	private String updateStatusMessage = "";
 	private boolean successFlag = true;
 
-	public StudentBorrower(String patronId) throws InvalidPrimaryKeyException {
+	public StudentBorrower(String bannerId) throws InvalidPrimaryKeyException {
 		super(myTableName);
 
 		setDependencies();
-		String query = "SELECT * FROM " + myTableName + " WHERE (patronId = " + patronId + ")";
+		String query = "SELECT * FROM " + myTableName + " WHERE (bannerId = " + bannerId + ")";
 
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
 
@@ -35,25 +32,27 @@ public class StudentBorrower extends EntityBase implements IView {
 		{
 			int size = allDataRetrieved.size();
 
-			// There should be EXACTLY one patron. More than that is an error
+			// There should be EXACTLY one studentBorrower. More than that is an error
 			if (size != 1)
 			{
-				throw new InvalidPrimaryKeyException("Multiple books matching id : "
-					+ patronId + " found.");
+				throw new InvalidPrimaryKeyException("Multiple studentBorrowers matching id : "
+					+ bannerId + " found.");
 			}
 			else
 			{
 				// copy all the retrieved data into persistent state
 				Properties retrievedAccountData = allDataRetrieved.elementAt(0);
-				processNewPatronHelper(retrievedAccountData);
+				processNewStudentBorrowerHelper(retrievedAccountData);
+
 
 			}
 		}
 		// If no account found for this user name, throw an exception
 		else
 		{
-			throw new InvalidPrimaryKeyException("No patron matching id : "
-				+ patronId + " found.");
+//		    studentBorrowerErrorMessage="No studentBorrower matching id : " + bannerId + " found.";
+			throw new InvalidPrimaryKeyException("No studentBorrower matching id : "
+				+ bannerId + " found.");
 		}
 	}
 
@@ -66,7 +65,7 @@ public class StudentBorrower extends EntityBase implements IView {
 		super(myTableName);
 
 		setDependencies();
-		processNewPatronHelper(props);
+		processNewStudentBorrowerHelper(props);
 	}
 	
 	
@@ -76,25 +75,26 @@ public class StudentBorrower extends EntityBase implements IView {
 		if (key.equals("UpdateStatusMessage"))
 			return updateStatusMessage;
 		else if(key.equals("SuccessFlag")){
-			return successFlag;
-		}
+		    return successFlag;
+        }
 		return persistentState.getProperty(key);
 	}
 
 	//----------------------------------------------------------------
 	public void stateChangeRequest(String key, Object value)
 	{
-		if(key.equals("ProcessNewPatron")){
-			processNewPatron((Properties) value);
-		}
-		myRegistry.updateSubscribers(key, this);
+		if(key.equals("ProcessNewStudentBorrower")){
+		    processNewStudentBorrower((Properties) value);
+        }
+	    myRegistry.updateSubscribers(key, this);
 	}
 	
 	private void setDependencies()
 	{
 		dependencies = new Properties();
-		dependencies.setProperty("AddStudentBorrowerCancelled", "ViewCancelled");
-		dependencies.setProperty("ProcessNewPatron","UpdateStatusMessage");
+		dependencies.setProperty("AddStudentBorrowerCancelled","ViewCancelled");
+		dependencies.setProperty("ModifyStudentBorrowerCancelled","ViewCancelled");
+        dependencies.setProperty("ProcessNewStudentBorrower","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}
 
@@ -109,32 +109,75 @@ public class StudentBorrower extends EntityBase implements IView {
 	{
 		try
 		{
-			successFlag = true;
-			if (persistentState.getProperty("patronId") != null)
+            successFlag = true;
+			if (persistentState.getProperty("bannerId") != null)
 			{
 				Properties whereClause = new Properties();
-				whereClause.setProperty("patronId",
-				persistentState.getProperty("patronId"));
+				whereClause.setProperty("bannerId",
+				persistentState.getProperty("bannerId"));
 				updatePersistentState(mySchema, persistentState, whereClause);
-				updateStatusMessage = "Patron data for patron id : " + persistentState.getProperty("patronId") + " updated successfully in database!";
+				updateStatusMessage = "StudentBorrower data for studentBorrower id : " + persistentState.getProperty("bannerId") + " updated successfully in database!";
 			}
 			else
 			{
-				Integer patronId =
+				Integer bannerId =
 					insertAutoIncrementalPersistentState(mySchema, persistentState);
-				persistentState.setProperty("patronId", "" + patronId.intValue());
-				updateStatusMessage = "Patron data for new patron : " +  persistentState.getProperty("patronId")
-					+ "installed successfully in database!";
+				persistentState.setProperty("bannerId", "" + bannerId.intValue());
+				updateStatusMessage = "StudentBorrower data for new studentBorrower : " +  persistentState.getProperty("bannerId")
+					+ " installed successfully in database!";
 			}
 		}
 		catch (SQLException ex)
 		{
-			successFlag = false;
-			updateStatusMessage = "Error in installing patron data in database!";
+		    successFlag = false;
+			updateStatusMessage = "Error in installing studentBorrower data in database!";
 		}
 		//DEBUG System.out.println("updateStateInDatabase " + updateStatusMessage);
 	}
 
+	/**
+	 * This method is needed solely to enable the Account information to be displayable in a table
+	 *
+	 */
+	//--------------------------------------------------------------------------
+	public Vector<String> getEntryListView()
+	{
+		Vector<String> v = new Vector<String>();
+		v.addElement(persistentState.getProperty("Barcode"));
+		v.addElement(persistentState.getProperty("Title"));
+		v.addElement(persistentState.getProperty("Discipline"));
+		v.addElement(persistentState.getProperty("Author1"));
+		v.addElement(persistentState.getProperty("Publisher"));
+		v.addElement(persistentState.getProperty("YearOfPublication"));
+		v.addElement(persistentState.getProperty("ISBN"));
+		v.addElement(persistentState.getProperty("Condition"));
+		v.addElement(persistentState.getProperty("SuggestedPrice"));
+		v.addElement(persistentState.getProperty("Notes"));
+		v.addElement(persistentState.getProperty("Status"));
+
+		return v;
+	}
+
+	public void processNewStudentBorrower(Properties props){
+        processNewStudentBorrowerHelper(props);
+        updateStateInDatabase();
+    }
+
+    private void processNewStudentBorrowerHelper(Properties props){
+        persistentState = new Properties();
+        Enumeration allKeys = props.propertyNames();
+        while (allKeys.hasMoreElements())
+        {
+            String nextKey = (String)allKeys.nextElement();
+            String nextValue = props.getProperty(nextKey);
+
+            if (nextValue != null)
+            {
+            	System.out.println(nextKey + "  " + nextValue);
+                persistentState.setProperty(nextKey, nextValue);
+            }
+        }
+    }
 	//-----------------------------------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{
@@ -144,55 +187,18 @@ public class StudentBorrower extends EntityBase implements IView {
 		}
 	}
 
-	public Vector<String> getEntryListView()
-	{
-		Vector<String> v = new Vector<String>();
-		v.addElement(persistentState.getProperty("patronId"));
-		v.addElement(persistentState.getProperty("name"));
-		v.addElement(persistentState.getProperty("address"));
-		v.addElement(persistentState.getProperty("city"));
-		v.addElement(persistentState.getProperty("stateCode"));
-		v.addElement(persistentState.getProperty("zip"));
-		v.addElement(persistentState.getProperty("email"));
-		v.addElement(persistentState.getProperty("dateOfBirth"));
-		v.addElement(persistentState.getProperty("status"));
-
-		return v;
-	}
-
-	private void processNewPatron(Properties props){
-		processNewPatronHelper(props);
-		updateStateInDatabase();
-	}
-
-	private void processNewPatronHelper(Properties props){
-		persistentState = new Properties();
-		Enumeration allKeys = props.propertyNames();
-		while (allKeys.hasMoreElements())
-		{
-			String nextKey = (String)allKeys.nextElement();
-			String nextValue = props.getProperty(nextKey);
-
-			if (nextValue != null)
-			{
-				persistentState.setProperty(nextKey, nextValue);
-			}
-		}
-	}
-
-
 	protected void createAndShowView()
 	{
-		Scene currentScene = myViews.get("NewBookView");
-
-		if (currentScene == null)
-		{
-			// create our initial view
-			View newView = ViewFactory.createView("NewPatronView", this);
-			currentScene = new Scene(newView);
-			myViews.put("NewPatronView", currentScene);
-		}
-		swapToView(currentScene);
+//		Scene currentScene = myViews.get("NewStudentBorrowerView");
+//
+//		if (currentScene == null)
+//		{
+//			// create our initial view
+//			View newView = ViewFactory.createView("NewStudentBorrowerView", this);
+//			currentScene = new Scene(newView);
+//			myViews.put("NewStudentBorrowerView", currentScene);
+//		}
+//		swapToView(currentScene);
 	}
 
 	@Override

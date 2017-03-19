@@ -1,106 +1,197 @@
 package model;
 
-import exception.InvalidLoginException;
 import exception.InvalidPrimaryKeyException;
-import exception.PasswordMismatchException;
 import impresario.IView;
 
+import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
-/**
- * Created by Sammytech on 3/5/17.
- */
 public class Worker extends EntityBase implements IView {
-    private static final String myTableName = "Worker";
 
-    public Worker(Properties props) throws InvalidLoginException {
-        super(myTableName);
+	private static final String myTableName = "Worker";
 
-        String idToQuery = props.getProperty("BannerId");
+	protected Properties dependencies;
 
-        String query = "SELECT * FROM " + myTableName + " WHERE (BannerId = " + idToQuery + ")";
+	// GUI Components
 
-        Vector allDataRetrieved =  getSelectQueryResult(query);
+	private String updateStatusMessage = "";
+	private boolean successFlag = true;
 
-        // You must get one account at least
-        if (allDataRetrieved != null)
+	public Worker(String bannerId) throws InvalidPrimaryKeyException {
+		super(myTableName);
+
+		setDependencies();
+		String query = "SELECT * FROM " + myTableName + " WHERE (bannerId = " + bannerId + ")";
+
+		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
+
+		// You must get one worker at least
+		if (allDataRetrieved != null)
+		{
+			int size = allDataRetrieved.size();
+
+			// There should be EXACTLY one worker. More than that is an error
+			if (size != 1)
+			{
+				throw new InvalidPrimaryKeyException("Multiple workers matching id : "
+					+ bannerId + " found.");
+			}
+			else
+			{
+				// copy all the retrieved data into persistent state
+				Properties retrievedWorkerData = allDataRetrieved.elementAt(0);
+				processNewWorkerHelper(retrievedWorkerData);
+
+
+			}
+		}
+		// If no worker found for this user name, throw an exception
+		else
+		{
+//		    workerErrorMessage="No worker matching id : " + workerId + " found.";
+			throw new InvalidPrimaryKeyException("No worker matching id : "
+				+ bannerId + " found.");
+		}
+	}
+
+
+	// Can also be used to create a NEW Worker (if the system it is part of
+	// allows for a new worker to be set up)
+	//----------------------------------------------------------
+	public Worker(Properties props)
+	{
+		super(myTableName);
+
+		setDependencies();
+		processNewWorkerHelper(props);
+	}
+	
+	
+	//----------------------------------------------------------
+	public Object getState(String key)
+	{
+		if (key.equals("UpdateStatusMessage"))
+			return updateStatusMessage;
+		else if(key.equals("SuccessFlag")){
+		    return successFlag;
+        }
+		return persistentState.getProperty(key);
+	}
+
+	//----------------------------------------------------------------
+	public void stateChangeRequest(String key, Object value)
+	{
+		if(key.equals("ProcessNewWorker")){
+		    processNewWorker((Properties) value);
+        }
+	    myRegistry.updateSubscribers(key, this);
+	}
+	
+	private void setDependencies()
+	{
+		dependencies = new Properties();
+		dependencies.setProperty("AddWorkerCancelled","ViewCancelled");
+		dependencies.setProperty("ModifyWorkerCancelled","ViewCancelled");
+        dependencies.setProperty("ProcessNewWorker","UpdateStatusMessage");
+		myRegistry.setDependencies(dependencies);
+	}
+
+	
+	public void update()
+	{
+		updateStateInDatabase();
+	}
+	
+	//-----------------------------------------------------------------------------------
+	private void updateStateInDatabase() 
+	{
+		try
+		{
+            successFlag = true;
+			Properties whereClause = new Properties();
+			whereClause.setProperty("workerId",
+					persistentState.getProperty("workerId"));
+			updatePersistentState(mySchema, persistentState, whereClause);
+			updateStatusMessage = "Worker data for worker id : " + persistentState.getProperty("workerId") + " updated successfully in database!";
+		}
+		catch (SQLException ex)
+		{
+		    successFlag = false;
+			updateStatusMessage = "Error in installing worker data in database!";
+		}
+		//DEBUG System.out.println("updateStateInDatabase " + updateStatusMessage);
+	}
+
+	/**
+	 * This method is needed solely to enable the Worker information to be displayable in a table
+	 *
+	 */
+	//--------------------------------------------------------------------------
+	public Vector<String> getEntryListView()
+	{
+		Vector<String> v = new Vector<String>();
+		v.addElement(persistentState.getProperty("BannerId"));
+		v.addElement(persistentState.getProperty("Title"));
+		v.addElement(persistentState.getProperty("Discipline"));
+		v.addElement(persistentState.getProperty("Author1"));
+		v.addElement(persistentState.getProperty("Publisher"));
+		v.addElement(persistentState.getProperty("YearOfPublication"));
+		v.addElement(persistentState.getProperty("ISBN"));
+		v.addElement(persistentState.getProperty("Condition"));
+		v.addElement(persistentState.getProperty("SuggestedPrice"));
+		v.addElement(persistentState.getProperty("Notes"));
+		v.addElement(persistentState.getProperty("Status"));
+
+		return v;
+	}
+
+	public void processNewWorker(Properties props){
+        processNewWorkerHelper(props);
+        updateStateInDatabase();
+    }
+
+    private void processNewWorkerHelper(Properties props){
+        persistentState = new Properties();
+        Enumeration allKeys = props.propertyNames();
+        while (allKeys.hasMoreElements())
         {
-            int size = allDataRetrieved.size();
+            String nextKey = (String)allKeys.nextElement();
+            String nextValue = props.getProperty(nextKey);
 
-            // There should be EXACTLY one account. More than that is an error
-            if (size != 1)
+            if (nextValue != null)
             {
-                throw new InvalidLoginException("Invalid BannerId/Password");
-            }
-            else
-            {
-                // copy all the retrieved data into persistent state
-                Properties retrievedCustomerData = (Properties)allDataRetrieved.elementAt(0);
-                persistentState = new Properties();
-
-                Enumeration allKeys = retrievedCustomerData.propertyNames();
-                while (allKeys.hasMoreElements() == true)
-                {
-                    String nextKey = (String)allKeys.nextElement();
-                    String nextValue = retrievedCustomerData.getProperty(nextKey);
-
-                    if (nextValue != null)
-                    {
-
-                        persistentState.setProperty(nextKey, nextValue);
-
-                    }
-                }
-
+            	System.out.println(nextKey + "  " + nextValue);
+                persistentState.setProperty(nextKey, nextValue);
             }
         }
-        // If no account found for this user name, throw an exception
-        else
-        {
-            throw new InvalidLoginException("Invalid BannerId/Password");
-        }
-
-        String password = props.getProperty("Password");
-
-        String workerPassword = persistentState.getProperty("Password");
-
-        if (workerPassword != null)
-        {
-            boolean passwordCheck = workerPassword.equals(password);
-            if (passwordCheck == false)
-            {
-                throw new InvalidLoginException("Invalid BannerId/Password");
-            } else{
-                persistentState.remove("Password");
-            }
-
-        }
-        else
-        {
-            throw new InvalidLoginException("Invalid BannerId/Password");
-        }
-
     }
+	//-----------------------------------------------------------------------------------
+	protected void initializeSchema(String tableName)
+	{
+		if (mySchema == null)
+		{
+			mySchema = getSchemaInfo(tableName);
+		}
+	}
 
-    @Override
-    public void updateState(String key, Object value) {
+	protected void createAndShowView()
+	{
+//		Scene currentScene = myViews.get("NewWorkerView");
+//
+//		if (currentScene == null)
+//		{
+//			// create our initial view
+//			View newView = ViewFactory.createView("NewWorkerView", this);
+//			currentScene = new Scene(newView);
+//			myViews.put("NewWorkerView", currentScene);
+//		}
+//		swapToView(currentScene);
+	}
 
-    }
-
-    @Override
-    public Object getState(String key) {
-        return persistentState.getProperty(key);
-    }
-
-    @Override
-    public void stateChangeRequest(String key, Object value) {
-
-    }
-
-    @Override
-    protected void initializeSchema(String tableName) {
-
-    }
+	@Override
+	public void updateState(String key, Object value) {
+		stateChangeRequest(key, value);
+	}
 }

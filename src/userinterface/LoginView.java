@@ -1,5 +1,6 @@
 package userinterface;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -50,14 +51,21 @@ public class LoginView extends View{
         fields.getChildren().addAll(userLabel, bannerId);
 
         // Password
-        Label passwordLabel = new Label("Password");
+        Label passwordLabel = new Label(Utilities.convertToTitleCase(messages.getString("login_pass")));
 
         password = new PasswordField();
-        password.setPromptText(messages.getString("login_pass"));
+        password.setPromptText(Utilities.convertToTitleCase(messages.getString("login_pass")));
         password.getStyleClass().add("textfield");
         password.setId("passwordtf");
         password.setPadding(new Insets(10,0, 10,40));
         password.setPrefHeight(40);
+
+        password.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                processLogin();
+            }
+        });
         fields.getChildren().addAll(passwordLabel, password);
 
         container.getChildren().addAll(title, fields);
