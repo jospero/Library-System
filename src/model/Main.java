@@ -45,11 +45,9 @@ public class Main implements IView, IModel {
     protected void setDependencies()
     {
         dependencies = new Properties();
-        dependencies.setProperty("AddBook", "ChangeView");
-        dependencies.setProperty("AddWorker", "ChangeView");
-        dependencies.setProperty("ModifyBook", "ChangeView");
-        dependencies.setProperty("DeleteBook", "ChangeView");
-        dependencies.setProperty("AddStudentBorrower", "ChangeView");
+        dependencies.setProperty("Add", "ChangeView");
+        dependencies.setProperty("Modify", "ChangeView");
+        dependencies.setProperty("Delete", "ChangeView");
         dependencies.setProperty("Welcome", "ChangeView");
         dependencies.setProperty("ViewCancelled", "ChangeView");
         dependencies.setProperty("SubViewChange", "ChangeView");
@@ -83,34 +81,49 @@ public class Main implements IView, IModel {
 
     @Override
     public void stateChangeRequest(String key, Object value) {
-        if(key.equals("AddBook")){
-            Book book = new Book(new Properties());
-            book.subscribe("ViewCancelled", this);
-            currentView = ViewFactory.createView("AddBookView", book);
+        if(key.equals("Add")){
+            EntityBase model = null;
+            String viewName = "";
+            if(value.equals("Book")){
+                model = new Book(new Properties());
+                viewName = "AddBookView";
+            } else if(value.equals("Worker")){
+                model = new Worker(new Properties());
+                viewName = "AddWorkerView";
+            } else if(value.equals("StudentBorrower")){
+                model = new StudentBorrower(new Properties());
+                viewName = "AddStudentBorrowerView";
+            }
+            if(model != null){
+                model.subscribe("ViewCancelled", this);
+                currentView = ViewFactory.createView(viewName, model);
 //            myViews.put("AddBookView", currentView);
-        } else if (key.equals("ModifyBook") || key.equals("DeleteBook")) {
-            SearchBook.SearchFor search;
-            if(key.equals("ModifyBook"))
-                search = SearchBook.SearchFor.MODIFY;
+            }
+        } else if (key.equals("Modify") || key.equals("Delete")) {
+            SearchFor search;
+            if(key.equals("Modify"))
+                search = SearchFor.MODIFY;
             else
-                search = SearchBook.SearchFor.DELETE;
-            SearchBook searchBook = new SearchBook(search);
-            searchBook.subscribe("SubViewChange", this);
-            searchBook.subscribe("ParentView", this);
-            searchBook.subscribe("ViewCancelled", this);
-            currentView = ViewFactory.createView("SearchBookView", searchBook);
-            myViews.put("SearchBookView", currentView);
-        }else if (key.equals("AddWorker")){
-            System.out.println(key);
-            Worker worker = new Worker( new Properties());
-            worker.subscribe("ViewCancelled", this);
-            currentView  = ViewFactory.createView("AddWorkerView", worker);
-//            myViews.put("AddBookView", currentView);
-        } else if (key.equals("AddStudentBorrower")){
-            StudentBorrower studentBorrower = new StudentBorrower( new Properties());
-            studentBorrower.subscribe("ViewCancelled", this);
-            currentView  = ViewFactory.createView("AddStudentBorrowerView", studentBorrower);
-//            myViews.put("AddBookView", currentView);
+                search = SearchFor.DELETE;
+            IModel searchModel = null;
+            String viewName = "";
+            if(value.equals("Book")){
+                searchModel = new SearchBook(search);
+                viewName = "SearchBookView";
+            } else if(value.equals("Worker")){
+                searchModel = new SearchWorker(search);
+                viewName = "SearchWorkerView";
+            } else if(value.equals("StudentBorrower")){
+                searchModel = new SearchStudentBorrower(search);
+                viewName = "SearchStudentBorrowerView";
+            }
+            if(searchModel != null) {
+                searchModel.subscribe("SubViewChange", this);
+                searchModel.subscribe("ParentView", this);
+                searchModel.subscribe("ViewCancelled", this);
+                currentView = ViewFactory.createView(viewName, searchModel);
+                myViews.put(viewName, currentView);
+            }
         } else if (key.equals("Welcome") || key.equals("ViewCancelled")) {
             currentView = ViewFactory.createView("WelcomeView", myWorkerHolder);
 //            myViews.put("AddBookView", currentView);

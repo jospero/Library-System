@@ -1,4 +1,4 @@
-package userinterface;
+package userinterface.worker;
 
 import impresario.IModel;
 import javafx.geometry.Insets;
@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import model.Worker;
+import userinterface.View;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -62,7 +63,7 @@ public abstract class WorkerInformationView extends View {
         int row = 0;
         Vector<String> worker = ((Worker) myModel).getEntryListView();
         for(FieldsEnum fEnum : FieldsEnum.values()){
-            if(fieldsStr.containsKey(fEnum)){
+            if(fieldsStr.containsKey(fEnum) && fEnum != FieldsEnum.PASSWORD){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);

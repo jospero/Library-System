@@ -1,4 +1,4 @@
-package userinterface;
+package userinterface.studentborrower;
 
 import impresario.IModel;
 import javafx.geometry.Insets;
@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import model.StudentBorrower;
+import userinterface.View;
 
 import java.util.HashMap;
 import java.util.Vector;

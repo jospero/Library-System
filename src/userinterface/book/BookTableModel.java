@@ -1,4 +1,4 @@
-package userinterface;
+package userinterface.book;
 
 import javafx.beans.property.SimpleStringProperty;
 
@@ -22,19 +22,19 @@ public class BookTableModel {
     private final SimpleStringProperty status;
 
     //----------------------------------------------------------------------------
-    public BookTableModel(Vector<String> accountData)
+    public BookTableModel(Vector<String> bookData)
     {
-        barcode =  new SimpleStringProperty(accountData.elementAt(0));
-        title =  new SimpleStringProperty(accountData.elementAt(1));
-        discipline =  new SimpleStringProperty(accountData.elementAt(2));
-        authors =  new SimpleStringProperty(accountData.elementAt(3));
-        publisher =  new SimpleStringProperty(accountData.elementAt(4));
-        yearOfPublication =  new SimpleStringProperty(accountData.elementAt(5));
-        isbn =  new SimpleStringProperty(accountData.elementAt(6));
-        condition =  new SimpleStringProperty(accountData.elementAt(7));
-        suggestedPrice =  new SimpleStringProperty(accountData.elementAt(8));
-        notes =  new SimpleStringProperty(accountData.elementAt(9));
-        status =  new SimpleStringProperty(accountData.elementAt(10));
+        barcode =  new SimpleStringProperty(bookData.elementAt(0));
+        title =  new SimpleStringProperty(bookData.elementAt(1));
+        discipline =  new SimpleStringProperty(bookData.elementAt(2));
+        authors =  new SimpleStringProperty(bookData.elementAt(3));
+        publisher =  new SimpleStringProperty(bookData.elementAt(4));
+        yearOfPublication =  new SimpleStringProperty(bookData.elementAt(5));
+        isbn =  new SimpleStringProperty(bookData.elementAt(6));
+        condition =  new SimpleStringProperty(bookData.elementAt(7));
+        suggestedPrice =  new SimpleStringProperty(bookData.elementAt(8));
+        notes =  new SimpleStringProperty(bookData.elementAt(9));
+        status =  new SimpleStringProperty(bookData.elementAt(10));
     }
 
     public String getBarcode() {

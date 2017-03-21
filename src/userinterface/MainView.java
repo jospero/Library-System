@@ -41,7 +41,7 @@ public class MainView extends View {
         addBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                myModel.stateChangeRequest("AddBook", null);
+                myModel.stateChangeRequest("Add", "Book");
             }
         });
 
@@ -50,7 +50,7 @@ public class MainView extends View {
         modifyBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                myModel.stateChangeRequest("ModifyBook", null);
+                myModel.stateChangeRequest("Modify", "Book");
             }
         });
 
@@ -59,7 +59,7 @@ public class MainView extends View {
         deleteBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                myModel.stateChangeRequest("DeleteBook", null);
+                myModel.stateChangeRequest("Delete", "Book");
             }
         });
 
@@ -100,7 +100,7 @@ public class MainView extends View {
         addWorker.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                myModel.stateChangeRequest("AddWorker", null);
+                myModel.stateChangeRequest("Add", "Worker");
             }
         });
 
@@ -109,7 +109,7 @@ public class MainView extends View {
         modifyWorker.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                System.out.println("Modify Worker Pressed");
+                myModel.stateChangeRequest("Modify", "Worker");
             }
         });
 
@@ -118,7 +118,7 @@ public class MainView extends View {
         deleteWorker.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                System.out.println("Delete Worker Pressed");
+                myModel.stateChangeRequest("Delete", "Worker");
             }
         });
 
@@ -131,7 +131,7 @@ public class MainView extends View {
         addStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                myModel.stateChangeRequest("AddStudentBorrower", null);
+                myModel.stateChangeRequest("Add", "StudentBorrower");
             }
         });
 
@@ -140,7 +140,7 @@ public class MainView extends View {
         modifyStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                System.out.println("Modify Student Pressed");
+                myModel.stateChangeRequest("Modify", "StudentBorrower");
             }
         });
 
@@ -149,7 +149,7 @@ public class MainView extends View {
         deleteStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                System.out.println("Delete Student Pressed");
+                myModel.stateChangeRequest("Delete", "StudentBorrower");
             }
         });
 

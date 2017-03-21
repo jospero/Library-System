@@ -1,4 +1,4 @@
-package userinterface;
+package userinterface.book;
 
 import impresario.IModel;
 import javafx.event.ActionEvent;
@@ -15,11 +15,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import userinterface.View;
 
 /**
  * Created by Sammytech on 3/11/17.
  */
-public class SearchBookView extends View{
+public class SearchBookView extends View {
 
     TextField barcode = new TextField();
     TextField bookTitle = new TextField();

@@ -133,15 +133,13 @@ public class Worker extends EntityBase implements IView {
 	{
 		Vector<String> v = new Vector<String>();
 		v.addElement(persistentState.getProperty("BannerId"));
-		v.addElement(persistentState.getProperty("Title"));
-		v.addElement(persistentState.getProperty("Discipline"));
-		v.addElement(persistentState.getProperty("Author1"));
-		v.addElement(persistentState.getProperty("Publisher"));
-		v.addElement(persistentState.getProperty("YearOfPublication"));
-		v.addElement(persistentState.getProperty("ISBN"));
-		v.addElement(persistentState.getProperty("Condition"));
-		v.addElement(persistentState.getProperty("SuggestedPrice"));
-		v.addElement(persistentState.getProperty("Notes"));
+		v.addElement(persistentState.getProperty("FirstName"));
+		v.addElement(persistentState.getProperty("LastName"));
+		v.addElement(persistentState.getProperty("Phone"));
+		v.addElement(persistentState.getProperty("E-mail"));
+		v.addElement(persistentState.getProperty("Credentials"));
+		v.addElement(persistentState.getProperty("DateOfLatestCredentialStatus"));
+		v.addElement(persistentState.getProperty("DateOfHire"));
 		v.addElement(persistentState.getProperty("Status"));
 
 		return v;

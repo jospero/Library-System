@@ -1,4 +1,4 @@
-package userinterface;
+package userinterface.book;
 
 import impresario.IModel;
 import javafx.geometry.Insets;
@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import model.Book;
+import userinterface.View;
 
 import java.util.HashMap;
 import java.util.Vector;

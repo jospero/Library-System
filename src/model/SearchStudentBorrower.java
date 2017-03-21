@@ -9,26 +9,24 @@ import userinterface.View;
 import userinterface.ViewFactory;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Properties;
 
 /**
  * Created by Sammytech on 3/11/17.
  */
-public class SearchBook implements IView, IModel {
+public class SearchStudentBorrower implements IView, IModel {
 
     private final SearchFor searchFor;
     protected Properties dependencies;
     protected ModelRegistry myRegistry;
     protected ArrayList<View> nextView;
-
-    public SearchBook(SearchFor searchFor) {
+    public SearchStudentBorrower(SearchFor searchFor) {
         this.searchFor = searchFor;
         nextView = new ArrayList<>();
-        myRegistry = new ModelRegistry("SearchBook");
+        myRegistry = new ModelRegistry("SearchStudentBorrower");
         if(myRegistry == null)
         {
-            new Event(Event.getLeafLevelClassName(this), "SearchBook",
+            new Event(Event.getLeafLevelClassName(this), "SearchStudentBorrower",
                     "Could not instantiate Registry", Event.ERROR);
         }
         setDependencies();
@@ -39,10 +37,10 @@ public class SearchBook implements IView, IModel {
     {
         dependencies = new Properties();
         dependencies.setProperty("ProcessSearch", "SubViewChange");
-        dependencies.setProperty("ViewBookCancelled", "SubViewChange");
+        dependencies.setProperty("ViewStudentBorrowerCancelled", "SubViewChange");
         dependencies.setProperty("ResultViewCancelled", "ParentView");
-        dependencies.setProperty("SearchBookCancelled", "ViewCancelled");
-        dependencies.setProperty("ViewBook", "SubViewChange");
+        dependencies.setProperty("SearchStudentBorrowerCancelled", "ViewCancelled");
+        dependencies.setProperty("ViewStudentBorrower", "SubViewChange");
         myRegistry.setDependencies(dependencies);
     }
 
@@ -53,11 +51,11 @@ public class SearchBook implements IView, IModel {
 
     @Override
     public Object getState(String key) {
-        System.out.println("SearchBook" + key);
+        System.out.println("SearchStudentBorrower" + key);
         if(key.equals("SubViewChange")){
             return nextView.get(nextView.size()-1);
         } if(key.equals("ParentView")){
-            return "SearchBookView";
+            return "SearchStudentBorrowerView";
         }
         return null;
     }
@@ -76,22 +74,22 @@ public class SearchBook implements IView, IModel {
     public void stateChangeRequest(String key, Object value) {
         System.out.println("SCR "+ key);
         if(key.equals("ProcessSearch")){
-            BookCollection bookCollection = new BookCollection();
+            StudentBorrowerCollection studentBorrowerCollection = new StudentBorrowerCollection();
             try {
-                bookCollection.findBooks();
+                studentBorrowerCollection.findStudentBorrowers();
             } catch (InvalidPrimaryKeyException e) {
                 e.printStackTrace();
             }
-            bookCollection.subscribe("ResultViewCancelled", this);
-            bookCollection.subscribe("ViewBook", this);
-            nextView.add(bookCollection.createView());
-        } else if(key.equals("ViewBook")){
+            studentBorrowerCollection.subscribe("ResultViewCancelled", this);
+            studentBorrowerCollection.subscribe("ViewStudentBorrower", this);
+            nextView.add(studentBorrowerCollection.createView());
+        } else if(key.equals("ViewStudentBorrower")){
             if(searchFor == SearchFor.MODIFY){
-                Book book = (Book) value;
-                book.subscribe("ViewBookCancelled", this);
-                nextView.add(ViewFactory.createView("ModifyBookView", book));
+                StudentBorrower studentBorrower = (StudentBorrower) value;
+                studentBorrower.subscribe("ViewStudentBorrowerCancelled", this);
+                nextView.add(ViewFactory.createView("ModifyStudentBorrowerView", studentBorrower));
             }
-        } else if(key.equals("ViewBookCancelled")){
+        } else if(key.equals("ViewStudentBorrowerCancelled")){
             nextView.remove(nextView.size()-1);
         }
         myRegistry.updateSubscribers(key, this);

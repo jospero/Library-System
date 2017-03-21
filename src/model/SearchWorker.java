@@ -9,26 +9,24 @@ import userinterface.View;
 import userinterface.ViewFactory;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Properties;
 
 /**
  * Created by Sammytech on 3/11/17.
  */
-public class SearchBook implements IView, IModel {
+public class SearchWorker implements IView, IModel {
 
     private final SearchFor searchFor;
     protected Properties dependencies;
     protected ModelRegistry myRegistry;
     protected ArrayList<View> nextView;
-
-    public SearchBook(SearchFor searchFor) {
+    public SearchWorker(SearchFor searchFor) {
         this.searchFor = searchFor;
         nextView = new ArrayList<>();
-        myRegistry = new ModelRegistry("SearchBook");
+        myRegistry = new ModelRegistry("SearchWorker");
         if(myRegistry == null)
         {
-            new Event(Event.getLeafLevelClassName(this), "SearchBook",
+            new Event(Event.getLeafLevelClassName(this), "SearchWorker",
                     "Could not instantiate Registry", Event.ERROR);
         }
         setDependencies();
@@ -39,10 +37,10 @@ public class SearchBook implements IView, IModel {
     {
         dependencies = new Properties();
         dependencies.setProperty("ProcessSearch", "SubViewChange");
-        dependencies.setProperty("ViewBookCancelled", "SubViewChange");
+        dependencies.setProperty("ViewWorkerCancelled", "SubViewChange");
         dependencies.setProperty("ResultViewCancelled", "ParentView");
-        dependencies.setProperty("SearchBookCancelled", "ViewCancelled");
-        dependencies.setProperty("ViewBook", "SubViewChange");
+        dependencies.setProperty("SearchWorkerCancelled", "ViewCancelled");
+        dependencies.setProperty("ViewWorker", "SubViewChange");
         myRegistry.setDependencies(dependencies);
     }
 
@@ -53,11 +51,11 @@ public class SearchBook implements IView, IModel {
 
     @Override
     public Object getState(String key) {
-        System.out.println("SearchBook" + key);
+        System.out.println("SearchWorker" + key);
         if(key.equals("SubViewChange")){
             return nextView.get(nextView.size()-1);
         } if(key.equals("ParentView")){
-            return "SearchBookView";
+            return "SearchWorkerView";
         }
         return null;
     }
@@ -76,22 +74,23 @@ public class SearchBook implements IView, IModel {
     public void stateChangeRequest(String key, Object value) {
         System.out.println("SCR "+ key);
         if(key.equals("ProcessSearch")){
-            BookCollection bookCollection = new BookCollection();
+            WorkerCollection workerCollection = new WorkerCollection();
             try {
-                bookCollection.findBooks();
+                workerCollection.findWorkers();
             } catch (InvalidPrimaryKeyException e) {
                 e.printStackTrace();
             }
-            bookCollection.subscribe("ResultViewCancelled", this);
-            bookCollection.subscribe("ViewBook", this);
-            nextView.add(bookCollection.createView());
-        } else if(key.equals("ViewBook")){
+            workerCollection.subscribe("ResultViewCancelled", this);
+            workerCollection.subscribe("ViewWorker", this);
+            nextView.add(workerCollection.createView());
+        } else if(key.equals("ViewWorker")){
             if(searchFor == SearchFor.MODIFY){
-                Book book = (Book) value;
-                book.subscribe("ViewBookCancelled", this);
-                nextView.add(ViewFactory.createView("ModifyBookView", book));
+                System.out.println(searchFor);
+                Worker worker = (Worker) value;
+                worker.subscribe("ViewWorkerCancelled", this);
+                nextView.add(ViewFactory.createView("ModifyWorkerView", worker));
             }
-        } else if(key.equals("ViewBookCancelled")){
+        } else if(key.equals("ViewWorkerCancelled")){
             nextView.remove(nextView.size()-1);
         }
         myRegistry.updateSubscribers(key, this);

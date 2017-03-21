@@ -1,31 +1,29 @@
-package userinterface;
+package userinterface.book;
 
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import userinterface.TitleView;
 
 import java.util.Optional;
 
 /**
  * Created by Sammytech on 3/5/17.
  */
-public class AddStudentBorrowerView extends StudentBorrowerInformationView {
+public class AddBookView extends BookInformationView {
 
-    public AddStudentBorrowerView(IModel model) {
-        super(model, true, "AddStudentBorrowerView");
+    public AddBookView(IModel model) {
+        super(model, true, "AddBookView");
 
         VBox box = new VBox();
-        box.setStyle("-fx-background-color: #530016");
+        box.setStyle("-fx-background-color: #93ffa8");
 
-        box.getChildren().add(TitleView.createTitle("Add New Student Borrower"));
+        box.getChildren().add(TitleView.createTitle("Add New Book"));
 
-        box.getChildren().add(getStudentBorrowerInformation());
+        box.getChildren().add(getBookInformation());
 
         HBox buttonBox = new HBox();
 
@@ -38,7 +36,7 @@ public class AddStudentBorrowerView extends StudentBorrowerInformationView {
         cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                myModel.stateChangeRequest("AddStudentBorrowerCancelled", null);
+                myModel.stateChangeRequest("AddBookCancelled", null);
             }
         });
 

@@ -1,4 +1,4 @@
-package userinterface;
+package userinterface.book;
 
 import impresario.IModel;
 import javafx.beans.value.ChangeListener;
@@ -19,6 +19,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import model.Book;
 import model.BookCollection;
+import userinterface.MessageView;
+import userinterface.TitleView;
+import userinterface.View;
 
 import java.util.Enumeration;
 import java.util.Vector;
@@ -26,7 +29,7 @@ import java.util.Vector;
 /**
  * Created by Sammytech on 3/12/17.
  */
-public class BookCollectionView extends View{
+public class BookCollectionView extends View {
 
     protected TableView<BookTableModel> tableOfBooks;
     protected Button cancelButton;
