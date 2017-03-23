@@ -3,15 +3,14 @@ package userinterface.book;
 import impresario.IModel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import model.Book;
 import userinterface.View;
 
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Vector;
 
 /**
@@ -20,7 +19,7 @@ import java.util.Vector;
 public abstract class BookInformationView extends View {
 
     enum FieldsEnum{
-        BARCODE, TITLE, AUTHOR, DISCIPLINE, PUBLISHER, YEAROFPUB, ISBN, CONDITION, SUGPRICE, NOTES, STATUS
+        Barcode, Title, Authors, Discipline, Publisher, YearOfPublication, ISBN, Condition, SuggestedPrice, Notes, Status
     }
 
     private class Fields{
@@ -29,7 +28,6 @@ public abstract class BookInformationView extends View {
     }
     HashMap<FieldsEnum, Fields> fieldsList = new HashMap<>();
     HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
-
     boolean enableFields;
 
 
@@ -38,17 +36,18 @@ public abstract class BookInformationView extends View {
         super(model, classname);
         this.enableFields = enableFields;
 
-        fieldsStr.put(FieldsEnum.BARCODE, "BARCODE");
-        fieldsStr.put(FieldsEnum.TITLE, "TITLE");
-        fieldsStr.put(FieldsEnum.AUTHOR, "AUTHOR");
-        fieldsStr.put(FieldsEnum.DISCIPLINE, "DISCIPLINE");
-        fieldsStr.put(FieldsEnum.PUBLISHER, "PUBLISHER");
-        fieldsStr.put(FieldsEnum.YEAROFPUB, "YEAR OF PUBLICATION");
+
+        fieldsStr.put(FieldsEnum.Barcode, "Barcode");
+        fieldsStr.put(FieldsEnum.Title, "Title");
+        fieldsStr.put(FieldsEnum.Authors, "Author(s)");
+        fieldsStr.put(FieldsEnum.Discipline, "Discipline");
+        fieldsStr.put(FieldsEnum.Publisher, "Publisher");
+        fieldsStr.put(FieldsEnum.YearOfPublication, "Year of Publication");
         fieldsStr.put(FieldsEnum.ISBN, "ISBN");
-        fieldsStr.put(FieldsEnum.CONDITION, "CONDITION");
-        fieldsStr.put(FieldsEnum.SUGPRICE, "SUGGESTED PRICE");
-        fieldsStr.put(FieldsEnum.NOTES, "NOTES");
-        fieldsStr.put(FieldsEnum.STATUS, "STATUS");
+        fieldsStr.put(FieldsEnum.Condition, "Condition");
+        fieldsStr.put(FieldsEnum.SuggestedPrice, "SUGGESTED PRICE");
+        fieldsStr.put(FieldsEnum.Notes, "Notes");
+        fieldsStr.put(FieldsEnum.Status, "Status");
 
 //        getFieldsString();
     }
@@ -58,7 +57,9 @@ public abstract class BookInformationView extends View {
         bookInfo.setHgap(10);
         bookInfo.setVgap(10);
         bookInfo.setPadding(new Insets(0, 10, 0, 10));
-
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPercentWidth(25);
+        bookInfo.getColumnConstraints().add(col1);
         int row = 0;
         Vector<String> book = ((Book) myModel).getEntryListView();
         for(FieldsEnum fEnum : FieldsEnum.values()){
@@ -66,15 +67,15 @@ public abstract class BookInformationView extends View {
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
-                if(fEnum == FieldsEnum.CONDITION){
+                if(fEnum == FieldsEnum.Condition){
                     field.field = getConditionNode();
                     if(book.get(row) != null && !book.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(book.get(row));
-                } else if(fEnum == FieldsEnum.STATUS){
+                } else if(fEnum == FieldsEnum.Status){
                     field.field = getStatusNode();
                     if(book.get(row) != null && !book.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(book.get(row));
-                } else if(fEnum == FieldsEnum.NOTES) {
+                } else if(fEnum == FieldsEnum.Notes) {
                     TextArea ta = new TextArea();
                     field.field = ta;
                 } else {
@@ -99,6 +100,58 @@ public abstract class BookInformationView extends View {
 
     }
 
+    private void error(Node n){
+        if(!n.getStyleClass().contains("error")){
+            n.getStyleClass().add("error");
+        }
+    }
+    final public Properties validateBook(){
+        Properties book = new Properties();
+        boolean errorFound = false;
+        for(FieldsEnum fieldsEnum: fieldsList.keySet()){
+             if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea){
+                 String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
+                 if(str.isEmpty()){
+                    error(fieldsList.get(fieldsEnum).field);
+                    if(!errorFound) {
+                        errorFound = true;
+                        book = new Properties();
+                    }
+                 }
+                 else if(fieldsEnum == FieldsEnum.Barcode || fieldsEnum == FieldsEnum.YearOfPublication || fieldsEnum == FieldsEnum.ISBN){
+                     try {
+                         int i = Integer.parseInt(str);
+                         if(!errorFound) {
+                             book.setProperty(fieldsEnum.name(), str);
+                         }
+
+                     } catch (NumberFormatException ex){
+                         error(fieldsList.get(fieldsEnum).field);
+                         if(!errorFound) {
+                             errorFound = true;
+                             book = new Properties();
+                         }
+
+                     }
+                 } else {
+                    if(!errorFound){
+                        book.setProperty(fieldsEnum.name(), str);
+                    }
+                 }
+             } else {
+                 if(!errorFound) {
+                     String str = ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
+                     book.setProperty(fieldsEnum.name(), str);
+                 }
+             }
+        }
+        System.out.println(book.toString());
+        return book;
+    }
+
+    private String Databasify(String field){
+        return field.replaceAll("[^a-zA-Z0-9]", "");
+    }
     private ComboBox getConditionNode(){
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll("Good", "Damaged");

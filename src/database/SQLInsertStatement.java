@@ -79,7 +79,7 @@ public class SQLInsertStatement extends SQLStatement
 			// System.out.println("The column name is " + theColumnName);
 			String theColumnValue = insertEscapes(insertValues.getProperty(theColumnName));
 			// System.out.println("The column value is " + theColumnValue);
-			theColumnNamesList += theColumnName;
+			theColumnNamesList += "`" + theColumnName + "`";
 			//	System.out.println("The list is " + theColumnNamesList);
 
 			//System.out.println("Checking insertType");
@@ -111,7 +111,7 @@ public class SQLInsertStatement extends SQLStatement
 		theSQLStatement += theValuesString;
 
 		theSQLStatement += ";";
-	
+		System.out.println(theSQLStatement);
 	}
 }
 

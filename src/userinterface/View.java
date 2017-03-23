@@ -13,6 +13,7 @@
 package userinterface;
 
 // system imports
+import java.io.File;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.EventObject;
@@ -50,6 +51,8 @@ public abstract class View extends Group
 	{
 		myModel = model;
 		Properties props;
+		File file = new File("resources/css/common.css");
+		this.getStylesheets().add(file.toURI().toString());
 		props = new PropertyFile("langConfig.ini");
 		if (props != null)
 		{

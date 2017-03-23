@@ -7,6 +7,11 @@ import model.Login;
 import userinterface.MainStageContainer;
 import userinterface.WindowPosition;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.net.URL;
+
 /**
  * Created by Sammytech on 2/28/17.
  */
@@ -28,7 +33,7 @@ public class LibraryGUI extends Application
         // Create the top-level container (main frame) and add contents to it.
         MainStageContainer.setStage(primaryStage, "EOP Login");
         mainStage = MainStageContainer.getInstance();
-
+        com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
         // Finish setting up the stage (ENABLE THE GUI TgO BE CLOSED USING THE TOP RIGHT
         // 'X' IN THE WINDOW), and show it.
         mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

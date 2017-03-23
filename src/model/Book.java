@@ -138,6 +138,18 @@ public class Book extends EntityBase implements IView {
 		//DEBUG System.out.println("updateStateInDatabase " + updateStatusMessage);
 	}
 
+	private void createNewBook(){
+		System.out.println(mySchema.toString());
+		System.out.println(persistentState.toString());
+		try {
+			insertPersistentState(mySchema, persistentState);
+			updateStatusMessage = "Book added to Database";
+		} catch (SQLException e) {
+			successFlag = false;
+		}
+
+	}
+
 	/**
 	 * This method is needed solely to enable the Account information to be displayable in a table
 	 *
@@ -149,7 +161,7 @@ public class Book extends EntityBase implements IView {
 		v.addElement(persistentState.getProperty("Barcode"));
 		v.addElement(persistentState.getProperty("Title"));
 		v.addElement(persistentState.getProperty("Discipline"));
-		v.addElement(persistentState.getProperty("Author1"));
+		v.addElement(persistentState.getProperty("Authors"));
 		v.addElement(persistentState.getProperty("Publisher"));
 		v.addElement(persistentState.getProperty("YearOfPublication"));
 		v.addElement(persistentState.getProperty("ISBN"));
@@ -163,7 +175,7 @@ public class Book extends EntityBase implements IView {
 
 	public void processNewBook(Properties props){
         processNewBookHelper(props);
-        updateStateInDatabase();
+        createNewBook();
     }
 
     private void processNewBookHelper(Properties props){
@@ -176,7 +188,6 @@ public class Book extends EntityBase implements IView {
 
             if (nextValue != null)
             {
-            	System.out.println(nextKey + "  " + nextValue);
                 persistentState.setProperty(nextKey, nextValue);
             }
         }

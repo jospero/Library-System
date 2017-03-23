@@ -2,3 +2,8 @@
     -fx-pref-width: 700;
     -fx-pref-height: 600;
 }
+
+.text-field.error, .text-area.error{
+    -fx-text-box-border: red;
+    -fx-focus-color: red ;
+}

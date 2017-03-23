@@ -3,12 +3,15 @@ package userinterface.book;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import userinterface.TitleView;
 
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -19,13 +22,15 @@ public class AddBookView extends BookInformationView {
         super(model, true, "AddBookView");
 
         VBox box = new VBox();
-        box.setStyle("-fx-background-color: #93ffa8");
-
+        box.setPadding(new Insets(10,40,10,40));
         box.getChildren().add(TitleView.createTitle("Add New Book"));
 
         box.getChildren().add(getBookInformation());
 
         HBox buttonBox = new HBox();
+        buttonBox.setPadding(new Insets(30, 0,30, 0));
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setSpacing(20);
 
         Button submit = new Button("Submit");
         Button cancel = new Button("Cancel");
@@ -43,6 +48,7 @@ public class AddBookView extends BookInformationView {
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                processBook();
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog with Custom Actions");
                 alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
@@ -73,6 +79,22 @@ public class AddBookView extends BookInformationView {
         getChildren().add(box);
 
     }
+
+    private void processBook() {
+        Properties book = validateBook();
+        if(book.size() > 0 ){
+            myModel.stateChangeRequest("ProcessNewBook", book);
+        }
+    }
+
+    private void clearFields(){
+        for(FieldsEnum fEnum : FieldsEnum.values()){
+
+
+        }
+    }
+
+
 
 
     @Override

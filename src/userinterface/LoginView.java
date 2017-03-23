@@ -11,6 +11,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -26,7 +27,8 @@ public class LoginView extends View{
 
     public LoginView(IModel model) {
         super(model, "LoginView");
-        this.getStylesheets().add("resources/css/login.css");
+        File file = new File("resources/css/login.css");
+        this.getStylesheets().add(file.toURI().toString());
         VBox container = new VBox();
         container.setPadding(new Insets(40));
         container.setSpacing(15);

@@ -75,7 +75,6 @@ public class BookCollection extends EntityBase implements IView {
     public void findBooks() throws InvalidPrimaryKeyException{
         String query = "SELECT * FROM " + myTableName;
         retrieveHelper(query);
-
     }
 
     public void findBooksNewerThanDate(String year) throws InvalidPrimaryKeyException{
