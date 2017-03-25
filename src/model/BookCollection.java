@@ -128,16 +128,16 @@ public class BookCollection extends EntityBase implements IView {
     }
 
     //----------------------------------------------------------
-    public Book retrieve(String bookId)
+    public Book retrieve(String Barcode)
     {
         Book retValue = null;
         for (int cnt = 0; cnt < books.size(); cnt++)
         {
-            Book nextAcct = books.elementAt(cnt);
-            String nextAccNum = (String)nextAcct.getState("bookId");
-            if (nextAccNum.equals(bookId) == true)
+            Book nextBook = books.elementAt(cnt);
+            String nextBookNum = (String)nextBook.getState("Barcode");
+            if (nextBookNum.equals(Barcode) == true)
             {
-                retValue = nextAcct;
+                retValue = nextBook;
                 return retValue; // we should say 'break;' here
             }
         }

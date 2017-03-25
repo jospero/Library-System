@@ -139,8 +139,6 @@ public class Book extends EntityBase implements IView {
 	}
 
 	private void createNewBook(){
-		System.out.println(mySchema.toString());
-		System.out.println(persistentState.toString());
 		try {
 			insertPersistentState(mySchema, persistentState);
 			updateStatusMessage = "Book added to Database";

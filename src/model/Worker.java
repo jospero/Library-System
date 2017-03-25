@@ -124,6 +124,17 @@ public class Worker extends EntityBase implements IView {
 		//DEBUG System.out.println("updateStateInDatabase " + updateStatusMessage);
 	}
 
+	private void createNewWorker(){
+		try {
+			insertPersistentState(mySchema, persistentState);
+			updateStatusMessage = "Worker added to Database";
+		} catch (SQLException e) {
+			successFlag = false;
+			updateStatusMessage = e.getMessage();
+		}
+
+	}
+
 	/**
 	 * This method is needed solely to enable the Worker information to be displayable in a table
 	 *
@@ -133,6 +144,7 @@ public class Worker extends EntityBase implements IView {
 	{
 		Vector<String> v = new Vector<String>();
 		v.addElement(persistentState.getProperty("BannerId"));
+		v.addElement(persistentState.getProperty("Password"));
 		v.addElement(persistentState.getProperty("FirstName"));
 		v.addElement(persistentState.getProperty("LastName"));
 		v.addElement(persistentState.getProperty("Phone"));
@@ -147,7 +159,7 @@ public class Worker extends EntityBase implements IView {
 
 	public void processNewWorker(Properties props){
         processNewWorkerHelper(props);
-        updateStateInDatabase();
+        createNewWorker();
     }
 
     private void processNewWorkerHelper(Properties props){
@@ -160,7 +172,7 @@ public class Worker extends EntityBase implements IView {
 
             if (nextValue != null)
             {
-            	System.out.println(nextKey + "  " + nextValue);
+//            	System.out.println(nextKey + "  " + nextValue);
                 persistentState.setProperty(nextKey, nextValue);
             }
         }

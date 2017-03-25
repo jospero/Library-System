@@ -1,5 +1,6 @@
 package userinterface.worker;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -11,6 +12,7 @@ import model.Worker;
 import userinterface.InformationView;
 import userinterface.View;
 import userinterface.book.BookInformationView;
+import userinterface.studentborrower.StudentBorrowerInformationView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -26,10 +28,10 @@ import java.util.regex.Pattern;
 public abstract class WorkerInformationView extends InformationView<WorkerInformationView.FieldsEnum> {
 
     enum FieldsEnum{
-        BANNERID, PASSWORD, FIRSTNAME, LASTNAME, PHONE, EMAIL, CREDENTIALS, DATEOFLASTCREDENTIALSTATUS, DATEOFHIRE,
-        STATUS
+        BannerId, Password, FirstName, LastName, Phone, Email, Credentials, DateOfLatestCredentialStatus, DateOfHire,
+        Status
     }
-    boolean enableFields;
+//    boolean enableFields;
 
     public WorkerInformationView(IModel model, boolean enableFields, String classname) {
         super(model, enableFields, classname);
@@ -37,16 +39,22 @@ public abstract class WorkerInformationView extends InformationView<WorkerInform
 
     @Override
     protected void setupFields() {
-        fieldsStr.put(FieldsEnum.BANNERID, "Banner ID");
-        fieldsStr.put(FieldsEnum.PASSWORD, "Password");
-        fieldsStr.put(FieldsEnum.FIRSTNAME, "First Name");
-        fieldsStr.put(FieldsEnum.LASTNAME, "Last Name");
-        fieldsStr.put(FieldsEnum.PHONE, "Phone");
-        fieldsStr.put(FieldsEnum.EMAIL, "Email");
-        fieldsStr.put(FieldsEnum.CREDENTIALS, "Credentials");
-        fieldsStr.put(FieldsEnum.DATEOFLASTCREDENTIALSTATUS, "Date of Last Credentials Status");
-        fieldsStr.put(FieldsEnum.DATEOFHIRE, "Date of Hire");
-        fieldsStr.put(FieldsEnum.STATUS, "Status");
+        fieldsStr = getFields();
+    }
+
+    public static HashMap<FieldsEnum, String> getFields(){
+        HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
+        fieldsStr.put(FieldsEnum.BannerId, "Banner ID");
+        fieldsStr.put(FieldsEnum.Password, "Password");
+        fieldsStr.put(FieldsEnum.FirstName, "First Name");
+        fieldsStr.put(FieldsEnum.LastName, "Last Name");
+        fieldsStr.put(FieldsEnum.Phone, "Phone");
+        fieldsStr.put(FieldsEnum.Email, "Email");
+        fieldsStr.put(FieldsEnum.Credentials, "Credentials");
+        fieldsStr.put(FieldsEnum.DateOfLatestCredentialStatus, "Date of Last Credentials Status");
+        fieldsStr.put(FieldsEnum.DateOfHire, "Date of Hire");
+        fieldsStr.put(FieldsEnum.Status, "Status");
+        return fieldsStr;
     }
 
     public GridPane getInformation(){
@@ -54,22 +62,22 @@ public abstract class WorkerInformationView extends InformationView<WorkerInform
         int row = 0;
         Vector<String> worker = ((Worker) myModel).getEntryListView();
         for(FieldsEnum fEnum : FieldsEnum.values()){
-            if(fieldsStr.containsKey(fEnum) && fEnum != FieldsEnum.PASSWORD){
+            if(fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
-                if(fEnum == FieldsEnum.CREDENTIALS){
+                if(fEnum == FieldsEnum.Credentials){
                     field.field = getCredentialsNode();
                     if(worker.get(row) != null && !worker.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(worker.get(row));
-                } else if(fEnum == FieldsEnum.STATUS){
+                } else if(fEnum == FieldsEnum.Status){
                     field.field = getStatusNode();
                     if(worker.get(row) != null && !worker.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(worker.get(row));
                 }
-                else if(fEnum == FieldsEnum.DATEOFHIRE || fEnum == FieldsEnum.DATEOFLASTCREDENTIALSTATUS) {
+                else if(fEnum == FieldsEnum.DateOfHire || fEnum == FieldsEnum.DateOfLatestCredentialStatus) {
                     LocalDate localDate;
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-DD");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     if(worker.get(row) != null && !worker.get(row).isEmpty()){
                         localDate = LocalDate.parse(worker.get(row), formatter);
                     } else {
@@ -137,25 +145,38 @@ public abstract class WorkerInformationView extends InformationView<WorkerInform
                         errorFound = true;
                         worker = new Properties();
                     }
-                } else if (fieldsEnum == FieldsEnum.BANNERID || fieldsEnum == FieldsEnum.PHONE) {
-                    try {
-                        int i = Integer.parseInt(str);
+                } else if (fieldsEnum == FieldsEnum.BannerId) {
+                    if (str.matches("[0-9]+")) {
                         if (!errorFound) {
                             fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                             worker.setProperty(fieldsEnum.name(), str);
                         }
-                    } catch (NumberFormatException ex) {
+                    } else {
                         error(fieldsList.get(fieldsEnum).field);
                         if (!errorFound) {
                             errorFound = true;
                             worker = new Properties();
                         }
-
                     }
-                } else if (fieldsEnum == FieldsEnum.EMAIL){
-                    Pattern VALID_EMAIL_ADDRESS_REGEX =
+
+                } else if (fieldsEnum == FieldsEnum.Phone) {
+                    if (Utilities.validatePhoneNumber(str)) {
+                        if (!errorFound) {
+                            fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                            worker.setProperty(fieldsEnum.name(), str);
+                        }
+                    } else {
+                        error(fieldsList.get(fieldsEnum).field);
+                        if (!errorFound) {
+                            errorFound = true;
+                            worker = new Properties();
+                        }
+                    }
+                }
+                else if (fieldsEnum == FieldsEnum.Email){
+                    Pattern VALID_Email_ADDRESS_REGEX =
                             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-                    Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(str);
+                    Matcher matcher = VALID_Email_ADDRESS_REGEX.matcher(str);
                     if(matcher.find()){
                         if (!errorFound) {
                             fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
@@ -176,10 +197,16 @@ public abstract class WorkerInformationView extends InformationView<WorkerInform
                         worker.setProperty(fieldsEnum.name(), str);
                     }
                 }
-            } else {
+            } else if( fieldsList.get(fieldsEnum).field instanceof ComboBox) {
                 if(!errorFound) {
                     String str = ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
                     worker.setProperty(fieldsEnum.name(), str);
+                }
+            } else{
+                if(!errorFound) {
+                    LocalDate date = ((DatePicker) fieldsList.get(fieldsEnum).field).getValue();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    worker.setProperty(fieldsEnum.name(), date.format(formatter));
                 }
             }
         }

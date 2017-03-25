@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import model.StudentBorrower;
 import userinterface.InformationView;
 import userinterface.View;
+import userinterface.book.BookInformationView;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -30,6 +31,11 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
 
     @Override
     protected void setupFields() {
+        fieldsStr = getFields();
+    }
+
+    public static HashMap<FieldsEnum, String> getFields(){
+        HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
         fieldsStr.put(FieldsEnum.BANNERID, "Banner ID");
         fieldsStr.put(FieldsEnum.FIRSTNAME, "Firstname");
         fieldsStr.put(FieldsEnum.LASTNAME, "Lastname");
@@ -40,6 +46,7 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
         fieldsStr.put(FieldsEnum.DATEOFREGISTRATION, "Date of Registration");
         fieldsStr.put(FieldsEnum.NOTES, "Notes");
         fieldsStr.put(FieldsEnum.STATUS, "Status");
+        return fieldsStr;
     }
 
     public final GridPane getInformation(){

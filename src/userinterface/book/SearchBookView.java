@@ -17,6 +17,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import userinterface.View;
 
+import java.util.HashMap;
+
 /**
  * Created by Sammytech on 3/11/17.
  */
@@ -38,6 +40,8 @@ public class SearchBookView extends View {
 //        root.setFillWidth(true);
         root.setAlignment(Pos.CENTER);
 
+        HashMap<BookInformationView.FieldsEnum, String> fields = BookInformationView.getFields();
+
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(0,60,0,60));
         grid.setHgap(30);
@@ -54,7 +58,7 @@ public class SearchBookView extends View {
         title.setAlignment(Pos.CENTER);
         grid.add(title,0,0,2,1);
 
-        String barcodeStr = "Barcode";
+        String barcodeStr = fields.get(BookInformationView.FieldsEnum.Barcode);
         Label barcodeLabel = new Label(barcodeStr);
         barcode.setPromptText(barcodeStr);
         grid.add(barcodeLabel, 0, 1);
@@ -74,36 +78,37 @@ public class SearchBookView extends View {
 
         grid.add(oneFieldHead,0,2,2,1);
 
+
         int row = 3;
-        String titleStr = "Book Title";
+        String titleStr = fields.get(BookInformationView.FieldsEnum.Title);
         Label titleLabel = new Label(titleStr);
         bookTitle.setPromptText(titleStr);
         grid.add(titleLabel, 0, row);
         grid.add(bookTitle, 1, row);
 
         row++;
-        String authorStr = "Author(s)";
+        String authorStr = fields.get(BookInformationView.FieldsEnum.Authors);
         Label authorLabel = new Label(authorStr);
         author.setPromptText(authorStr);
         grid.add(authorLabel, 0, row);
         grid.add(author, 1, row);
 
         row++;
-        String publisherStr = "Publisher";
+        String publisherStr = fields.get(BookInformationView.FieldsEnum.Publisher);
         Label pubLabel = new Label(publisherStr);
         publisher.setPromptText(publisherStr);
         grid.add(pubLabel, 0, row);
         grid.add(publisher, 1, row);
 
         row++;
-        String pubYearStr = "Year of Publication";
+        String pubYearStr = fields.get(BookInformationView.FieldsEnum.YearOfPublication);
         Label pubYearLabel = new Label(pubYearStr);
         pubYear.setPromptText(pubYearStr);
         grid.add(pubYearLabel, 0, row);
         grid.add(pubYear, 1, row);
 
         row++;
-        String isbnStr = "ISBN";
+        String isbnStr = fields.get(BookInformationView.FieldsEnum.ISBN);
         Label isbnLabel = new Label(isbnStr);
         isbn.setPromptText(isbnStr);
         grid.add(isbnLabel, 0, row);
@@ -117,7 +122,7 @@ public class SearchBookView extends View {
 //        grid.add(condition, 1, row);
 
         row++;
-        String sugPriceStr = "Suggested Price";
+        String sugPriceStr = fields.get(BookInformationView.FieldsEnum.SuggestedPrice);
         Label sugPriceLabel = new Label(sugPriceStr);
         sugPrice.setPromptText(sugPriceStr);
         grid.add(sugPriceLabel, 0, row);

@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import userinterface.TitleView;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -20,12 +21,13 @@ public class AddWorkerView extends WorkerInformationView {
     public AddWorkerView(IModel model) {
         super(model, true,"AddWorkerView");
 
+        myModel.subscribe("UpdateStatusMessage", this);
     }
 
     private void processWorker() {
-        Properties book = validateWorker();
-        if(book.size() > 0 ){
-            myModel.stateChangeRequest("ProcessNewWorker", book);
+        Properties worker = validateWorker();
+        if(worker.size() > 0 ){
+            myModel.stateChangeRequest("ProcessNewWorker", worker);
         }
     }
 
@@ -33,8 +35,10 @@ public class AddWorkerView extends WorkerInformationView {
         for(FieldsEnum fEnum : FieldsEnum.values()){
             if(fieldsList.get(fEnum).field instanceof TextField || fieldsList.get(fEnum).field instanceof TextArea) {
                 ((TextInputControl) fieldsList.get(fEnum).field).setText("");
-            } else{
+            } else if (fieldsList.get(fEnum).field instanceof ComboBox){
                 ((ComboBox) fieldsList.get(fEnum).field).getSelectionModel().select(0);
+            } else {
+                ((DatePicker) fieldsList.get(fEnum).field).setValue(LocalDate.now());
             }
         }
     }
@@ -69,6 +73,13 @@ public class AddWorkerView extends WorkerInformationView {
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);
 
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                processWorker();
+            }
+        });
+
         cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -80,7 +91,8 @@ public class AddWorkerView extends WorkerInformationView {
 
     protected void confirmDialog(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Worker Successfully Added");
+        alert.setTitle("Worker Confirmation");
+        alert.setHeaderText("Worker Successfully Added");
         alert.setContentText("Would you like to add a new book?");
 
         ButtonType yesButton = new ButtonType("Yes");
@@ -98,7 +110,8 @@ public class AddWorkerView extends WorkerInformationView {
 
     protected void errorDialog(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Worker Failed");
+        alert.setTitle("Worker Error");
+        alert.setHeaderText("Worker failed to be added");
         alert.setContentText("An error occurred while adding book to database. " + msg );
 
         ButtonType okButton = new ButtonType("Ok");

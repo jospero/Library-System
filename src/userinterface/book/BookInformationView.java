@@ -35,6 +35,11 @@ public abstract class BookInformationView extends InformationView<BookInformatio
 
     @Override
     protected void setupFields() {
+        fieldsStr = getFields();
+    }
+
+    public static HashMap<FieldsEnum, String> getFields(){
+        HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
         fieldsStr.put(FieldsEnum.Barcode, "Barcode");
         fieldsStr.put(FieldsEnum.Title, "Title");
         fieldsStr.put(FieldsEnum.Authors, "Author(s)");
@@ -46,6 +51,7 @@ public abstract class BookInformationView extends InformationView<BookInformatio
         fieldsStr.put(FieldsEnum.SuggestedPrice, "Suggested Price");
         fieldsStr.put(FieldsEnum.Notes, "Notes");
         fieldsStr.put(FieldsEnum.Status, "Status");
+        return fieldsStr;
     }
 
     @Override

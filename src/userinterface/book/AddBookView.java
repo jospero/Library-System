@@ -73,7 +73,6 @@ public class AddBookView extends BookInformationView {
             @Override
             public void handle(ActionEvent event) {
                 processBook();
-
             }
         });
         return buttonBox;
@@ -92,7 +91,8 @@ public class AddBookView extends BookInformationView {
 
     protected void confirmDialog(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Book Successfully Added");
+        alert.setTitle("Book Confirmation");
+        alert.setHeaderText("Book Successfully Added");
         alert.setContentText("Would you like to add a new book?");
 
         ButtonType yesButton = new ButtonType("Yes");
@@ -110,7 +110,8 @@ public class AddBookView extends BookInformationView {
 
     protected void errorDialog(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Book Failed");
+        alert.setTitle("Book Error");
+        alert.setHeaderText("Book failed to be added");
         alert.setContentText("An error occurred while adding book to database. " + msg );
 
         ButtonType okButton = new ButtonType("Ok");
