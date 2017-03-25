@@ -17,13 +17,16 @@ public class ModifyBookView extends BookInformationView {
     public ModifyBookView(IModel model) {
         super(model, false, "ModifyBookView");
 
-        VBox box = new VBox();
-        box.setStyle("-fx-background-color: #93ffa8");
 
-        box.getChildren().add(TitleView.createTitle("Modify Book"));
+    }
 
-        box.getChildren().add(getBookInformation());
+    @Override
+    protected HBox getHeading() {
+        return TitleView.createTitle("Modify Book");
+    }
 
+    @Override
+    protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
         Button submit = new Button("Submit");
@@ -50,15 +53,22 @@ public class ModifyBookView extends BookInformationView {
                 myModel.stateChangeRequest("ViewBookCancelled", null);
             }
         });
+        return buttonBox;
+    }
 
-        box.getChildren().add(buttonBox);
+    @Override
+    protected void confirmDialog() {
 
-        getChildren().add(box);
+    }
+
+    @Override
+    protected void errorDialog(String value) {
+
     }
 
     @Override
     public void updateState(String key, Object value) {
-
+        super.updateState(key, value);
     }
 
 

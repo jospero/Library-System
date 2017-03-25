@@ -3,63 +3,54 @@ package userinterface.worker;
 import impresario.IModel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 import model.Worker;
+import userinterface.InformationView;
 import userinterface.View;
+import userinterface.book.BookInformationView;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Sammytech on 3/9/17.
  */
-public abstract class WorkerInformationView extends View {
-
+public abstract class WorkerInformationView extends InformationView<WorkerInformationView.FieldsEnum> {
 
     enum FieldsEnum{
         BANNERID, PASSWORD, FIRSTNAME, LASTNAME, PHONE, EMAIL, CREDENTIALS, DATEOFLASTCREDENTIALSTATUS, DATEOFHIRE,
         STATUS
     }
-
-    private class Fields{
-        Label label = new Label();
-        Node field;
-    }
-    HashMap<FieldsEnum, Fields> fieldsList = new HashMap<>();
-    HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
-
     boolean enableFields;
 
-
-
     public WorkerInformationView(IModel model, boolean enableFields, String classname) {
-        super(model, classname);
-        this.enableFields = enableFields;
+        super(model, enableFields, classname);
+    }
 
+    @Override
+    protected void setupFields() {
         fieldsStr.put(FieldsEnum.BANNERID, "Banner ID");
         fieldsStr.put(FieldsEnum.PASSWORD, "Password");
-        fieldsStr.put(FieldsEnum.FIRSTNAME, "Firstname");
-        fieldsStr.put(FieldsEnum.LASTNAME, "Lastname");
+        fieldsStr.put(FieldsEnum.FIRSTNAME, "First Name");
+        fieldsStr.put(FieldsEnum.LASTNAME, "Last Name");
         fieldsStr.put(FieldsEnum.PHONE, "Phone");
         fieldsStr.put(FieldsEnum.EMAIL, "Email");
         fieldsStr.put(FieldsEnum.CREDENTIALS, "Credentials");
         fieldsStr.put(FieldsEnum.DATEOFLASTCREDENTIALSTATUS, "Date of Last Credentials Status");
         fieldsStr.put(FieldsEnum.DATEOFHIRE, "Date of Hire");
         fieldsStr.put(FieldsEnum.STATUS, "Status");
-
-//        getFieldsString();
     }
 
-    public final GridPane getWorkerInformation(){
-        GridPane workerInfo = new GridPane();
-        workerInfo.setHgap(10);
-        workerInfo.setVgap(10);
-        workerInfo.setPadding(new Insets(0, 10, 0, 10));
-
+    public GridPane getInformation(){
+        GridPane workerInfo = super.getInformation();
         int row = 0;
         Vector<String> worker = ((Worker) myModel).getEntryListView();
         for(FieldsEnum fEnum : FieldsEnum.values()){
@@ -75,11 +66,38 @@ public abstract class WorkerInformationView extends View {
                     field.field = getStatusNode();
                     if(worker.get(row) != null && !worker.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(worker.get(row));
-                } else if(fEnum == FieldsEnum.DATEOFHIRE || fEnum == FieldsEnum.DATEOFLASTCREDENTIALSTATUS) {
-                    DatePicker datePicker = new DatePicker();
-                    field.field = datePicker;
+                }
+                else if(fEnum == FieldsEnum.DATEOFHIRE || fEnum == FieldsEnum.DATEOFLASTCREDENTIALSTATUS) {
+                    LocalDate localDate;
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-DD");
+                    if(worker.get(row) != null && !worker.get(row).isEmpty()){
+                        localDate = LocalDate.parse(worker.get(row), formatter);
+                    } else {
+                        localDate = LocalDate.now();
+                    }
+                    DatePicker datePicker = new DatePicker(localDate);
+                    datePicker.setEditable(false);
+                    Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
+                        @Override
+                        public DateCell call(DatePicker param) {
+                            return new DateCell(){
+                                @Override
+                                public void updateItem(LocalDate item, boolean empty) {
+                                    super.updateItem(item, empty);
+                                    // Disable all future date cells
+                                    if (item.isAfter(LocalDate.now()))
+                                    {
+                                        this.setDisable(true);
+                                    }
 
-                } else {
+                                }
+                            };
+                        }
+                    };
+                    datePicker.setDayCellFactory(dayCellFactory);
+                    field.field = datePicker;
+                }
+                else {
                     TextField fTF = new TextField();
                     fTF.setPromptText(str);
                     if(worker.get(row) != null && !worker.get(row).isEmpty())
@@ -101,17 +119,85 @@ public abstract class WorkerInformationView extends View {
 
     }
 
+    private void error(Node n){
+        if(!n.getStyleClass().contains("error")){
+            n.getStyleClass().add("error");
+        }
+    }
+
+    final public Properties validateWorker(){
+        Properties worker = new Properties();
+        boolean errorFound = false;
+        for(FieldsEnum fieldsEnum: fieldsList.keySet()){
+            if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
+                String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
+                if (str.isEmpty()) {
+                    error(fieldsList.get(fieldsEnum).field);
+                    if (!errorFound) {
+                        errorFound = true;
+                        worker = new Properties();
+                    }
+                } else if (fieldsEnum == FieldsEnum.BANNERID || fieldsEnum == FieldsEnum.PHONE) {
+                    try {
+                        int i = Integer.parseInt(str);
+                        if (!errorFound) {
+                            fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                            worker.setProperty(fieldsEnum.name(), str);
+                        }
+                    } catch (NumberFormatException ex) {
+                        error(fieldsList.get(fieldsEnum).field);
+                        if (!errorFound) {
+                            errorFound = true;
+                            worker = new Properties();
+                        }
+
+                    }
+                } else if (fieldsEnum == FieldsEnum.EMAIL){
+                    Pattern VALID_EMAIL_ADDRESS_REGEX =
+                            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+                    Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(str);
+                    if(matcher.find()){
+                        if (!errorFound) {
+                            fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                            worker.setProperty(fieldsEnum.name(), str);
+                        }
+                    } else {
+                        error(fieldsList.get(fieldsEnum).field);
+                        if (!errorFound) {
+                            errorFound = true;
+                            worker = new Properties();
+                        }
+                    }
+
+                }
+                else {
+                    if(!errorFound){
+                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                        worker.setProperty(fieldsEnum.name(), str);
+                    }
+                }
+            } else {
+                if(!errorFound) {
+                    String str = ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
+                    worker.setProperty(fieldsEnum.name(), str);
+                }
+            }
+        }
+        System.out.println(worker.toString());
+        return worker;
+    }
+
     private ComboBox getCredentialsNode(){
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll("Ordinary", "Administrator");
-        comboBox.setValue("Ordinary");
+        comboBox.getSelectionModel().select(0);
         return comboBox;
     }
 
     private ComboBox getStatusNode(){
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll("Active", "Inactive");
-        comboBox.setValue("Active");
+        comboBox.getSelectionModel().select(0);
         return comboBox;
     }
 

@@ -146,6 +146,8 @@ public class SearchBookView extends View {
 
             }
         });
+        buttonPane.setSpacing(20);
+        buttonPane.setPadding(new Insets(20));
         buttonPane.getChildren().addAll(searchButton, cancelButton);
 
         grid.add(buttonPane, 0, row, 2, 1);

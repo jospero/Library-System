@@ -17,14 +17,15 @@ public class ModifyWorkerView extends WorkerInformationView {
 
     public ModifyWorkerView(IModel model) {
         super(model, false, "ModifyWorkerView");
+    }
 
-        VBox box = new VBox();
-        box.setStyle("-fx-background-color: #93ffa8");
+    @Override
+    protected HBox getHeading() {
+        return TitleView.createTitle("Modify Worker");
+    }
 
-        box.getChildren().add(TitleView.createTitle("Modify Worker"));
-
-        box.getChildren().add(getWorkerInformation());
-
+    @Override
+    protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
         Button submit = new Button("Submit");
@@ -51,15 +52,22 @@ public class ModifyWorkerView extends WorkerInformationView {
                 myModel.stateChangeRequest("ViewWorkerCancelled", null);
             }
         });
+        return buttonBox;
+    }
 
-        box.getChildren().add(buttonBox);
+    @Override
+    protected void confirmDialog() {
 
-        getChildren().add(box);
+    }
+
+    @Override
+    protected void errorDialog(String value) {
+
     }
 
     @Override
     public void updateState(String key, Object value) {
-
+        super.updateState(key, value);
     }
 
 

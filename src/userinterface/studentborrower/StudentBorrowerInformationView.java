@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import model.StudentBorrower;
+import userinterface.InformationView;
 import userinterface.View;
 
 import java.util.HashMap;
@@ -14,28 +15,21 @@ import java.util.Vector;
 /**
  * Created by Sammytech on 3/9/17.
  */
-public abstract class StudentBorrowerInformationView extends View {
+public abstract class StudentBorrowerInformationView extends InformationView<StudentBorrowerInformationView.FieldsEnum> {
 
     enum FieldsEnum{
         BANNERID, FIRSTNAME, LASTNAME, PHONE, EMAIL, BORROWERSTATUS, DATEOFLASTBORROWERSTATUS, DATEOFREGISTRATION,
         NOTES, STATUS
     }
 
-    private class Fields{
-        Label label = new Label();
-        Node field;
-    }
-    HashMap<FieldsEnum, Fields> fieldsList = new HashMap<>();
-    HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
-
-    boolean enableFields;
-
-
 
     public StudentBorrowerInformationView(IModel model, boolean enableFields, String classname) {
-        super(model, classname);
-        this.enableFields = enableFields;
+        super(model, enableFields, classname);
 
+    }
+
+    @Override
+    protected void setupFields() {
         fieldsStr.put(FieldsEnum.BANNERID, "Banner ID");
         fieldsStr.put(FieldsEnum.FIRSTNAME, "Firstname");
         fieldsStr.put(FieldsEnum.LASTNAME, "Lastname");
@@ -46,16 +40,10 @@ public abstract class StudentBorrowerInformationView extends View {
         fieldsStr.put(FieldsEnum.DATEOFREGISTRATION, "Date of Registration");
         fieldsStr.put(FieldsEnum.NOTES, "Notes");
         fieldsStr.put(FieldsEnum.STATUS, "Status");
-
-//        getFieldsString();
     }
 
-    public final GridPane getStudentBorrowerInformation(){
-        GridPane studentBorrowerInfo = new GridPane();
-        studentBorrowerInfo.setHgap(10);
-        studentBorrowerInfo.setVgap(10);
-        studentBorrowerInfo.setPadding(new Insets(0, 10, 0, 10));
-
+    public final GridPane getInformation(){
+        GridPane studentBorrowerInfo = super.getInformation();
         int row = 0;
         Vector<String> studentBorrower = ((StudentBorrower) myModel).getEntryListView();
         for(FieldsEnum fEnum : FieldsEnum.values()){

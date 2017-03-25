@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
+import model.WorkerHolder;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -92,38 +93,40 @@ public class MainView extends View {
 
         SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
         menuBook.getItems().addAll(addBook,modifyBook,deleteBook, separatorMenuItem, listBook, checkInBook, checkOutBook);
-
+        menuBar.getMenus().add(menuBook);
         // --- Menu Worker
-        Menu menuWorker = new Menu("Worker");
-        MenuItem addWorker = new MenuItem("Add Worker");
-        addWorker.setAccelerator(KeyCombination.keyCombination("Ctrl+W"));
-        addWorker.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
+        if(((WorkerHolder)myModel.getState("WorkerHolder")).getState("Credentials").equals("Administrator")) {
+            Menu menuWorker = new Menu("Worker");
+            MenuItem addWorker = new MenuItem("Add Worker");
+            addWorker.setAccelerator(KeyCombination.keyCombination("Ctrl+W"));
+            addWorker.setOnAction(new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                myModel.stateChangeRequest("Add", "Worker");
-            }
-        });
+                    myModel.stateChangeRequest("Add", "Worker");
+                }
+            });
 
-        MenuItem modifyWorker= new MenuItem("Modify Worker");
+            MenuItem modifyWorker = new MenuItem("Modify Worker");
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
-        modifyWorker.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
+            modifyWorker.setOnAction(new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                myModel.stateChangeRequest("Modify", "Worker");
-            }
-        });
+                    myModel.stateChangeRequest("Modify", "Worker");
+                }
+            });
 
-        MenuItem deleteWorker = new MenuItem("Delete Worker");
+            MenuItem deleteWorker = new MenuItem("Delete Worker");
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
-        deleteWorker.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
+            deleteWorker.setOnAction(new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                myModel.stateChangeRequest("Delete", "Worker");
-            }
-        });
+                    myModel.stateChangeRequest("Delete", "Worker");
+                }
+            });
 
-        menuWorker.getItems().addAll(addWorker, modifyWorker, deleteWorker);
-
+            menuWorker.getItems().addAll(addWorker, modifyWorker, deleteWorker);
+            menuBar.getMenus().add(menuWorker);
+        }
         // --- Menu Student
         Menu menuStudent = new Menu("Student Borrower");
         MenuItem addStudent = new MenuItem("Add Student Borrower");
@@ -156,7 +159,7 @@ public class MainView extends View {
         menuStudent.getItems().addAll(addStudent, modifyStudent, deleteStudent);
 
 
-        menuBar.getMenus().addAll(menuBook, menuWorker, menuStudent);
+        menuBar.getMenus().add( menuStudent);
         return menuBar;
     }
 
@@ -178,6 +181,7 @@ public class MainView extends View {
         mainView = content;
         mainView.getChildren().get(0).getStyleClass().add("page");
         container.getChildren().add(mainView);
+//        ((View)mainView).ft.playFromStart();
 
     }
 }

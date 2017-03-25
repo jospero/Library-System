@@ -146,6 +146,7 @@ public class Book extends EntityBase implements IView {
 			updateStatusMessage = "Book added to Database";
 		} catch (SQLException e) {
 			successFlag = false;
+			updateStatusMessage = e.getMessage();
 		}
 
 	}

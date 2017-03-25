@@ -19,6 +19,8 @@ import java.util.Vector;
 import java.util.EventObject;
 
 import common.PropertyFile;
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.scene.Group;
 import java.util.*;
 // project imports
@@ -27,6 +29,7 @@ import impresario.IView;
 import impresario.IModel;
 import impresario.IControl;
 import impresario.ControlRegistry;
+import javafx.util.Duration;
 
 //==============================================================
 public abstract class View extends Group
@@ -43,8 +46,8 @@ public abstract class View extends Group
 	Locale currentLocale;
 	ResourceBundle messages;
 	// GUI components
-	
-		
+	protected final ScaleTransition stSmall = new ScaleTransition();
+	protected FadeTransition ft = new FadeTransition();
 	// Class constructor
 	//----------------------------------------------------------
 	public View(IModel model, String classname)
@@ -66,6 +69,22 @@ public abstract class View extends Group
 		messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
 
 		myRegistry = new ControlRegistry(classname);
+
+
+		stSmall.setNode(this);
+		stSmall.setFromX(0.0);
+		stSmall.setFromY(0.0);
+		stSmall.setToX(1.0);
+		stSmall.setToY(1.0);
+		stSmall.setDuration(new Duration(500));
+
+
+		ft.setNode(this);
+		ft.setDuration(new Duration(2000));
+		ft.setFromValue(0.0);
+		ft.setToValue(1.0);
+		ft.setCycleCount(1);
+		ft.setAutoReverse(false);
 	}
 	
 	

@@ -3,10 +3,15 @@ package userinterface.worker;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import userinterface.TitleView;
+
+import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -15,14 +20,48 @@ public class AddWorkerView extends WorkerInformationView {
     public AddWorkerView(IModel model) {
         super(model, true,"AddWorkerView");
 
-        VBox box = new VBox();
-        box.setStyle("-fx-background-color: #ffad16");
+    }
 
-        box.getChildren().add(TitleView.createTitle("Add New Worker"));
+    private void processWorker() {
+        Properties book = validateWorker();
+        if(book.size() > 0 ){
+            myModel.stateChangeRequest("ProcessNewWorker", book);
+        }
+    }
 
-        box.getChildren().add(getWorkerInformation());
+    void clearFields(){
+        for(FieldsEnum fEnum : FieldsEnum.values()){
+            if(fieldsList.get(fEnum).field instanceof TextField || fieldsList.get(fEnum).field instanceof TextArea) {
+                ((TextInputControl) fieldsList.get(fEnum).field).setText("");
+            } else{
+                ((ComboBox) fieldsList.get(fEnum).field).getSelectionModel().select(0);
+            }
+        }
+    }
 
+
+    @Override
+    public void updateState(String key, Object value) {
+        super.updateState(key, value);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        System.out.println("Destroyed");
+    }
+
+    @Override
+    protected HBox getHeading() {
+        return TitleView.createTitle("Add New Worker");
+    }
+
+    @Override
+    protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
+        buttonBox.setPadding(new Insets(30, 0,30, 0));
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setSpacing(20);
 
         Button submit = new Button("Submit");
         Button cancel = new Button("Cancel");
@@ -36,13 +75,39 @@ public class AddWorkerView extends WorkerInformationView {
                 myModel.stateChangeRequest("AddWorkerCancelled", null);
             }
         });
-
-        box.getChildren().add(buttonBox);
-        getChildren().add(box);
+        return buttonBox;
     }
 
-    @Override
-    public void updateState(String key, Object value) {
+    protected void confirmDialog(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Worker Successfully Added");
+        alert.setContentText("Would you like to add a new book?");
 
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == yesButton){
+            clearFields();
+        } else if (result.get() == noButton) {
+            myModel.stateChangeRequest("AddWorkerCancelled", null);
+        }
+    }
+
+    protected void errorDialog(String msg){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Worker Failed");
+        alert.setContentText("An error occurred while adding book to database. " + msg );
+
+        ButtonType okButton = new ButtonType("Ok");
+
+        alert.getButtonTypes().setAll(okButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+//        if (result.get() == okButton){
+//            clearFields();
+//        }
     }
 }

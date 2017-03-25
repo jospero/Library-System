@@ -20,14 +20,16 @@ public class AddStudentBorrowerView extends StudentBorrowerInformationView {
 
     public AddStudentBorrowerView(IModel model) {
         super(model, true, "AddStudentBorrowerView");
+    }
 
-        VBox box = new VBox();
-        box.setStyle("-fx-background-color: #530016");
 
-        box.getChildren().add(TitleView.createTitle("Add New Student Borrower"));
+    @Override
+    protected HBox getHeading() {
+        return TitleView.createTitle("Add New Student Borrower");
+    }
 
-        box.getChildren().add(getStudentBorrowerInformation());
-
+    @Override
+    protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
         Button submit = new Button("Submit");
@@ -71,12 +73,18 @@ public class AddStudentBorrowerView extends StudentBorrowerInformationView {
             }
         });
 
-        box.getChildren().add(buttonBox);
+        return buttonBox;
+    }
 
-        getChildren().add(box);
+    @Override
+    protected void confirmDialog() {
 
     }
 
+    @Override
+    protected void errorDialog(String value) {
+
+    }
 
     @Override
     public void updateState(String key, Object value) {
