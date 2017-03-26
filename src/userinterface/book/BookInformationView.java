@@ -113,19 +113,17 @@ public abstract class BookInformationView extends InformationView<BookInformatio
                      }
                  } else if (fieldsEnum == FieldsEnum.Barcode || fieldsEnum == FieldsEnum.YearOfPublication ||
                          fieldsEnum == FieldsEnum.ISBN) {
-                     try {
-                         int i = Integer.parseInt(str);
+                     if (str.matches("[0-9]+")) {
                          if (!errorFound) {
                              fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                              book.setProperty(fieldsEnum.name(), str);
                          }
-                     } catch (NumberFormatException ex) {
+                     } else {
                          error(fieldsList.get(fieldsEnum).field);
                          if (!errorFound) {
                              errorFound = true;
                              book = new Properties();
                          }
-
                      }
                  } else if (fieldsEnum == FieldsEnum.SuggestedPrice){
                      try {

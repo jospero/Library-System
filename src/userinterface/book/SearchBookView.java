@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import userinterface.View;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * Created by Sammytech on 3/11/17.
@@ -164,8 +165,65 @@ public class SearchBookView extends View {
     }
 
     private void processSearch() {
+        Properties prop = validateSearch();
+        if(prop.size() > 0){
+            myModel.stateChangeRequest("ProcessSearch", prop);
+        }
 
-        myModel.stateChangeRequest("ProcessSearch", null);
+    }
+
+    private Properties validateSearch(){
+        Properties search = new Properties();
+        String bookTitleStr = bookTitle.getText();
+        String authorStr = author.getText();
+        String publisherStr = publisher.getText();
+        String pubYearStr = pubYear.getText();
+        String isbnStr = isbn.getText();
+        String sugPriceStr = sugPrice.getText();
+        if(barcode.getText().trim().isEmpty()){
+
+            if(bookTitleStr.trim().isEmpty() && authorStr.trim().isEmpty() && publisherStr.trim().isEmpty() && pubYearStr.trim().isEmpty() &&
+                    isbnStr.trim().isEmpty() && sugPriceStr.trim().isEmpty()){
+//                Error
+            } else{
+                if(!bookTitleStr.trim().isEmpty()){
+                    search.setProperty("Title", bookTitleStr);
+                }
+                if(!authorStr.trim().isEmpty()){
+                    search.setProperty("Authors", authorStr);
+                }
+                if(!publisherStr.trim().isEmpty()){
+                    search.setProperty("Publisher", publisherStr);
+                }
+                if(!pubYearStr.trim().isEmpty() && pubYearStr.matches("[0-9]+")){
+                    search.setProperty("YearOfPublication", pubYearStr);
+                }
+                if(!isbnStr.trim().isEmpty() && isbnStr.matches("[0-9]+")){
+                    search.setProperty("ISBN", isbnStr);
+                }
+                if(!sugPriceStr.trim().isEmpty()){
+                    try {
+                        double d = Double.parseDouble(sugPriceStr);
+                        search.setProperty("Suggested Price", sugPriceStr);
+                    } catch (NumberFormatException ex){
+
+                    }
+                }
+            }
+        } else{
+            String str = barcode.getText();
+            if(bookTitleStr.trim().isEmpty() && authorStr.trim().isEmpty() && publisherStr.trim().isEmpty() && pubYearStr.trim().isEmpty() &&
+                    isbnStr.trim().isEmpty() && sugPriceStr.trim().isEmpty()){
+                if (str.matches("[0-9]+")) {
+                    search.setProperty("Barcode", str);
+                } else {
+                    //Error
+                }
+            } else {
+
+            }
+        }
+        return search;
     }
 
     @Override

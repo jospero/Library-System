@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import userinterface.View;
 import userinterface.ViewFactory;
 
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -65,37 +66,30 @@ public class BookCollection extends EntityBase implements IView {
         }
     }
 
-
-    public void findBooksOlderThanDate(String year) throws InvalidPrimaryKeyException{
-        String query = "SELECT * FROM " + myTableName + " WHERE (pubYear <= " + year + ")";
-        retrieveHelper(query);
-
-    }
-
-    public void findBooks() throws InvalidPrimaryKeyException{
-        String query = "SELECT * FROM " + myTableName;
+    public void findBookBarcode(String barcode) throws InvalidPrimaryKeyException{
+        String query = "SELECT * FROM " + myTableName + " WHERE (Barcode =" + barcode + ");";
         retrieveHelper(query);
     }
 
-    public void findBooksNewerThanDate(String year) throws InvalidPrimaryKeyException{
-        String query = "SELECT * FROM " + myTableName + " WHERE (pubYear >= " + year + ")";
+    public void findBooksCriteria(Properties props) throws InvalidPrimaryKeyException {
+        String query = "SELECT * FROM " + myTableName + " WHERE (";
+        Enumeration theWhereFields = props.propertyNames();
+        while (theWhereFields.hasMoreElements()){
+            String theFieldName = (String)theWhereFields.nextElement();
+            String theFieldValue = props.getProperty(theFieldName).replace("'", "\'");
+            if (theFieldName != "Authors") {
+                query += theFieldName + " = '" + theFieldValue + "' AND ";
+            } else{
+                String[] splitStr = theFieldValue.split(",");
+                for(String s : splitStr){
+                    query += theFieldName + " LIKE '%" + s.trim() + "%' AND ";
+                }
+            }
+        }
+        query = query.substring(0, query.lastIndexOf("AND")) + ")";
+        System.out.println(query);
         retrieveHelper(query);
-
     }
-
-    public void findBooksWithTitleLike(String title) throws InvalidPrimaryKeyException{
-        String query = "SELECT * FROM " + myTableName + " WHERE (title LIKE '%" + title + "%')";
-        retrieveHelper(query);
-
-    }
-
-    public void findBooksWithAuthorLike(String author) throws InvalidPrimaryKeyException{
-        String query = "SELECT * FROM " + myTableName + " WHERE (author LIKE %" + author + "%)";
-        retrieveHelper(query);
-
-    }
-
-
 
     /**
      *
