@@ -22,11 +22,11 @@ public class Book extends EntityBase implements IView {
 	private String updateStatusMessage = "";
 	private boolean successFlag = true;
 
-	public Book(String bookId) throws InvalidPrimaryKeyException {
+	public Book(String Barcode) throws InvalidPrimaryKeyException {
 		super(myTableName);
 
 		setDependencies();
-		String query = "SELECT * FROM " + myTableName + " WHERE (bookId = " + bookId + ")";
+		String query = "SELECT * FROM " + myTableName + " WHERE (Barcode = " + Barcode + ")";
 
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
 
@@ -39,7 +39,7 @@ public class Book extends EntityBase implements IView {
 			if (size != 1)
 			{
 				throw new InvalidPrimaryKeyException("Multiple books matching id : "
-					+ bookId + " found.");
+					+ Barcode + " found.");
 			}
 			else
 			{
@@ -53,9 +53,9 @@ public class Book extends EntityBase implements IView {
 		// If no account found for this user name, throw an exception
 		else
 		{
-//		    bookErrorMessage="No book matching id : " + bookId + " found.";
+//		    bookErrorMessage="No book matching id : " + Barcode + " found.";
 			throw new InvalidPrimaryKeyException("No book matching id : "
-				+ bookId + " found.");
+				+ Barcode + " found.");
 		}
 	}
 
@@ -88,7 +88,9 @@ public class Book extends EntityBase implements IView {
 	{
 		if(key.equals("ProcessNewBook")){
 		    processNewBook((Properties) value);
-        }
+        } else if(key.equals("ProcessModifyBook")){
+			processModifyBook((Properties) value);
+		}
 	    myRegistry.updateSubscribers(key, this);
 	}
 	
@@ -98,6 +100,7 @@ public class Book extends EntityBase implements IView {
 		dependencies.setProperty("AddBookCancelled","ViewCancelled");
 		dependencies.setProperty("ModifyBookCancelled","ViewCancelled");
         dependencies.setProperty("ProcessNewBook","UpdateStatusMessage");
+        dependencies.setProperty("ProcessModifyBook","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}
 
@@ -113,20 +116,20 @@ public class Book extends EntityBase implements IView {
 		try
 		{
             successFlag = true;
-			if (persistentState.getProperty("bookId") != null)
+			if (persistentState.getProperty("Barcode") != null)
 			{
 				Properties whereClause = new Properties();
-				whereClause.setProperty("bookId",
-				persistentState.getProperty("bookId"));
+				whereClause.setProperty("Barcode",
+				persistentState.getProperty("Barcode"));
 				updatePersistentState(mySchema, persistentState, whereClause);
-				updateStatusMessage = "Book data for book id : " + persistentState.getProperty("bookId") + " updated successfully in database!";
+				updateStatusMessage = "Book data for book id : " + persistentState.getProperty("Barcode") + " updated successfully in database!";
 			}
 			else
 			{
-				Integer bookId =
+				Integer Barcode =
 					insertAutoIncrementalPersistentState(mySchema, persistentState);
-				persistentState.setProperty("bookId", "" + bookId.intValue());
-				updateStatusMessage = "Book data for new book : " +  persistentState.getProperty("bookId")
+				persistentState.setProperty("Barcode", "" + Barcode.intValue());
+				updateStatusMessage = "Book data for new book : " +  persistentState.getProperty("Barcode")
 					+ " installed successfully in database!";
 			}
 		}
@@ -145,6 +148,19 @@ public class Book extends EntityBase implements IView {
 		} catch (SQLException e) {
 			successFlag = false;
 			updateStatusMessage = e.getMessage();
+		}
+
+	}
+
+	private void modifyBook(){
+		try {
+			Properties whereClause = new Properties();
+			whereClause.setProperty("Barcode",
+					persistentState.getProperty("Barcode"));
+			updatePersistentState(mySchema, persistentState, whereClause);
+			updateStatusMessage = "Book data for Barcode : " + persistentState.getProperty("Barcode") + " updated successfully in database!";
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 
 	}
@@ -177,6 +193,11 @@ public class Book extends EntityBase implements IView {
         createNewBook();
     }
 
+	public void processModifyBook(Properties props){
+		processNewBookHelper(props);
+		modifyBook();
+	}
+
     private void processNewBookHelper(Properties props){
         persistentState = new Properties();
         Enumeration allKeys = props.propertyNames();
@@ -191,6 +212,7 @@ public class Book extends EntityBase implements IView {
             }
         }
     }
+
 	//-----------------------------------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{

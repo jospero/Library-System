@@ -80,6 +80,9 @@ public abstract class BookInformationView extends InformationView<BookInformatio
                     TextField fTF = new TextField();
                     fTF.setPromptText(str);
                     fTF.setEditable(enableFields);
+                    if(fEnum == FieldsEnum.Barcode){
+                        fTF.setEditable(!modify);
+                    }
                     if(book.get(row) != null && !book.get(row).isEmpty())
                         fTF.setText(book.get(row));
                     field.field = fTF;

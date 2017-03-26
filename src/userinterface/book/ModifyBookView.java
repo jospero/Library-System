@@ -5,9 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import userinterface.TitleView;
+
+import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -15,7 +19,7 @@ import userinterface.TitleView;
 public class ModifyBookView extends BookInformationView {
 
     public ModifyBookView(IModel model) {
-        super(model, false, "ModifyBookView");
+        super(model, true, "ModifyBookView");
 
 
     }
@@ -39,12 +43,7 @@ public class ModifyBookView extends BookInformationView {
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Book has been modified");
-                alert.setHeaderText(null);
-                alert.setContentText("I have a great message for you!");
-
-                alert.showAndWait();
+                modifyBook();
             }
         });
         cancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -56,14 +55,41 @@ public class ModifyBookView extends BookInformationView {
         return buttonBox;
     }
 
+    private void modifyBook() {
+        Properties book = validateBook();
+        if(book.size() > 0 ){
+            myModel.stateChangeRequest("ProcessModifyBook", book);
+        }
+    }
+
     @Override
     protected void confirmDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Book Confirmation");
+        alert.setHeaderText("Book Successfully Added");
+        alert.setContentText("Would you like to add a new book?");
 
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+       if (result.get() == noButton) {
+            myModel.stateChangeRequest("ViewBookCancelled", null);
+        }
     }
 
     @Override
     protected void errorDialog(String value) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Book Error");
+        alert.setHeaderText("Book failed to be added");
+        alert.setContentText("An error occurred while adding book to database. " + value );
 
+        ButtonType okButton = new ButtonType("Ok");
+
+        alert.getButtonTypes().setAll(okButton);
     }
 
     @Override

@@ -29,10 +29,14 @@ public abstract class InformationView<T> extends View {
     protected HashMap<T, Fields> fieldsList = new HashMap<>();
     protected HashMap<T, String> fieldsStr = new HashMap<>();
     protected boolean enableFields;
+    protected boolean modify = false;
 
     public InformationView(IModel model, boolean enableFields, String classname) {
         super(model, classname);
         this.enableFields = enableFields;
+        if(classname.toLowerCase().contains("modify")){
+            modify = true;
+        }
         setupFields();
         VBox box = new VBox();
         box.setPadding(new Insets(10,40,10,40));

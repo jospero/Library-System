@@ -114,7 +114,6 @@ public class BookCollection extends EntityBase implements IView {
     //----------------------------------------------------------------
     public void stateChangeRequest(String key, Object value)
     {
-        System.out.println(key);
         if(key.equals("ViewBook")){
             selectedBook = (int) value;
         }
