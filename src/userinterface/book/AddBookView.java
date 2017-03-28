@@ -23,7 +23,7 @@ public class AddBookView extends BookInformationView {
 
         VBox box = new VBox();
         box.setPadding(new Insets(10,40,10,40));
-        box.getChildren().add(TitleView.createTitle("Add New Book"));
+        box.getChildren().add(TitleView.createTitle(messages.getString("new_book_title")));
 
         box.getChildren().add(getBookInformation());
 
@@ -32,8 +32,8 @@ public class AddBookView extends BookInformationView {
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setSpacing(20);
 
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Cancel");
+        Button submit = new Button(messages.getString("sub_btn"));
+        Button cancel = new Button(messages.getString("cancel_btn"));
 
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);

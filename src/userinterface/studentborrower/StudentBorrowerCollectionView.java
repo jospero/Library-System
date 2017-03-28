@@ -114,66 +114,66 @@ public class StudentBorrowerCollectionView extends View {
         tableOfStudentBorrowers = new TableView<StudentBorrowerTableModel>();
         tableOfStudentBorrowers.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        TableColumn bannerIdColumn = new TableColumn("Banner ID") ;
+        TableColumn bannerIdColumn = new TableColumn(messages.getString("bid")) ;
         bannerIdColumn.setMinWidth(100);
         bannerIdColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("bannerId"));
         bannerIdColumn.setSortable(false);
 
-        TableColumn firstNameColumn = new TableColumn("First Name") ;
+        TableColumn firstNameColumn = new TableColumn(messages.getString("fname")) ;
         firstNameColumn.setMinWidth(100);
         firstNameColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("firstName"));
         firstNameColumn.setSortable(false);
 
 
-        TableColumn lastNameColumn = new TableColumn("Last Name") ;
+        TableColumn lastNameColumn = new TableColumn(messages.getString("lname")) ;
         lastNameColumn.setMinWidth(100);
         lastNameColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("lastName"));
         lastNameColumn.setSortable(false);
 
 
-        phoneColumn = new TableColumn("Phone Number") ;
+        phoneColumn = new TableColumn(messages.getString("phone_num")) ;
         phoneColumn.setMinWidth(100);
         phoneColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("phone"));
 //        phoneColumn.setSortType(TableColumn.SortType.ASCENDING);
 
 
-        TableColumn emailColumn = new TableColumn("Email") ;
+        TableColumn emailColumn = new TableColumn(messages.getString("email")) ;
         emailColumn.setMinWidth(120);
         emailColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("email"));
         emailColumn.setSortable(false);
 
-        TableColumn borrowerStatusColumn = new TableColumn("Borrower Status") ;
+        TableColumn borrowerStatusColumn = new TableColumn(messages.getString("sb_status")) ;
         borrowerStatusColumn.setMinWidth(120);
         borrowerStatusColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("borrowerStatus"));
         borrowerStatusColumn.setSortable(false);
 
 
-        TableColumn dateOfLastBorrowerStatusColumn = new TableColumn("Date Of Last Borrower Status") ;
+        TableColumn dateOfLastBorrowerStatusColumn = new TableColumn(messages.getString("date_latest_sb_status"));
         dateOfLastBorrowerStatusColumn.setMinWidth(120);
         dateOfLastBorrowerStatusColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("dateOfLastBorrowerStatus"));
         dateOfLastBorrowerStatusColumn.setSortable(false);
 
 
-        TableColumn dateOfRegistrationColumn = new TableColumn("Date Of Registration") ;
+        TableColumn dateOfRegistrationColumn = new TableColumn(messages.getString("date_reg")) ;
         dateOfRegistrationColumn.setMinWidth(120);
         dateOfRegistrationColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("dateOfRegistration"));
         dateOfRegistrationColumn.setSortable(false);
 
-        TableColumn notesColumn = new TableColumn("Notes") ;
+        TableColumn notesColumn = new TableColumn(messages.getString("notes")) ;
         notesColumn.setMinWidth(120);
         notesColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("notes"));
         notesColumn.setSortable(false);
 
-        TableColumn statusColumn = new TableColumn("Status") ;
+        TableColumn statusColumn = new TableColumn(messages.getString("status")) ;
         statusColumn.setMinWidth(100);
         statusColumn.setCellValueFactory(
                 new PropertyValueFactory<StudentBorrowerTableModel, String>("status"));

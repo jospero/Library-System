@@ -41,7 +41,7 @@ public abstract class View extends Group
 
 
 	Locale currentLocale;
-	ResourceBundle messages;
+	protected ResourceBundle messages;
 	// GUI components
 	
 		

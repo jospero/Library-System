@@ -20,13 +20,13 @@ public class ModifyBookView extends BookInformationView {
         VBox box = new VBox();
         box.setStyle("-fx-background-color: #93ffa8");
 
-        box.getChildren().add(TitleView.createTitle("Modify Book"));
+        box.getChildren().add(TitleView.createTitle(messages.getString("mod_book")));
 
         box.getChildren().add(getBookInformation());
 
         HBox buttonBox = new HBox();
 
-        Button submit = new Button("Submit");
+        Button submit = new Button(messages.getString("sub_btn"));
         Button cancel = new Button("Back to Search Results");
 //        Button cancel = new Button("Back to Search");
 

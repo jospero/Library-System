@@ -114,67 +114,67 @@ public class BookCollectionView extends View {
         tableOfBooks = new TableView<BookTableModel>();
         tableOfBooks.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        TableColumn barcodeColumn = new TableColumn("Barcode") ;
+        TableColumn barcodeColumn = new TableColumn(messages.getString("barcode")) ;
         barcodeColumn.setMinWidth(100);
         barcodeColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("barcode"));
         barcodeColumn.setSortable(false);
 
-        TableColumn titleColumn = new TableColumn("Title") ;
+        TableColumn titleColumn = new TableColumn(messages.getString("title")) ;
         titleColumn.setMinWidth(100);
         titleColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("title"));
         titleColumn.setSortable(false);
 
 
-        TableColumn disciplineColumn = new TableColumn("Discipline") ;
+        TableColumn disciplineColumn = new TableColumn(messages.getString("disc")) ;
         disciplineColumn.setMinWidth(100);
         disciplineColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("discipline"));
         disciplineColumn.setSortable(false);
 
 
-        authorColumn = new TableColumn("Author(s)") ;
+        authorColumn = new TableColumn(messages.getString("auth"));
         authorColumn.setMinWidth(100);
         authorColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("authors"));
 //        authorColumn.setSortType(TableColumn.SortType.ASCENDING);
 
 
-        TableColumn pubColumn = new TableColumn("Publisher") ;
+        TableColumn pubColumn = new TableColumn(messages.getString("pub")) ;
         pubColumn.setMinWidth(120);
         pubColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("publisher"));
         pubColumn.setSortable(false);
 
-        TableColumn pubYearColumn = new TableColumn("Year of Publication") ;
+        TableColumn pubYearColumn = new TableColumn(messages.getString("year_pub")) ;
         pubYearColumn.setMinWidth(120);
         pubYearColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("yearOfPublication"));
         pubYearColumn.setSortable(false);
 
 
-        TableColumn isbnColumn = new TableColumn("ISBN") ;
+        TableColumn isbnColumn = new TableColumn(messages.getString("isbn")) ;
         isbnColumn.setMinWidth(120);
         isbnColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("isbn"));
         isbnColumn.setSortable(false);
 
 
-        TableColumn sugPriceColumn = new TableColumn("Suggested Price") ;
+        TableColumn sugPriceColumn = new TableColumn(messages.getString("sug_price")) ;
         sugPriceColumn.setMinWidth(120);
         sugPriceColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("suggestedPrice"));
         sugPriceColumn.setSortable(false);
 
 
-        TableColumn notesColumn = new TableColumn("Notes") ;
+        TableColumn notesColumn = new TableColumn(messages.getString("notes"));
         notesColumn.setMinWidth(120);
         notesColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("notes"));
         notesColumn.setSortable(false);
 
-        TableColumn statusColumn = new TableColumn("Status") ;
+        TableColumn statusColumn = new TableColumn(messages.getString("status")) ;
         statusColumn.setMinWidth(100);
         statusColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("status"));

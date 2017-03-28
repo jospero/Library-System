@@ -20,13 +20,13 @@ public class ModifyStudentBorrowerView extends StudentBorrowerInformationView {
         VBox box = new VBox();
         box.setStyle("-fx-background-color: #93ffa8");
 
-        box.getChildren().add(TitleView.createTitle("Modify Student Borrower"));
+        box.getChildren().add(TitleView.createTitle(messages.getString("mod_sb")));
 
         box.getChildren().add(getStudentBorrowerInformation());
 
         HBox buttonBox = new HBox();
 
-        Button submit = new Button("Submit");
+        Button submit = new Button(messages.getString("sub_btn"));
         Button cancel = new Button("Back to Search Results");
 //        Button cancel = new Button("Back to Search");
 

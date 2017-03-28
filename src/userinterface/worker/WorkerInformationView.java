@@ -40,16 +40,16 @@ public abstract class WorkerInformationView extends View {
         super(model, classname);
         this.enableFields = enableFields;
 
-        fieldsStr.put(FieldsEnum.BANNERID, "Banner ID");
-        fieldsStr.put(FieldsEnum.PASSWORD, "Password");
-        fieldsStr.put(FieldsEnum.FIRSTNAME, "Firstname");
-        fieldsStr.put(FieldsEnum.LASTNAME, "Lastname");
-        fieldsStr.put(FieldsEnum.PHONE, "Phone");
-        fieldsStr.put(FieldsEnum.EMAIL, "Email");
-        fieldsStr.put(FieldsEnum.CREDENTIALS, "Credentials");
-        fieldsStr.put(FieldsEnum.DATEOFLASTCREDENTIALSTATUS, "Date of Last Credentials Status");
-        fieldsStr.put(FieldsEnum.DATEOFHIRE, "Date of Hire");
-        fieldsStr.put(FieldsEnum.STATUS, "Status");
+        fieldsStr.put(FieldsEnum.BANNERID, messages.getString("bid"));
+        fieldsStr.put(FieldsEnum.PASSWORD, messages.getString("login_pass"));
+        fieldsStr.put(FieldsEnum.FIRSTNAME, messages.getString("fname"));
+        fieldsStr.put(FieldsEnum.LASTNAME, messages.getString("lname"));
+        fieldsStr.put(FieldsEnum.PHONE, messages.getString("phone_num"));
+        fieldsStr.put(FieldsEnum.EMAIL, messages.getString("email"));
+        fieldsStr.put(FieldsEnum.CREDENTIALS, messages.getString("creds"));
+        fieldsStr.put(FieldsEnum.DATEOFLASTCREDENTIALSTATUS, messages.getString("date_latest_creds_status"));
+        fieldsStr.put(FieldsEnum.DATEOFHIRE, messages.getString("date_hire"));
+        fieldsStr.put(FieldsEnum.STATUS, messages.getString("status"));
 
 //        getFieldsString();
     }

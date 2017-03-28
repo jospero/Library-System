@@ -115,61 +115,61 @@ public class WorkerCollectionView extends View {
         tableOfWorkers = new TableView<WorkerTableModel>();
         tableOfWorkers.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        TableColumn bannerIdColumn = new TableColumn("Banner ID") ;
+        TableColumn bannerIdColumn = new TableColumn(messages.getString("bid")) ;
         bannerIdColumn.setMinWidth(100);
         bannerIdColumn.setCellValueFactory(
                 new PropertyValueFactory<WorkerTableModel, String>("bannerId"));
         bannerIdColumn.setSortable(false);
 
-        TableColumn firstNameColumn = new TableColumn("First Name") ;
+        TableColumn firstNameColumn = new TableColumn(messages.getString("fname")) ;
         firstNameColumn.setMinWidth(100);
         firstNameColumn.setCellValueFactory(
                 new PropertyValueFactory<WorkerTableModel, String>("firstName"));
         firstNameColumn.setSortable(false);
 
 
-        TableColumn disciplineColumn = new TableColumn("Last Name") ;
+        TableColumn disciplineColumn = new TableColumn(messages.getString("lname")) ;
         disciplineColumn.setMinWidth(100);
         disciplineColumn.setCellValueFactory(
                 new PropertyValueFactory<WorkerTableModel, String>("lastName"));
         disciplineColumn.setSortable(false);
 
 
-        phoneColumn = new TableColumn("Phone Number") ;
+        phoneColumn = new TableColumn(messages.getString("phone_num")) ;
         phoneColumn.setMinWidth(100);
         phoneColumn.setCellValueFactory(
                 new PropertyValueFactory<WorkerTableModel, String>("phone"));
 //        phoneColumn.setSortType(TableColumn.SortType.ASCENDING);
 
 
-        TableColumn emailColumn = new TableColumn("Email") ;
+        TableColumn emailColumn = new TableColumn(messages.getString("email")) ;
         emailColumn.setMinWidth(120);
         emailColumn.setCellValueFactory(
                 new PropertyValueFactory<WorkerTableModel, String>("email"));
         emailColumn.setSortable(false);
 
-        TableColumn credentialsColumn = new TableColumn("Credentials") ;
+        TableColumn credentialsColumn = new TableColumn(messages.getString("creds")) ;
         credentialsColumn.setMinWidth(120);
         credentialsColumn.setCellValueFactory(
                 new PropertyValueFactory<WorkerTableModel, String>("credentials"));
         credentialsColumn.setSortable(false);
 
 
-        TableColumn dateOfLastestCredentialStatusColumn = new TableColumn("Date of Lastest Credential Status") ;
+        TableColumn dateOfLastestCredentialStatusColumn = new TableColumn(messages.getString("date_latest_creds_status")) ;
         dateOfLastestCredentialStatusColumn.setMinWidth(120);
         dateOfLastestCredentialStatusColumn.setCellValueFactory(
                 new PropertyValueFactory<WorkerTableModel, String>("dateOfLastestCredentialStatus"));
         dateOfLastestCredentialStatusColumn.setSortable(false);
 
 
-        TableColumn dateOfHireColumn = new TableColumn("Date of Hire") ;
+        TableColumn dateOfHireColumn = new TableColumn(messages.getString("date_hire")) ;
         dateOfHireColumn.setMinWidth(120);
         dateOfHireColumn.setCellValueFactory(
                 new PropertyValueFactory<WorkerTableModel, String>("dateOfHire"));
         dateOfHireColumn.setSortable(false);
 
 
-        TableColumn statusColumn = new TableColumn("Status") ;
+        TableColumn statusColumn = new TableColumn(messages.getString("status")) ;
         statusColumn.setMinWidth(100);
         statusColumn.setCellValueFactory(
                 new PropertyValueFactory<WorkerTableModel, String>("status"));

@@ -37,17 +37,17 @@ public abstract class BookInformationView extends View {
         this.enableFields = enableFields;
 
 
-        fieldsStr.put(FieldsEnum.Barcode, "Barcode");
-        fieldsStr.put(FieldsEnum.Title, "Title");
-        fieldsStr.put(FieldsEnum.Authors, "Author(s)");
-        fieldsStr.put(FieldsEnum.Discipline, "Discipline");
-        fieldsStr.put(FieldsEnum.Publisher, "Publisher");
-        fieldsStr.put(FieldsEnum.YearOfPublication, "Year of Publication");
-        fieldsStr.put(FieldsEnum.ISBN, "ISBN");
-        fieldsStr.put(FieldsEnum.Condition, "Condition");
-        fieldsStr.put(FieldsEnum.SuggestedPrice, "SUGGESTED PRICE");
-        fieldsStr.put(FieldsEnum.Notes, "Notes");
-        fieldsStr.put(FieldsEnum.Status, "Status");
+        fieldsStr.put(FieldsEnum.Barcode, messages.getString("barcode"));
+        fieldsStr.put(FieldsEnum.Title, messages.getString("title"));
+        fieldsStr.put(FieldsEnum.Authors, messages.getString("auth"));
+        fieldsStr.put(FieldsEnum.Discipline, messages.getString("disc"));
+        fieldsStr.put(FieldsEnum.Publisher, messages.getString("pub"));
+        fieldsStr.put(FieldsEnum.YearOfPublication, messages.getString("year_pub"));
+        fieldsStr.put(FieldsEnum.ISBN, messages.getString("isbn"));
+        fieldsStr.put(FieldsEnum.Condition, messages.getString("cond"));
+        fieldsStr.put(FieldsEnum.SuggestedPrice, messages.getString("sug_price"));
+        fieldsStr.put(FieldsEnum.Notes, messages.getString("notes"));
+        fieldsStr.put(FieldsEnum.Status, messages.getString("status"));
 
 //        getFieldsString();
     }

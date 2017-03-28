@@ -70,28 +70,28 @@ public class SearchWorkerView extends View {
 //        grid.add(oneFieldHead,0,2,2,1);
 
         int row = 1;
-        String firstnameStr = "First Name";
+        String firstnameStr = messages.getString("fname");
         Label firsnameLabel = new Label(firstnameStr);
         firstName.setPromptText(firstnameStr);
         grid.add(firsnameLabel, 0, row);
         grid.add(firstName, 1, row);
 
         row++;
-        String lastnameStr = "Last Name";
+        String lastnameStr = messages.getString("lname");
         Label lastnameLabel = new Label(lastnameStr);
         lastName.setPromptText(lastnameStr);
         grid.add(lastnameLabel, 0, row);
         grid.add(lastName, 1, row);
 
         row++;
-        String phoneStr = "Phone Number";
+        String phoneStr = messages.getString("phone_num");
         Label phoneLabal = new Label(phoneStr);
         phone.setPromptText(phoneStr);
         grid.add(phoneLabal, 0, row);
         grid.add(phone, 1, row);
 
         row++;
-        String emailStr = "Email Address";
+        String emailStr = messages.getString("email");
         Label emailLabel = new Label(emailStr);
         email.setPromptText(emailStr);
         grid.add(emailLabel, 0, row);
@@ -101,8 +101,8 @@ public class SearchWorkerView extends View {
         row++;
         HBox buttonPane = new HBox();
         buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button("Submit");
-        Button cancelButton = new Button("Cancel");
+        Button searchButton = new Button(messages.getString("sub_btn"));
+        Button cancelButton = new Button(messages.getString("cancel_btn"));
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override

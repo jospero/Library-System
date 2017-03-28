@@ -18,14 +18,14 @@ public class AddWorkerView extends WorkerInformationView {
         VBox box = new VBox();
         box.setStyle("-fx-background-color: #ffad16");
 
-        box.getChildren().add(TitleView.createTitle("Add New Worker"));
+        box.getChildren().add(TitleView.createTitle(messages.getString("add_worker")));
 
         box.getChildren().add(getWorkerInformation());
 
         HBox buttonBox = new HBox();
 
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Cancel");
+        Button submit = new Button(messages.getString("sub_btn"));
+        Button cancel = new Button(messages.getString("cancel_btn"));
 
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);

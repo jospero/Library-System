@@ -36,16 +36,16 @@ public abstract class StudentBorrowerInformationView extends View {
         super(model, classname);
         this.enableFields = enableFields;
 
-        fieldsStr.put(FieldsEnum.BANNERID, "Banner ID");
-        fieldsStr.put(FieldsEnum.FIRSTNAME, "Firstname");
-        fieldsStr.put(FieldsEnum.LASTNAME, "Lastname");
-        fieldsStr.put(FieldsEnum.PHONE, "Phone");
-        fieldsStr.put(FieldsEnum.EMAIL, "Email");
-        fieldsStr.put(FieldsEnum.BORROWERSTATUS, "Borrower Status");
-        fieldsStr.put(FieldsEnum.DATEOFLASTBORROWERSTATUS, "Date of Last Borrower Status");
-        fieldsStr.put(FieldsEnum.DATEOFREGISTRATION, "Date of Registration");
-        fieldsStr.put(FieldsEnum.NOTES, "Notes");
-        fieldsStr.put(FieldsEnum.STATUS, "Status");
+        fieldsStr.put(FieldsEnum.BANNERID, messages.getString("bid"));
+        fieldsStr.put(FieldsEnum.FIRSTNAME,messages.getString("fname"));
+        fieldsStr.put(FieldsEnum.LASTNAME, messages.getString("lname"));
+        fieldsStr.put(FieldsEnum.PHONE, messages.getString("phone_num"));
+        fieldsStr.put(FieldsEnum.EMAIL, messages.getString("email"));
+        fieldsStr.put(FieldsEnum.BORROWERSTATUS,messages.getString("sb_status"));
+        fieldsStr.put(FieldsEnum.DATEOFLASTBORROWERSTATUS, messages.getString("date_latest_sb_status"));
+        fieldsStr.put(FieldsEnum.DATEOFREGISTRATION, messages.getString("date_reg"));
+        fieldsStr.put(FieldsEnum.NOTES, messages.getString("notes"));
+        fieldsStr.put(FieldsEnum.STATUS, messages.getString("status"));
 
 //        getFieldsString();
     }

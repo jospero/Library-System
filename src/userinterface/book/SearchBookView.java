@@ -47,14 +47,14 @@ public class SearchBookView extends View {
 //        HBox title = TitleView.createTitle("Enter Book Information");
 //        title.setStyle("-fx-background-color:#0c7a79");
 //        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label("Enter Book Information");
+        Label title = new Label(messages.getString("search_book"));
         title.setPrefWidth(Double.MAX_VALUE);
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.setPadding(new Insets(0,0,20,0));
         title.setAlignment(Pos.CENTER);
         grid.add(title,0,0,2,1);
 
-        String barcodeStr = "Barcode";
+        String barcodeStr = messages.getString("barcode");
         Label barcodeLabel = new Label(barcodeStr);
         barcode.setPromptText(barcodeStr);
         grid.add(barcodeLabel, 0, 1);
@@ -75,35 +75,35 @@ public class SearchBookView extends View {
         grid.add(oneFieldHead,0,2,2,1);
 
         int row = 3;
-        String titleStr = "Book Title";
+        String titleStr = messages.getString("title");
         Label titleLabel = new Label(titleStr);
         bookTitle.setPromptText(titleStr);
         grid.add(titleLabel, 0, row);
         grid.add(bookTitle, 1, row);
 
         row++;
-        String authorStr = "Author(s)";
+        String authorStr = messages.getString("auth");
         Label authorLabel = new Label(authorStr);
         author.setPromptText(authorStr);
         grid.add(authorLabel, 0, row);
         grid.add(author, 1, row);
 
         row++;
-        String publisherStr = "Publisher";
+        String publisherStr = messages.getString("pub");
         Label pubLabel = new Label(publisherStr);
         publisher.setPromptText(publisherStr);
         grid.add(pubLabel, 0, row);
         grid.add(publisher, 1, row);
 
         row++;
-        String pubYearStr = "Year of Publication";
+        String pubYearStr = messages.getString("year_pub");
         Label pubYearLabel = new Label(pubYearStr);
         pubYear.setPromptText(pubYearStr);
         grid.add(pubYearLabel, 0, row);
         grid.add(pubYear, 1, row);
 
         row++;
-        String isbnStr = "ISBN";
+        String isbnStr = messages.getString("isbn");
         Label isbnLabel = new Label(isbnStr);
         isbn.setPromptText(isbnStr);
         grid.add(isbnLabel, 0, row);
@@ -117,7 +117,7 @@ public class SearchBookView extends View {
 //        grid.add(condition, 1, row);
 
         row++;
-        String sugPriceStr = "Suggested Price";
+        String sugPriceStr = messages.getString("sug_price");
         Label sugPriceLabel = new Label(sugPriceStr);
         sugPrice.setPromptText(sugPriceStr);
         grid.add(sugPriceLabel, 0, row);
@@ -126,8 +126,8 @@ public class SearchBookView extends View {
         row++;
         HBox buttonPane = new HBox();
         buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button("Submit");
-        Button cancelButton = new Button("Cancel");
+        Button searchButton = new Button(messages.getString("sub_btn"));
+        Button cancelButton = new Button(messages.getString("cancel_btn"));
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
