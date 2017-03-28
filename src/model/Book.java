@@ -113,6 +113,7 @@ public class Book extends EntityBase implements IView {
 			processModifyBook((Properties) value);
 		}
 	    myRegistry.updateSubscribers(key, this);
+		System.out.println("Created Book");
 	}
 	
 	private void setDependencies()
@@ -164,8 +165,10 @@ public class Book extends EntityBase implements IView {
 
 	private void createNewBook(){
 		try {
+			successFlag = true;
 			insertPersistentState(mySchema, persistentState);
 			updateStatusMessage = "Book added to Database";
+			System.out.println("Created Book");
 		} catch (SQLException e) {
 			successFlag = false;
 			updateStatusMessage = e.getMessage();
@@ -175,6 +178,7 @@ public class Book extends EntityBase implements IView {
 
 	private void modifyBook(){
 		try {
+			successFlag = true;
 			Properties whereClause = new Properties();
 			whereClause.setProperty(DATABASE.Barcode.name(),
 					persistentState.getProperty(DATABASE.Barcode.name()));

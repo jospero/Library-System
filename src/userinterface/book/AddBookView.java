@@ -22,9 +22,6 @@ public class AddBookView extends BookInformationView {
 
     public AddBookView(IModel model) {
         super(model, true, "AddBookView");
-
-        myModel.subscribe("UpdateStatusMessage", this);
-
     }
 
     private void processBook() {
@@ -81,7 +78,7 @@ public class AddBookView extends BookInformationView {
 
     @Override
     public void updateState(String key, Object value) {
-
+        super.updateState(key, value);
     }
 
     @Override

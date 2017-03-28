@@ -190,13 +190,13 @@ public class StudentBorrower extends EntityBase implements IView {
 
 	private void createNewStudentBorrower(){
 		try {
+			successFlag = true;
 			insertPersistentState(mySchema, persistentState);
 			updateStatusMessage = "Student Borrower added to Database";
 		} catch (SQLException e) {
 			successFlag = false;
 			updateStatusMessage = e.getMessage();
 		}
-
 	}
 
     private void processNewStudentBorrowerHelper(Properties props){

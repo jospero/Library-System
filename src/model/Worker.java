@@ -148,6 +148,7 @@ public class Worker extends EntityBase implements IView {
 
 	private void createNewWorker(){
 		try {
+			successFlag = true;
 			insertPersistentState(mySchema, persistentState);
 			updateStatusMessage = "Worker added to Database";
 		} catch (SQLException e) {
@@ -159,6 +160,7 @@ public class Worker extends EntityBase implements IView {
 
 	private void modifyWorker(){
 		try {
+			successFlag = true;
 			Properties whereClause = new Properties();
 			whereClause.setProperty("BannerId",
 					persistentState.getProperty("BannerId"));
