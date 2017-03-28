@@ -94,6 +94,7 @@ public class ModifyWorkerView extends WorkerInformationView {
     @Override
     public void updateState(String key, Object value) {
         super.updateState(key, value);
+        System.out.println("updateModify");
     }
 
 

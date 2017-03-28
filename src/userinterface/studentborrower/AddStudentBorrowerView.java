@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import userinterface.TitleView;
 
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -48,47 +49,33 @@ public class AddStudentBorrowerView extends StudentBorrowerInformationView {
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation Dialog with Custom Actions");
-                alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
-                alert.setContentText("Choose your option.");
-
-                ButtonType buttonTypeOne = new ButtonType("One");
-                ButtonType buttonTypeTwo = new ButtonType("Two");
-                ButtonType buttonTypeThree = new ButtonType("Three");
-                ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-                alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree, buttonTypeCancel);
-
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == buttonTypeOne){
-                    // ... user chose "One"
-                } else if (result.get() == buttonTypeTwo) {
-                    // ... user chose "Two"
-                } else if (result.get() == buttonTypeThree) {
-                    // ... user chose "Three"
-                } else {
-                    // ... user chose CANCEL or closed the dialog
-                }
+                processStudentBorrower();
             }
         });
 
         return buttonBox;
     }
 
+    private void processStudentBorrower() {
+        Properties studentBorrower = validateStudentBorrower();
+        if(studentBorrower.size() > 0 ){
+            myModel.stateChangeRequest("ProcessNewStudentBorrower", studentBorrower);
+        }
+    }
+
     @Override
     protected void confirmDialog() {
-
+        System.out.println("Confirm");
     }
 
     @Override
     protected void errorDialog(String value) {
-
+        System.out.println("error");
     }
 
     @Override
     public void updateState(String key, Object value) {
-
+        super.updateState(key, value);
     }
 
     @Override

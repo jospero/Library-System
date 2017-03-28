@@ -67,7 +67,7 @@ public class Book extends EntityBase implements IView {
 	public static HashMap<DATABASE, String> getFields(){
 		HashMap<DATABASE, String> fieldsStr = new HashMap<>();
 		fieldsStr.put(DATABASE.Barcode, DATABASE.Barcode.name());
-		fieldsStr.put(DATABASE.Title, "Titless");
+		fieldsStr.put(DATABASE.Title, "Title");
 		fieldsStr.put(DATABASE.Authors, "Author(s)");
 		fieldsStr.put(DATABASE.Discipline, "Discipline");
 		fieldsStr.put(DATABASE.Publisher, "Publisher");

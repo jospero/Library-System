@@ -52,6 +52,7 @@ public abstract class InformationView<T> extends View {
         box.getChildren().add(buttonBox);
 
         getChildren().add(box);
+        myModel.subscribe("UpdateStatusMessage", this);
     }
 
     protected GridPane getInformation(){
@@ -76,6 +77,7 @@ public abstract class InformationView<T> extends View {
 
     @Override
     public void updateState(String key, Object value) {
+
         if(key.equals("UpdateStatusMessage")){
             boolean success = (boolean) myModel.getState("SuccessFlag");
             if(success){

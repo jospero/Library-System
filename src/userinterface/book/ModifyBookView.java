@@ -67,7 +67,7 @@ public class ModifyBookView extends BookInformationView {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Book Confirmation");
         alert.setHeaderText("Book Successfully Added");
-        alert.setContentText("Would you like to add a new book?");
+        alert.setContentText("Would you like to continue modification of Worker");
 
         ButtonType yesButton = new ButtonType("Yes");
         ButtonType noButton = new ButtonType("No");

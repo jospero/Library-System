@@ -1,14 +1,17 @@
 package userinterface.studentborrower;
 
+import Utilities.Utilities;
 import impresario.IModel;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import model.StudentBorrower;
+import model.Worker;
 import userinterface.InformationView;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Properties;
 import java.util.Vector;
 
 import static model.StudentBorrower.getFields;
@@ -46,7 +49,15 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                     if(studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(studentBorrower.get(row));
                 } else if(fEnum == StudentBorrower.DATABASE.DateOfLastBorrowerStatus || fEnum == StudentBorrower.DATABASE.DateOfRegistration) {
-                    DatePicker datePicker = new DatePicker();
+
+                    LocalDate localDate;
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    if(studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty()){
+                        localDate = LocalDate.parse(studentBorrower.get(row), formatter);
+                    } else {
+                        localDate = LocalDate.now();
+                    }
+                    DatePicker datePicker = new DatePicker(localDate);
                     field.field = datePicker;
                 } else if(fEnum == StudentBorrower.DATABASE.Notes) {
                     TextArea ta = new TextArea();
@@ -72,6 +83,90 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
         return studentBorrowerInfo;
 
 
+    }
+
+    private void error(Node n){
+        if(!n.getStyleClass().contains("error")){
+            n.getStyleClass().add("error");
+        }
+    }
+
+    final public Properties validateStudentBorrower() {
+        Properties studentBorrower = new Properties();
+        boolean errorFound = false;
+        for(StudentBorrower.DATABASE fieldsEnum: fieldsList.keySet()){
+            if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
+                String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
+                if (str.isEmpty()) {
+                    error(fieldsList.get(fieldsEnum).field);
+                    if (!errorFound) {
+                        errorFound = true;
+                        studentBorrower = new Properties();
+                    }
+                } else if (fieldsEnum == StudentBorrower.DATABASE.BannerId) {
+                    if (str.matches("[0-9]+")) {
+                        if (!errorFound) {
+                            fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                            studentBorrower.setProperty(fieldsEnum.name(), str);
+                        }
+                    } else {
+                        error(fieldsList.get(fieldsEnum).field);
+                        if (!errorFound) {
+                            errorFound = true;
+                            studentBorrower = new Properties();
+                        }
+                    }
+
+                } else if (fieldsEnum == StudentBorrower.DATABASE.Phone) {
+                    if (Utilities.validatePhoneNumber(str)) {
+                        if (!errorFound) {
+                            fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                            studentBorrower.setProperty(fieldsEnum.name(), str);
+                        }
+                    } else {
+                        error(fieldsList.get(fieldsEnum).field);
+                        if (!errorFound) {
+                            errorFound = true;
+                            studentBorrower = new Properties();
+                        }
+                    }
+                }
+                else if (fieldsEnum == StudentBorrower.DATABASE.Email){
+                    if(Utilities.validateEmail(str)){
+                        if (!errorFound) {
+                            fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                            studentBorrower.setProperty(fieldsEnum.name(), str);
+                        }
+                    } else {
+                        error(fieldsList.get(fieldsEnum).field);
+                        if (!errorFound) {
+                            errorFound = true;
+                            studentBorrower = new Properties();
+                        }
+                    }
+
+                }
+                else {
+                    if(!errorFound){
+                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                        studentBorrower.setProperty(fieldsEnum.name(), str);
+                    }
+                }
+            } else if( fieldsList.get(fieldsEnum).field instanceof ComboBox) {
+                if(!errorFound) {
+                    String str = ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
+                    studentBorrower.setProperty(fieldsEnum.name(), str);
+                }
+            } else{
+                if(!errorFound) {
+                    LocalDate date = ((DatePicker) fieldsList.get(fieldsEnum).field).getValue();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    studentBorrower.setProperty(fieldsEnum.name(), date.format(formatter));
+                }
+            }
+        }
+        System.out.println(studentBorrower.toString());
+        return studentBorrower;
     }
 
     private ComboBox getBorrowerStatusNode(){

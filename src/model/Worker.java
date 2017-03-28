@@ -163,9 +163,10 @@ public class Worker extends EntityBase implements IView {
 			whereClause.setProperty("BannerId",
 					persistentState.getProperty("BannerId"));
 			updatePersistentState(mySchema, persistentState, whereClause);
-			updateStatusMessage = "Book data for Barcode : " + persistentState.getProperty("Barcode") + " updated successfully in database!";
+			updateStatusMessage = "Worker data for BannerId : " + persistentState.getProperty("BannerId") + " updated successfully in database!";
 		} catch (SQLException e) {
-			e.printStackTrace();
+			successFlag = false;
+			updateStatusMessage = e.getMessage();
 		}
 
 	}
