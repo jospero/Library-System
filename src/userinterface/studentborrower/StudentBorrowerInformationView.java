@@ -1,28 +1,22 @@
 package userinterface.studentborrower;
 
 import impresario.IModel;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import model.StudentBorrower;
 import userinterface.InformationView;
-import userinterface.View;
-import userinterface.book.BookInformationView;
 
-import java.util.HashMap;
 import java.util.Vector;
+
+import static model.StudentBorrower.getFields;
 
 /**
  * Created by Sammytech on 3/9/17.
  */
-public abstract class StudentBorrowerInformationView extends InformationView<StudentBorrowerInformationView.FieldsEnum> {
-
-    enum FieldsEnum{
-        BANNERID, FIRSTNAME, LASTNAME, PHONE, EMAIL, BORROWERSTATUS, DATEOFLASTBORROWERSTATUS, DATEOFREGISTRATION,
-        NOTES, STATUS
-    }
-
+public abstract class StudentBorrowerInformationView extends InformationView<StudentBorrower.DATABASE> {
 
     public StudentBorrowerInformationView(IModel model, boolean enableFields, String classname) {
         super(model, enableFields, classname);
@@ -34,42 +28,27 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
         fieldsStr = getFields();
     }
 
-    public static HashMap<FieldsEnum, String> getFields(){
-        HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
-        fieldsStr.put(FieldsEnum.BANNERID, "Banner ID");
-        fieldsStr.put(FieldsEnum.FIRSTNAME, "Firstname");
-        fieldsStr.put(FieldsEnum.LASTNAME, "Lastname");
-        fieldsStr.put(FieldsEnum.PHONE, "Phone");
-        fieldsStr.put(FieldsEnum.EMAIL, "Email");
-        fieldsStr.put(FieldsEnum.BORROWERSTATUS, "Borrower Status");
-        fieldsStr.put(FieldsEnum.DATEOFLASTBORROWERSTATUS, "Date of Last Borrower Status");
-        fieldsStr.put(FieldsEnum.DATEOFREGISTRATION, "Date of Registration");
-        fieldsStr.put(FieldsEnum.NOTES, "Notes");
-        fieldsStr.put(FieldsEnum.STATUS, "Status");
-        return fieldsStr;
-    }
-
     public final GridPane getInformation(){
         GridPane studentBorrowerInfo = super.getInformation();
         int row = 0;
         Vector<String> studentBorrower = ((StudentBorrower) myModel).getEntryListView();
-        for(FieldsEnum fEnum : FieldsEnum.values()){
+        for(StudentBorrower.DATABASE fEnum : StudentBorrower.DATABASE.values()){
             if(fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
-                if(fEnum == FieldsEnum.BORROWERSTATUS){
+                if(fEnum == StudentBorrower.DATABASE.BorrowerStatus){
                     field.field = getBorrowerStatusNode();
                     if(studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(studentBorrower.get(row));
-                } else if(fEnum == FieldsEnum.STATUS){
+                } else if(fEnum == StudentBorrower.DATABASE.Status){
                     field.field = getStatusNode();
                     if(studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(studentBorrower.get(row));
-                } else if(fEnum == FieldsEnum.DATEOFLASTBORROWERSTATUS || fEnum == FieldsEnum.DATEOFREGISTRATION) {
+                } else if(fEnum == StudentBorrower.DATABASE.DateOfLastBorrowerStatus || fEnum == StudentBorrower.DATABASE.DateOfRegistration) {
                     DatePicker datePicker = new DatePicker();
                     field.field = datePicker;
-                } else if(fEnum == FieldsEnum.NOTES) {
+                } else if(fEnum == StudentBorrower.DATABASE.Notes) {
                     TextArea ta = new TextArea();
                     field.field = ta;
                 }   else

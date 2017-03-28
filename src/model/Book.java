@@ -8,10 +8,15 @@ import userinterface.ViewFactory;
 
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
 
 public class Book extends EntityBase implements IView {
+
+	public enum DATABASE{
+		Barcode, Title, Authors, Discipline, Publisher, YearOfPublication, ISBN, Condition, SuggestedPrice, Notes, Status
+	}
 
 	private static final String myTableName = "Book";
 
@@ -57,6 +62,22 @@ public class Book extends EntityBase implements IView {
 			throw new InvalidPrimaryKeyException("No book matching id : "
 				+ Barcode + " found.");
 		}
+	}
+
+	public static HashMap<DATABASE, String> getFields(){
+		HashMap<DATABASE, String> fieldsStr = new HashMap<>();
+		fieldsStr.put(DATABASE.Barcode, DATABASE.Barcode.name());
+		fieldsStr.put(DATABASE.Title, "Titless");
+		fieldsStr.put(DATABASE.Authors, "Author(s)");
+		fieldsStr.put(DATABASE.Discipline, "Discipline");
+		fieldsStr.put(DATABASE.Publisher, "Publisher");
+		fieldsStr.put(DATABASE.YearOfPublication, "Year of Publication");
+		fieldsStr.put(DATABASE.ISBN, "ISBN");
+		fieldsStr.put(DATABASE.Condition, "Condition");
+		fieldsStr.put(DATABASE.SuggestedPrice, "Suggested Price");
+		fieldsStr.put(DATABASE.Notes, "Notes");
+		fieldsStr.put(DATABASE.Status, "Status");
+		return fieldsStr;
 	}
 
 
@@ -116,20 +137,20 @@ public class Book extends EntityBase implements IView {
 		try
 		{
             successFlag = true;
-			if (persistentState.getProperty("Barcode") != null)
+			if (persistentState.getProperty(DATABASE.Barcode.name()) != null)
 			{
 				Properties whereClause = new Properties();
-				whereClause.setProperty("Barcode",
-				persistentState.getProperty("Barcode"));
+				whereClause.setProperty(DATABASE.Barcode.name(),
+				persistentState.getProperty(DATABASE.Barcode.name()));
 				updatePersistentState(mySchema, persistentState, whereClause);
-				updateStatusMessage = "Book data for book id : " + persistentState.getProperty("Barcode") + " updated successfully in database!";
+				updateStatusMessage = "Book data for book id : " + persistentState.getProperty(DATABASE.Barcode.name()) + " updated successfully in database!";
 			}
 			else
 			{
 				Integer Barcode =
 					insertAutoIncrementalPersistentState(mySchema, persistentState);
-				persistentState.setProperty("Barcode", "" + Barcode.intValue());
-				updateStatusMessage = "Book data for new book : " +  persistentState.getProperty("Barcode")
+				persistentState.setProperty(DATABASE.Barcode.name(), "" + Barcode.intValue());
+				updateStatusMessage = "Book data for new book : " +  persistentState.getProperty(DATABASE.Barcode.name())
 					+ " installed successfully in database!";
 			}
 		}
@@ -155,10 +176,10 @@ public class Book extends EntityBase implements IView {
 	private void modifyBook(){
 		try {
 			Properties whereClause = new Properties();
-			whereClause.setProperty("Barcode",
-					persistentState.getProperty("Barcode"));
+			whereClause.setProperty(DATABASE.Barcode.name(),
+					persistentState.getProperty(DATABASE.Barcode.name()));
 			updatePersistentState(mySchema, persistentState, whereClause);
-			updateStatusMessage = "Book data for Barcode : " + persistentState.getProperty("Barcode") + " updated successfully in database!";
+			updateStatusMessage = "Book data for Barcode : " + persistentState.getProperty(DATABASE.Barcode.name()) + " updated successfully in database!";
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -173,17 +194,20 @@ public class Book extends EntityBase implements IView {
 	public Vector<String> getEntryListView()
 	{
 		Vector<String> v = new Vector<String>();
-		v.addElement(persistentState.getProperty("Barcode"));
-		v.addElement(persistentState.getProperty("Title"));
-		v.addElement(persistentState.getProperty("Discipline"));
-		v.addElement(persistentState.getProperty("Authors"));
-		v.addElement(persistentState.getProperty("Publisher"));
-		v.addElement(persistentState.getProperty("YearOfPublication"));
-		v.addElement(persistentState.getProperty("ISBN"));
-		v.addElement(persistentState.getProperty("Condition"));
-		v.addElement(persistentState.getProperty("SuggestedPrice"));
-		v.addElement(persistentState.getProperty("Notes"));
-		v.addElement(persistentState.getProperty("Status"));
+		for(DATABASE d : DATABASE.values()){
+			v.addElement(persistentState.getProperty(d.name()));
+		}
+//		v.addElement(persistentState.getProperty(DATABASE.Barcode.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Title.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Discipline.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Authors.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Publisher.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.YearOfPublication.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.ISBN.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Condition.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.SuggestedPrice.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Notes.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Status.name());
 
 		return v;
 	}

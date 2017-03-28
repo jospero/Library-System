@@ -34,7 +34,7 @@ public class LibraryGUI extends Application
         MainStageContainer.setStage(primaryStage, "EOP Login");
         mainStage = MainStageContainer.getInstance();
         com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
-        // Finish setting up the stage (ENABLE THE GUI TgO BE CLOSED USING THE TOP RIGHT
+        // Finish setting up the stage (ENABLE THE GUI TO BE CLOSED USING THE TOP RIGHT
         // 'X' IN THE WINDOW), and show it.
         mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override

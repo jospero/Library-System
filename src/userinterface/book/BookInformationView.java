@@ -1,32 +1,24 @@
 package userinterface.book;
 
 import impresario.IModel;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import model.Book;
 import userinterface.InformationView;
-import userinterface.InformationView.*;
-import userinterface.View;
 
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
+
+import static model.Book.getFields;
 
 /**
  * Created by Sammytech on 3/9/17.
  */
-public abstract class BookInformationView extends InformationView<BookInformationView.FieldsEnum> {
-
-    enum FieldsEnum{
-        Barcode, Title, Authors, Discipline, Publisher, YearOfPublication, ISBN, Condition, SuggestedPrice, Notes, Status
-    }
-
+public abstract class BookInformationView extends InformationView<Book.DATABASE> {
 
 
     public BookInformationView(IModel model, boolean enableFields, String classname) {
@@ -38,49 +30,35 @@ public abstract class BookInformationView extends InformationView<BookInformatio
         fieldsStr = getFields();
     }
 
-    public static HashMap<FieldsEnum, String> getFields(){
-        HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
-        fieldsStr.put(FieldsEnum.Barcode, "Barcode");
-        fieldsStr.put(FieldsEnum.Title, "Title");
-        fieldsStr.put(FieldsEnum.Authors, "Author(s)");
-        fieldsStr.put(FieldsEnum.Discipline, "Discipline");
-        fieldsStr.put(FieldsEnum.Publisher, "Publisher");
-        fieldsStr.put(FieldsEnum.YearOfPublication, "Year of Publication");
-        fieldsStr.put(FieldsEnum.ISBN, "ISBN");
-        fieldsStr.put(FieldsEnum.Condition, "Condition");
-        fieldsStr.put(FieldsEnum.SuggestedPrice, "Suggested Price");
-        fieldsStr.put(FieldsEnum.Notes, "Notes");
-        fieldsStr.put(FieldsEnum.Status, "Status");
-        return fieldsStr;
-    }
+
 
     @Override
     protected GridPane getInformation(){
         GridPane bookInfo =  super.getInformation();
         int row = 0;
         Vector<String> book = ((Book) myModel).getEntryListView();
-        for(FieldsEnum fEnum : FieldsEnum.values()){
+        for(Book.DATABASE fEnum : Book.DATABASE.values()){
 
             if(fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
-                if(fEnum == FieldsEnum.Condition){
+                if(fEnum == Book.DATABASE.Condition){
                     field.field = getConditionNode();
                     if(book.get(row) != null && !book.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(book.get(row));
-                } else if(fEnum == FieldsEnum.Status){
+                } else if(fEnum == Book.DATABASE.Status){
                     field.field = getStatusNode();
                     if(book.get(row) != null && !book.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(book.get(row));
-                } else if(fEnum == FieldsEnum.Notes) {
+                } else if(fEnum == Book.DATABASE.Notes) {
                     TextArea ta = new TextArea();
                     field.field = ta;
                 } else {
                     TextField fTF = new TextField();
                     fTF.setPromptText(str);
                     fTF.setEditable(enableFields);
-                    if(fEnum == FieldsEnum.Barcode){
+                    if(fEnum == Book.DATABASE.Barcode){
                         fTF.setEditable(!modify);
                     }
                     if(book.get(row) != null && !book.get(row).isEmpty())
@@ -105,17 +83,17 @@ public abstract class BookInformationView extends InformationView<BookInformatio
     final public Properties validateBook(){
         Properties book = new Properties();
         boolean errorFound = false;
-        for(FieldsEnum fieldsEnum: fieldsList.keySet()){
+        for(Book.DATABASE fieldsEnum: fieldsList.keySet()){
              if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
                  String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
-                 if (str.isEmpty() && fieldsEnum != FieldsEnum.Notes) {
+                 if (str.isEmpty() && fieldsEnum != Book.DATABASE.Notes) {
                      error(fieldsList.get(fieldsEnum).field);
                      if (!errorFound) {
                          errorFound = true;
                          book = new Properties();
                      }
-                 } else if (fieldsEnum == FieldsEnum.Barcode || fieldsEnum == FieldsEnum.YearOfPublication ||
-                         fieldsEnum == FieldsEnum.ISBN) {
+                 } else if (fieldsEnum == Book.DATABASE.Barcode || fieldsEnum == Book.DATABASE.YearOfPublication ||
+                         fieldsEnum == Book.DATABASE.ISBN) {
                      if (str.matches("[0-9]+")) {
                          if (!errorFound) {
                              fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
@@ -128,7 +106,7 @@ public abstract class BookInformationView extends InformationView<BookInformatio
                              book = new Properties();
                          }
                      }
-                 } else if (fieldsEnum == FieldsEnum.SuggestedPrice){
+                 } else if (fieldsEnum == Book.DATABASE.SuggestedPrice){
                      try {
                          double i = Double.parseDouble(str);
                          if (!errorFound) {

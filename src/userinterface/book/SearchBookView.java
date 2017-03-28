@@ -15,10 +15,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import model.Book;
 import userinterface.View;
 
 import java.util.HashMap;
 import java.util.Properties;
+
+import static model.Book.getFields;
 
 /**
  * Created by Sammytech on 3/11/17.
@@ -41,7 +44,7 @@ public class SearchBookView extends View {
 //        root.setFillWidth(true);
         root.setAlignment(Pos.CENTER);
 
-        HashMap<BookInformationView.FieldsEnum, String> fields = BookInformationView.getFields();
+        HashMap<Book.DATABASE, String> fields = getFields();
 
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(0,60,0,60));
@@ -59,7 +62,7 @@ public class SearchBookView extends View {
         title.setAlignment(Pos.CENTER);
         grid.add(title,0,0,2,1);
 
-        String barcodeStr = fields.get(BookInformationView.FieldsEnum.Barcode);
+        String barcodeStr = fields.get(Book.DATABASE.Barcode);
         Label barcodeLabel = new Label(barcodeStr);
         barcode.setPromptText(barcodeStr);
         grid.add(barcodeLabel, 0, 1);
@@ -81,35 +84,35 @@ public class SearchBookView extends View {
 
 
         int row = 3;
-        String titleStr = fields.get(BookInformationView.FieldsEnum.Title);
+        String titleStr = fields.get(Book.DATABASE.Title);
         Label titleLabel = new Label(titleStr);
         bookTitle.setPromptText(titleStr);
         grid.add(titleLabel, 0, row);
         grid.add(bookTitle, 1, row);
 
         row++;
-        String authorStr = fields.get(BookInformationView.FieldsEnum.Authors);
+        String authorStr = fields.get(Book.DATABASE.Authors);
         Label authorLabel = new Label(authorStr);
         author.setPromptText(authorStr);
         grid.add(authorLabel, 0, row);
         grid.add(author, 1, row);
 
         row++;
-        String publisherStr = fields.get(BookInformationView.FieldsEnum.Publisher);
+        String publisherStr = fields.get(Book.DATABASE.Publisher);
         Label pubLabel = new Label(publisherStr);
         publisher.setPromptText(publisherStr);
         grid.add(pubLabel, 0, row);
         grid.add(publisher, 1, row);
 
         row++;
-        String pubYearStr = fields.get(BookInformationView.FieldsEnum.YearOfPublication);
+        String pubYearStr = fields.get(Book.DATABASE.YearOfPublication);
         Label pubYearLabel = new Label(pubYearStr);
         pubYear.setPromptText(pubYearStr);
         grid.add(pubYearLabel, 0, row);
         grid.add(pubYear, 1, row);
 
         row++;
-        String isbnStr = fields.get(BookInformationView.FieldsEnum.ISBN);
+        String isbnStr = fields.get(Book.DATABASE.ISBN);
         Label isbnLabel = new Label(isbnStr);
         isbn.setPromptText(isbnStr);
         grid.add(isbnLabel, 0, row);
@@ -123,7 +126,7 @@ public class SearchBookView extends View {
 //        grid.add(condition, 1, row);
 
         row++;
-        String sugPriceStr = fields.get(BookInformationView.FieldsEnum.SuggestedPrice);
+        String sugPriceStr = fields.get(Book.DATABASE.SuggestedPrice);
         Label sugPriceLabel = new Label(sugPriceStr);
         sugPrice.setPromptText(sugPriceStr);
         grid.add(sugPriceLabel, 0, row);
@@ -187,24 +190,24 @@ public class SearchBookView extends View {
 //                Error
             } else{
                 if(!bookTitleStr.trim().isEmpty()){
-                    search.setProperty("Title", bookTitleStr);
+                    search.setProperty(Book.DATABASE.Title.name(), bookTitleStr);
                 }
                 if(!authorStr.trim().isEmpty()){
-                    search.setProperty("Authors", authorStr);
+                    search.setProperty(Book.DATABASE.Authors.name(), authorStr);
                 }
                 if(!publisherStr.trim().isEmpty()){
-                    search.setProperty("Publisher", publisherStr);
+                    search.setProperty(Book.DATABASE.Publisher.name(), publisherStr);
                 }
                 if(!pubYearStr.trim().isEmpty() && pubYearStr.matches("[0-9]+")){
-                    search.setProperty("YearOfPublication", pubYearStr);
+                    search.setProperty(Book.DATABASE.YearOfPublication.name(), pubYearStr);
                 }
                 if(!isbnStr.trim().isEmpty() && isbnStr.matches("[0-9]+")){
-                    search.setProperty("ISBN", isbnStr);
+                    search.setProperty(Book.DATABASE.ISBN.name(), isbnStr);
                 }
                 if(!sugPriceStr.trim().isEmpty()){
                     try {
                         double d = Double.parseDouble(sugPriceStr);
-                        search.setProperty("Suggested Price", sugPriceStr);
+                        search.setProperty(Book.DATABASE.SuggestedPrice.name(), sugPriceStr);
                     } catch (NumberFormatException ex){
 
                     }
@@ -215,7 +218,7 @@ public class SearchBookView extends View {
             if(bookTitleStr.trim().isEmpty() && authorStr.trim().isEmpty() && publisherStr.trim().isEmpty() && pubYearStr.trim().isEmpty() &&
                     isbnStr.trim().isEmpty() && sugPriceStr.trim().isEmpty()){
                 if (str.matches("[0-9]+")) {
-                    search.setProperty("Barcode", str);
+                    search.setProperty(Book.DATABASE.Barcode.name(), str);
                 } else {
                     //Error
                 }

@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // project imports
 
@@ -325,7 +327,13 @@ public class Utilities
 		else if(phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}")) return true;
 			//return false if nothing matches the input
 		else return false;
+	}
 
+	public static boolean validateEmail(String email){
+		Pattern VALID_Email_ADDRESS_REGEX =
+				Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = VALID_Email_ADDRESS_REGEX.matcher(email);
+		return matcher.find();
 	}
 
 }

@@ -78,7 +78,7 @@ public class BookCollection extends EntityBase implements IView {
             String theFieldName = (String)theWhereFields.nextElement();
             String theFieldValue = props.getProperty(theFieldName).replace("'", "\'");
             if (theFieldName != "Authors") {
-                query += theFieldName + " = '" + theFieldValue + "' AND ";
+                query +=  "`"+ theFieldName + "` = '" + theFieldValue.trim() + "' AND ";
             } else{
                 String[] splitStr = theFieldValue.split(",");
                 for(String s : splitStr){

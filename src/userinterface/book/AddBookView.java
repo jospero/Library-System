@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import model.Book;
 import userinterface.TitleView;
 
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class AddBookView extends BookInformationView {
     }
 
     void clearFields(){
-        for(FieldsEnum fEnum : FieldsEnum.values()){
+        for(Book.DATABASE fEnum : Book.DATABASE.values()){
             if(fieldsList.get(fEnum).field instanceof TextField || fieldsList.get(fEnum).field instanceof TextArea) {
                 ((TextInputControl) fieldsList.get(fEnum).field).setText("");
             } else{

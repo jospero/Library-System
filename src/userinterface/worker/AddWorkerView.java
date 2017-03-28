@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import model.Worker;
 import userinterface.TitleView;
 
 import java.time.LocalDate;
@@ -32,7 +33,7 @@ public class AddWorkerView extends WorkerInformationView {
     }
 
     void clearFields(){
-        for(FieldsEnum fEnum : FieldsEnum.values()){
+        for(Worker.DATABASE fEnum : Worker.DATABASE.values()){
             if(fieldsList.get(fEnum).field instanceof TextField || fieldsList.get(fEnum).field instanceof TextArea) {
                 ((TextInputControl) fieldsList.get(fEnum).field).setText("");
             } else if (fieldsList.get(fEnum).field instanceof ComboBox){
