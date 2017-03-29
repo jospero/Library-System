@@ -24,7 +24,10 @@ import userinterface.TitleView;
 import userinterface.View;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Vector;
+
+import static model.Book.getFields;
 
 /**
  * Created by Sammytech on 3/12/17.
@@ -111,70 +114,71 @@ public class BookCollectionView extends View {
         prompt.setFill(Color.BLACK);
         grid.add(prompt, 0, 0, 2, 1);
 
+        HashMap<Book.DATABASE, String> fields = getFields();
         tableOfBooks = new TableView<BookTableModel>();
         tableOfBooks.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        TableColumn barcodeColumn = new TableColumn(messages.getString("barcode")) ;
+        TableColumn barcodeColumn = new TableColumn(fields.get(Book.DATABASE.Barcode)) ;
         barcodeColumn.setMinWidth(100);
         barcodeColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("barcode"));
         barcodeColumn.setSortable(false);
 
-        TableColumn titleColumn = new TableColumn(messages.getString("title")) ;
+        TableColumn titleColumn = new TableColumn(fields.get(Book.DATABASE.Title)) ;
         titleColumn.setMinWidth(100);
         titleColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("title"));
         titleColumn.setSortable(false);
 
 
-        TableColumn disciplineColumn = new TableColumn(messages.getString("disc")) ;
+        TableColumn disciplineColumn = new TableColumn(fields.get(Book.DATABASE.Discipline)) ;
         disciplineColumn.setMinWidth(100);
         disciplineColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("discipline"));
         disciplineColumn.setSortable(false);
 
 
-        authorColumn = new TableColumn(messages.getString("auth"));
+        authorColumn = new TableColumn(fields.get(Book.DATABASE.Authors)) ;
         authorColumn.setMinWidth(100);
         authorColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("authors"));
 //        authorColumn.setSortType(TableColumn.SortType.ASCENDING);
 
 
-        TableColumn pubColumn = new TableColumn(messages.getString("pub")) ;
+        TableColumn pubColumn = new TableColumn(fields.get(Book.DATABASE.Publisher)) ;
         pubColumn.setMinWidth(120);
         pubColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("publisher"));
         pubColumn.setSortable(false);
 
-        TableColumn pubYearColumn = new TableColumn(messages.getString("year_pub")) ;
+        TableColumn pubYearColumn = new TableColumn(fields.get(Book.DATABASE.YearOfPublication)) ;
         pubYearColumn.setMinWidth(120);
         pubYearColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("yearOfPublication"));
         pubYearColumn.setSortable(false);
 
 
-        TableColumn isbnColumn = new TableColumn(messages.getString("isbn")) ;
+        TableColumn isbnColumn = new TableColumn(fields.get(Book.DATABASE.ISBN)) ;
         isbnColumn.setMinWidth(120);
         isbnColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("isbn"));
         isbnColumn.setSortable(false);
 
 
-        TableColumn sugPriceColumn = new TableColumn(messages.getString("sug_price")) ;
+        TableColumn sugPriceColumn = new TableColumn(fields.get(Book.DATABASE.SuggestedPrice)) ;
         sugPriceColumn.setMinWidth(120);
         sugPriceColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("suggestedPrice"));
         sugPriceColumn.setSortable(false);
 
 
-        TableColumn notesColumn = new TableColumn(messages.getString("notes"));
+        TableColumn notesColumn = new TableColumn(fields.get(Book.DATABASE.Notes)) ;
         notesColumn.setMinWidth(120);
         notesColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("notes"));
         notesColumn.setSortable(false);
 
-        TableColumn statusColumn = new TableColumn(messages.getString("status")) ;
+        TableColumn statusColumn = new TableColumn(fields.get(Book.DATABASE.Status));
         statusColumn.setMinWidth(100);
         statusColumn.setCellValueFactory(
                 new PropertyValueFactory<BookTableModel, String>("status"));

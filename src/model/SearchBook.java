@@ -77,10 +77,19 @@ public class SearchBook implements IView, IModel {
         System.out.println("SCR "+ key);
         if(key.equals("ProcessSearch")){
             BookCollection bookCollection = new BookCollection();
-            try {
-                bookCollection.findBooks();
-            } catch (InvalidPrimaryKeyException e) {
-                e.printStackTrace();
+            Properties props = (Properties) value;
+            if(props.contains("barcode")) {
+                try {
+                    bookCollection.findBookBarcode(props.getProperty("Barcode"));
+                } catch (InvalidPrimaryKeyException e) {
+                    e.printStackTrace();
+                }
+            } else{
+                try {
+                    bookCollection.findBooksCriteria(props);
+                } catch (InvalidPrimaryKeyException e) {
+                    e.printStackTrace();
+                }
             }
             bookCollection.subscribe("ResultViewCancelled", this);
             bookCollection.subscribe("ViewBook", this);

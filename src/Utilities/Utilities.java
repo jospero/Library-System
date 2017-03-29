@@ -2,11 +2,13 @@
 package Utilities;
 
 // system imports
+import common.PropertyFile;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // project imports
 
@@ -312,6 +314,49 @@ public class Utilities
 		}
 
 		return true;
+	}
+
+	public static boolean validatePhoneNumber(String phoneNo) {
+		//validate phone numbers of format "1234567890"
+		if (phoneNo.matches("\\d{10}")) return true;
+			//validating phone number with -, . or spaces
+		else if(phoneNo.matches("\\d{3}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}")) return true;
+			//validating phone number with extension length from 3 to 5
+		else if(phoneNo.matches("\\d{3}-\\d{3}-\\d{4}\\s(x|(ext))\\d{3,5}")) return true;
+			//validating phone number where area code is in braces ()
+		else if(phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}")) return true;
+			//return false if nothing matches the input
+		else return false;
+	}
+
+	public static String getStringLang(String key){
+		String language ="";
+		String country ="";
+
+
+		Locale currentLocale;
+		ResourceBundle messages;
+		Properties props;
+
+		props = new PropertyFile("langConfig.ini");
+		if (props != null)
+		{
+			language = props.getProperty("lang");
+			country = props.getProperty("country");
+
+		}
+
+		currentLocale = new Locale(language, country);
+
+		messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
+		return convertToTitleCase(messages.getString(key));
+
+	}
+	public static boolean validateEmail(String email){
+		Pattern VALID_Email_ADDRESS_REGEX =
+				Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = VALID_Email_ADDRESS_REGEX.matcher(email);
+		return matcher.find();
 	}
 
 }

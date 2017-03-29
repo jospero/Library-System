@@ -13,7 +13,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import model.StudentBorrower;
 import userinterface.View;
+
+import java.util.HashMap;
+
+import static model.StudentBorrower.getFields;
 
 /**
  * Created by Sammytech on 3/11/17.
@@ -32,6 +37,8 @@ public class SearchStudentBorrowerView extends View {
 //        root.setFillWidth(true);
         root.setAlignment(Pos.CENTER);
 
+        HashMap<StudentBorrower.DATABASE, String> fields = getFields();
+
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(0,60,0,60));
         grid.setHgap(30);
@@ -41,7 +48,7 @@ public class SearchStudentBorrowerView extends View {
 //        HBox title = TitleView.createTitle("Enter StudentBorrower Information");
 //        title.setStyle("-fx-background-color:#0c7a79");
 //        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label(messages.getString("search_sb"));
+        Label title = new Label("Enter Student Borrower Information");
         title.setPrefWidth(Double.MAX_VALUE);
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.setPadding(new Insets(0,0,20,0));
@@ -69,28 +76,28 @@ public class SearchStudentBorrowerView extends View {
 //        grid.add(oneFieldHead,0,2,2,1);
 
         int row = 1;
-        String firstnameStr = messages.getString("fname");
+        String firstnameStr = fields.get(StudentBorrower.DATABASE.FirstName);
         Label firsnameLabel = new Label(firstnameStr);
         firstName.setPromptText(firstnameStr);
         grid.add(firsnameLabel, 0, row);
         grid.add(firstName, 1, row);
 
         row++;
-        String lastnameStr = messages.getString("lname");
+        String lastnameStr = fields.get(StudentBorrower.DATABASE.LastName);
         Label lastnameLabel = new Label(lastnameStr);
         lastName.setPromptText(lastnameStr);
         grid.add(lastnameLabel, 0, row);
         grid.add(lastName, 1, row);
 
         row++;
-        String phoneStr = messages.getString("phone_num");
+        String phoneStr = fields.get(StudentBorrower.DATABASE.Phone);
         Label phoneLabal = new Label(phoneStr);
         phone.setPromptText(phoneStr);
         grid.add(phoneLabal, 0, row);
         grid.add(phone, 1, row);
 
         row++;
-        String emailStr = messages.getString("email");
+        String emailStr = fields.get(StudentBorrower.DATABASE.Email);
         Label emailLabel = new Label(emailStr);
         email.setPromptText(emailStr);
         grid.add(emailLabel, 0, row);
@@ -100,8 +107,8 @@ public class SearchStudentBorrowerView extends View {
         row++;
         HBox buttonPane = new HBox();
         buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button(messages.getString("sub_btn"));
-        Button cancelButton = new Button(messages.getString("cancel_btn"));
+        Button searchButton = new Button("Submit");
+        Button cancelButton = new Button("Cancel");
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -123,7 +130,6 @@ public class SearchStudentBorrowerView extends View {
         buttonPane.getChildren().addAll(searchButton, cancelButton);
 
         grid.add(buttonPane, 0, row, 2, 1);
-
 
         root.getChildren().add(grid);
         getChildren().add(root);

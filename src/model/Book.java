@@ -1,17 +1,22 @@
 package model;
 
+import Utilities.Utilities;
 import exception.InvalidPrimaryKeyException;
 import impresario.IView;
-import javafx.scene.Scene;
-import userinterface.View;
-import userinterface.ViewFactory;
 
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
 
+import static Utilities.Utilities.getStringLang;
+
 public class Book extends EntityBase implements IView {
+
+	public enum DATABASE{
+		Barcode, Title, Authors, Discipline, Publisher, YearOfPublication, ISBN, Condition, SuggestedPrice, Notes, Status
+	}
 
 	private static final String myTableName = "Book";
 
@@ -22,11 +27,11 @@ public class Book extends EntityBase implements IView {
 	private String updateStatusMessage = "";
 	private boolean successFlag = true;
 
-	public Book(String bookId) throws InvalidPrimaryKeyException {
+	public Book(String Barcode) throws InvalidPrimaryKeyException {
 		super(myTableName);
 
 		setDependencies();
-		String query = "SELECT * FROM " + myTableName + " WHERE (bookId = " + bookId + ")";
+		String query = "SELECT * FROM " + myTableName + " WHERE (Barcode = " + Barcode + ")";
 
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
 
@@ -39,7 +44,7 @@ public class Book extends EntityBase implements IView {
 			if (size != 1)
 			{
 				throw new InvalidPrimaryKeyException("Multiple books matching id : "
-					+ bookId + " found.");
+					+ Barcode + " found.");
 			}
 			else
 			{
@@ -53,10 +58,26 @@ public class Book extends EntityBase implements IView {
 		// If no account found for this user name, throw an exception
 		else
 		{
-//		    bookErrorMessage="No book matching id : " + bookId + " found.";
+//		    bookErrorMessage="No book matching id : " + Barcode + " found.";
 			throw new InvalidPrimaryKeyException("No book matching id : "
-				+ bookId + " found.");
+				+ Barcode + " found.");
 		}
+	}
+
+	public static HashMap<DATABASE, String> getFields(){
+		HashMap<DATABASE, String> fieldsStr = new HashMap<>();
+		fieldsStr.put(DATABASE.Barcode, getStringLang("barcode"));
+		fieldsStr.put(DATABASE.Title, getStringLang("title"));
+		fieldsStr.put(DATABASE.Authors, getStringLang("auth"));
+		fieldsStr.put(DATABASE.Discipline, getStringLang("disc"));
+		fieldsStr.put(DATABASE.Publisher, getStringLang("pub"));
+		fieldsStr.put(DATABASE.YearOfPublication, getStringLang("year_pub"));
+		fieldsStr.put(DATABASE.ISBN, getStringLang("isbn"));
+		fieldsStr.put(DATABASE.Condition, getStringLang("cond"));
+		fieldsStr.put(DATABASE.SuggestedPrice, getStringLang("sug_price"));
+		fieldsStr.put(DATABASE.Notes, getStringLang("notes"));
+		fieldsStr.put(DATABASE.Status, getStringLang("status"));
+		return fieldsStr;
 	}
 
 
@@ -88,7 +109,9 @@ public class Book extends EntityBase implements IView {
 	{
 		if(key.equals("ProcessNewBook")){
 		    processNewBook((Properties) value);
-        }
+        } else if(key.equals("ProcessModifyBook")){
+			processModifyBook((Properties) value);
+		}
 	    myRegistry.updateSubscribers(key, this);
 	}
 	
@@ -98,6 +121,7 @@ public class Book extends EntityBase implements IView {
 		dependencies.setProperty("AddBookCancelled","ViewCancelled");
 		dependencies.setProperty("ModifyBookCancelled","ViewCancelled");
         dependencies.setProperty("ProcessNewBook","UpdateStatusMessage");
+        dependencies.setProperty("ProcessModifyBook","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}
 
@@ -113,20 +137,20 @@ public class Book extends EntityBase implements IView {
 		try
 		{
             successFlag = true;
-			if (persistentState.getProperty("bookId") != null)
+			if (persistentState.getProperty(DATABASE.Barcode.name()) != null)
 			{
 				Properties whereClause = new Properties();
-				whereClause.setProperty("bookId",
-				persistentState.getProperty("bookId"));
+				whereClause.setProperty(DATABASE.Barcode.name(),
+				persistentState.getProperty(DATABASE.Barcode.name()));
 				updatePersistentState(mySchema, persistentState, whereClause);
-				updateStatusMessage = "Book data for book id : " + persistentState.getProperty("bookId") + " updated successfully in database!";
+				updateStatusMessage = "Book data for book id : " + persistentState.getProperty(DATABASE.Barcode.name()) + " updated successfully in database!";
 			}
 			else
 			{
-				Integer bookId =
+				Integer Barcode =
 					insertAutoIncrementalPersistentState(mySchema, persistentState);
-				persistentState.setProperty("bookId", "" + bookId.intValue());
-				updateStatusMessage = "Book data for new book : " +  persistentState.getProperty("bookId")
+				persistentState.setProperty(DATABASE.Barcode.name(), "" + Barcode.intValue());
+				updateStatusMessage = "Book data for new book : " +  persistentState.getProperty(DATABASE.Barcode.name())
 					+ " installed successfully in database!";
 			}
 		}
@@ -139,13 +163,28 @@ public class Book extends EntityBase implements IView {
 	}
 
 	private void createNewBook(){
-		System.out.println(mySchema.toString());
-		System.out.println(persistentState.toString());
 		try {
+			successFlag = true;
 			insertPersistentState(mySchema, persistentState);
 			updateStatusMessage = "Book added to Database";
+			System.out.println("Created Book");
 		} catch (SQLException e) {
 			successFlag = false;
+			updateStatusMessage = e.getMessage();
+		}
+
+	}
+
+	private void modifyBook(){
+		try {
+			successFlag = true;
+			Properties whereClause = new Properties();
+			whereClause.setProperty(DATABASE.Barcode.name(),
+					persistentState.getProperty(DATABASE.Barcode.name()));
+			updatePersistentState(mySchema, persistentState, whereClause);
+			updateStatusMessage = "Book data for Barcode : " + persistentState.getProperty(DATABASE.Barcode.name()) + " updated successfully in database!";
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 
 	}
@@ -158,17 +197,20 @@ public class Book extends EntityBase implements IView {
 	public Vector<String> getEntryListView()
 	{
 		Vector<String> v = new Vector<String>();
-		v.addElement(persistentState.getProperty("Barcode"));
-		v.addElement(persistentState.getProperty("Title"));
-		v.addElement(persistentState.getProperty("Discipline"));
-		v.addElement(persistentState.getProperty("Authors"));
-		v.addElement(persistentState.getProperty("Publisher"));
-		v.addElement(persistentState.getProperty("YearOfPublication"));
-		v.addElement(persistentState.getProperty("ISBN"));
-		v.addElement(persistentState.getProperty("Condition"));
-		v.addElement(persistentState.getProperty("SuggestedPrice"));
-		v.addElement(persistentState.getProperty("Notes"));
-		v.addElement(persistentState.getProperty("Status"));
+		for(DATABASE d : DATABASE.values()){
+			v.addElement(persistentState.getProperty(d.name()));
+		}
+//		v.addElement(persistentState.getProperty(DATABASE.Barcode.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Title.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Discipline.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Authors.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Publisher.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.YearOfPublication.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.ISBN.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Condition.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.SuggestedPrice.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Notes.name()));
+//		v.addElement(persistentState.getProperty(DATABASE.Status.name());
 
 		return v;
 	}
@@ -177,6 +219,11 @@ public class Book extends EntityBase implements IView {
         processNewBookHelper(props);
         createNewBook();
     }
+
+	public void processModifyBook(Properties props){
+		processNewBookHelper(props);
+		modifyBook();
+	}
 
     private void processNewBookHelper(Properties props){
         persistentState = new Properties();
@@ -192,6 +239,7 @@ public class Book extends EntityBase implements IView {
             }
         }
     }
+
 	//-----------------------------------------------------------------------------------
 	protected void initializeSchema(String tableName)
 	{

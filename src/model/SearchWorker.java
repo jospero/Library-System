@@ -76,7 +76,7 @@ public class SearchWorker implements IView, IModel {
         if(key.equals("ProcessSearch")){
             WorkerCollection workerCollection = new WorkerCollection();
             try {
-                workerCollection.findWorkers();
+                workerCollection.findBooksCriteria((Properties) value);
             } catch (InvalidPrimaryKeyException e) {
                 e.printStackTrace();
             }

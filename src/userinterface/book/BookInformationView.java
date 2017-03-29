@@ -1,87 +1,66 @@
 package userinterface.book;
 
 import impresario.IModel;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.GridPane;
 import model.Book;
-import userinterface.View;
+import userinterface.InformationView;
 
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
+
+import static model.Book.getFields;
 
 /**
  * Created by Sammytech on 3/9/17.
  */
-public abstract class BookInformationView extends View {
-
-    enum FieldsEnum{
-        Barcode, Title, Authors, Discipline, Publisher, YearOfPublication, ISBN, Condition, SuggestedPrice, Notes, Status
-    }
-
-    private class Fields{
-        Label label = new Label();
-        Node field;
-    }
-    HashMap<FieldsEnum, Fields> fieldsList = new HashMap<>();
-    HashMap<FieldsEnum, String> fieldsStr = new HashMap<>();
-    boolean enableFields;
-
+public abstract class BookInformationView extends InformationView<Book.DATABASE> {
 
 
     public BookInformationView(IModel model, boolean enableFields, String classname) {
-        super(model, classname);
-        this.enableFields = enableFields;
-
-
-        fieldsStr.put(FieldsEnum.Barcode, messages.getString("barcode"));
-        fieldsStr.put(FieldsEnum.Title, messages.getString("title"));
-        fieldsStr.put(FieldsEnum.Authors, messages.getString("auth"));
-        fieldsStr.put(FieldsEnum.Discipline, messages.getString("disc"));
-        fieldsStr.put(FieldsEnum.Publisher, messages.getString("pub"));
-        fieldsStr.put(FieldsEnum.YearOfPublication, messages.getString("year_pub"));
-        fieldsStr.put(FieldsEnum.ISBN, messages.getString("isbn"));
-        fieldsStr.put(FieldsEnum.Condition, messages.getString("cond"));
-        fieldsStr.put(FieldsEnum.SuggestedPrice, messages.getString("sug_price"));
-        fieldsStr.put(FieldsEnum.Notes, messages.getString("notes"));
-        fieldsStr.put(FieldsEnum.Status, messages.getString("status"));
-
-//        getFieldsString();
+        super(model, enableFields, classname);
     }
 
-    public final GridPane getBookInformation(){
-        GridPane bookInfo = new GridPane();
-        bookInfo.setHgap(10);
-        bookInfo.setVgap(10);
-        bookInfo.setPadding(new Insets(0, 10, 0, 10));
-        ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(25);
-        bookInfo.getColumnConstraints().add(col1);
+    @Override
+    protected void setupFields() {
+        fieldsStr = getFields();
+    }
+
+
+
+    @Override
+    protected GridPane getInformation(){
+        GridPane bookInfo =  super.getInformation();
         int row = 0;
         Vector<String> book = ((Book) myModel).getEntryListView();
-        for(FieldsEnum fEnum : FieldsEnum.values()){
+        for(Book.DATABASE fEnum : Book.DATABASE.values()){
+
             if(fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
-                if(fEnum == FieldsEnum.Condition){
+                if(fEnum == Book.DATABASE.Condition){
                     field.field = getConditionNode();
                     if(book.get(row) != null && !book.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(book.get(row));
-                } else if(fEnum == FieldsEnum.Status){
+                } else if(fEnum == Book.DATABASE.Status){
                     field.field = getStatusNode();
                     if(book.get(row) != null && !book.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(book.get(row));
-                } else if(fEnum == FieldsEnum.Notes) {
+                } else if(fEnum == Book.DATABASE.Notes) {
                     TextArea ta = new TextArea();
                     field.field = ta;
                 } else {
                     TextField fTF = new TextField();
                     fTF.setPromptText(str);
                     fTF.setEditable(enableFields);
+                    if(fEnum == Book.DATABASE.Barcode){
+                        fTF.setEditable(!modify);
+                    }
                     if(book.get(row) != null && !book.get(row).isEmpty())
                         fTF.setText(book.get(row));
                     field.field = fTF;
@@ -89,15 +68,10 @@ public abstract class BookInformationView extends View {
                 fieldsList.put(fEnum, field);
                 bookInfo.add(field.label, 0, row);
                 bookInfo.add(field.field, 1, row);
-//                bookInfo.add(field.label, 0, row);
                 row++;
             }
         }
-
-
         return bookInfo;
-
-
     }
 
     private void error(Node n){
@@ -105,36 +79,51 @@ public abstract class BookInformationView extends View {
             n.getStyleClass().add("error");
         }
     }
+
     final public Properties validateBook(){
         Properties book = new Properties();
         boolean errorFound = false;
-        for(FieldsEnum fieldsEnum: fieldsList.keySet()){
-             if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea){
+        for(Book.DATABASE fieldsEnum: fieldsList.keySet()){
+             if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
                  String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
-                 if(str.isEmpty()){
-                    error(fieldsList.get(fieldsEnum).field);
-                    if(!errorFound) {
-                        errorFound = true;
-                        book = new Properties();
-                    }
-                 }
-                 else if(fieldsEnum == FieldsEnum.Barcode || fieldsEnum == FieldsEnum.YearOfPublication || fieldsEnum == FieldsEnum.ISBN){
-                     try {
-                         int i = Integer.parseInt(str);
-                         if(!errorFound) {
+                 if (str.isEmpty() && fieldsEnum != Book.DATABASE.Notes) {
+                     error(fieldsList.get(fieldsEnum).field);
+                     if (!errorFound) {
+                         errorFound = true;
+                         book = new Properties();
+                     }
+                 } else if (fieldsEnum == Book.DATABASE.Barcode || fieldsEnum == Book.DATABASE.YearOfPublication ||
+                         fieldsEnum == Book.DATABASE.ISBN) {
+                     if (str.matches("[0-9]+")) {
+                         if (!errorFound) {
+                             fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                              book.setProperty(fieldsEnum.name(), str);
                          }
-
-                     } catch (NumberFormatException ex){
+                     } else {
                          error(fieldsList.get(fieldsEnum).field);
-                         if(!errorFound) {
+                         if (!errorFound) {
                              errorFound = true;
                              book = new Properties();
                          }
-
                      }
-                 } else {
+                 } else if (fieldsEnum == Book.DATABASE.SuggestedPrice){
+                     try {
+                         double i = Double.parseDouble(str);
+                         if (!errorFound) {
+                             fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                             book.setProperty(fieldsEnum.name(), str);
+                         }
+                     } catch (NumberFormatException ex) {
+                         error(fieldsList.get(fieldsEnum).field);
+                         if (!errorFound) {
+                             errorFound = true;
+                             book = new Properties();
+                         }
+                     }
+                }
+                 else {
                     if(!errorFound){
+                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                         book.setProperty(fieldsEnum.name(), str);
                     }
                  }
@@ -149,21 +138,28 @@ public abstract class BookInformationView extends View {
         return book;
     }
 
+
     private String Databasify(String field){
         return field.replaceAll("[^a-zA-Z0-9]", "");
     }
     private ComboBox getConditionNode(){
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll("Good", "Damaged");
-        comboBox.setValue("Good");
+        comboBox.getSelectionModel().select(0);
         return comboBox;
     }
 
     private ComboBox getStatusNode(){
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll("Active", "Inactive");
-        comboBox.setValue("Active");
+        comboBox.getSelectionModel().select(0);
         return comboBox;
     }
+
+//    abstract void clearFields();
+
+
+
+
 
 }

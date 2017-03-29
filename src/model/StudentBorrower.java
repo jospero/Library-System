@@ -1,16 +1,24 @@
 package model;
 
+import Utilities.Utilities;
 import exception.InvalidPrimaryKeyException;
 import impresario.IView;
 
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
 
 public class StudentBorrower extends EntityBase implements IView {
 
+	public enum DATABASE{
+		BannerId, FirstName, LastName, Phone, Email, BorrowerStatus, DateOfLastBorrowerStatus, DateOfRegistration,
+		Notes, Status
+	}
+
 	private static final String myTableName = "StudentBorrower";
+
 
 	protected Properties dependencies;
 
@@ -56,6 +64,20 @@ public class StudentBorrower extends EntityBase implements IView {
 		}
 	}
 
+	public static HashMap<DATABASE, String> getFields(){
+		HashMap<DATABASE, String> fieldsStr = new HashMap<>();
+		fieldsStr.put(DATABASE.BannerId, Utilities.getStringLang("bid"));
+		fieldsStr.put(DATABASE.FirstName, Utilities.getStringLang("fname"));
+		fieldsStr.put(DATABASE.LastName, Utilities.getStringLang("lname"));
+		fieldsStr.put(DATABASE.Phone, Utilities.getStringLang("phone_num"));
+		fieldsStr.put(DATABASE.Email, Utilities.getStringLang("email"));
+		fieldsStr.put(DATABASE.BorrowerStatus, Utilities.getStringLang("sb_status"));
+		fieldsStr.put(DATABASE.DateOfLastBorrowerStatus, Utilities.getStringLang("date_latest_sb_status"));
+		fieldsStr.put(DATABASE.DateOfRegistration, Utilities.getStringLang("date_reg"));
+		fieldsStr.put(DATABASE.Notes, Utilities.getStringLang("notes"));
+		fieldsStr.put(DATABASE.Status, Utilities.getStringLang("status"));
+		return fieldsStr;
+	}
 
 	// Can also be used to create a NEW Account (if the system it is part of
 	// allows for a new account to be set up)
@@ -144,24 +166,39 @@ public class StudentBorrower extends EntityBase implements IView {
 	{
 
 		Vector<String> v = new Vector<String>();
-		v.addElement(persistentState.getProperty("BannerId"));
-		v.addElement(persistentState.getProperty("FirstName"));
-		v.addElement(persistentState.getProperty("LastName"));
-		v.addElement(persistentState.getProperty("Phone"));
-		v.addElement(persistentState.getProperty("E-mail"));
-		v.addElement(persistentState.getProperty("BorrowerStatus"));
-		v.addElement(persistentState.getProperty("DateOfLastBorrowerStatus"));
-		v.addElement(persistentState.getProperty("DateOfRegistration"));
-		v.addElement(persistentState.getProperty("Notes"));
-		v.addElement(persistentState.getProperty("Status"));
+		for(DATABASE d : DATABASE.values()){
+			v.addElement(persistentState.getProperty(d.name()));
+		}
+//		v.addElement(persistentState.getProperty("BannerId"));
+//		v.addElement(persistentState.getProperty("FirstName"));
+//		v.addElement(persistentState.getProperty("LastName"));
+//		v.addElement(persistentState.getProperty("Phone"));
+//		v.addElement(persistentState.getProperty("E-mail"));
+//		v.addElement(persistentState.getProperty("BorrowerStatus"));
+//		v.addElement(persistentState.getProperty("DateOfLastBorrowerStatus"));
+//		v.addElement(persistentState.getProperty("DateOfRegistration"));
+//		v.addElement(persistentState.getProperty("Notes"));
+//		v.addElement(persistentState.getProperty("Status"));
 
 		return v;
 	}
 
 	public void processNewStudentBorrower(Properties props){
         processNewStudentBorrowerHelper(props);
-        updateStateInDatabase();
+		createNewStudentBorrower();
     }
+
+
+	private void createNewStudentBorrower(){
+		try {
+			successFlag = true;
+			insertPersistentState(mySchema, persistentState);
+			updateStatusMessage = "Student Borrower added to Database";
+		} catch (SQLException e) {
+			successFlag = false;
+			updateStatusMessage = e.getMessage();
+		}
+	}
 
     private void processNewStudentBorrowerHelper(Properties props){
         persistentState = new Properties();

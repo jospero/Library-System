@@ -1,12 +1,12 @@
 package userinterface.worker;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -14,7 +14,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import model.Worker;
 import userinterface.View;
+
+import java.util.HashMap;
+import java.util.Properties;
+
+import static model.Worker.getFields;
 
 /**
  * Created by Sammytech on 3/11/17.
@@ -32,6 +38,8 @@ public class SearchWorkerView extends View {
         VBox root = new VBox();
 //        root.setFillWidth(true);
         root.setAlignment(Pos.CENTER);
+
+        HashMap<Worker.DATABASE, String> fields = getFields();
 
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(0,60,0,60));
@@ -70,28 +78,28 @@ public class SearchWorkerView extends View {
 //        grid.add(oneFieldHead,0,2,2,1);
 
         int row = 1;
-        String firstnameStr = messages.getString("fname");
+        String firstnameStr = fields.get(Worker.DATABASE.FirstName);
         Label firsnameLabel = new Label(firstnameStr);
         firstName.setPromptText(firstnameStr);
         grid.add(firsnameLabel, 0, row);
         grid.add(firstName, 1, row);
 
         row++;
-        String lastnameStr = messages.getString("lname");
+        String lastnameStr = fields.get(Worker.DATABASE.LastName);
         Label lastnameLabel = new Label(lastnameStr);
         lastName.setPromptText(lastnameStr);
         grid.add(lastnameLabel, 0, row);
         grid.add(lastName, 1, row);
 
         row++;
-        String phoneStr = messages.getString("phone_num");
+        String phoneStr = fields.get(Worker.DATABASE.Phone);
         Label phoneLabal = new Label(phoneStr);
         phone.setPromptText(phoneStr);
         grid.add(phoneLabal, 0, row);
         grid.add(phone, 1, row);
 
         row++;
-        String emailStr = messages.getString("email");
+        String emailStr = fields.get(Worker.DATABASE.Email);
         Label emailLabel = new Label(emailStr);
         email.setPromptText(emailStr);
         grid.add(emailLabel, 0, row);
@@ -101,8 +109,8 @@ public class SearchWorkerView extends View {
         row++;
         HBox buttonPane = new HBox();
         buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button(messages.getString("sub_btn"));
-        Button cancelButton = new Button(messages.getString("cancel_btn"));
+        Button searchButton = new Button("Submit");
+        Button cancelButton = new Button("Cancel");
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -131,9 +139,36 @@ public class SearchWorkerView extends View {
 
     }
 
-    private void processSearch() {
+    private Properties validateSearch(){
+        Properties search = new Properties();
+        String firstNameStr = firstName.getText();
+        String lastNameStr = lastName.getText();
+        String phoneStr = phone.getText();
+        String emailStr = email.getText();
+       if(firstNameStr.trim().isEmpty() && lastNameStr.trim().isEmpty() && phoneStr.trim().isEmpty() && emailStr.trim().isEmpty()){
+//Error
+       } else{
+           if(!firstNameStr.trim().isEmpty()){
+               search.setProperty(Worker.DATABASE.FirstName.name(), firstNameStr);
+           }
+           if(!lastNameStr.trim().isEmpty()){
+               search.setProperty(Worker.DATABASE.LastName.name(), lastNameStr);
+           }
+           if(!phoneStr.trim().isEmpty() && Utilities.validatePhoneNumber(phoneStr)){
+               search.setProperty(Worker.DATABASE.Phone.name(), phoneStr);
+           }
+           if(!emailStr.trim().isEmpty()){
+               search.setProperty(Worker.DATABASE.Email.name(), emailStr);
+           }
+       }
+        return search;
+    }
 
-        myModel.stateChangeRequest("ProcessSearch", null);
+    private void processSearch() {
+        Properties prop = validateSearch();
+        if(prop.size() > 0) {
+            myModel.stateChangeRequest("ProcessSearch", prop);
+        }
     }
 
     @Override

@@ -1,15 +1,21 @@
 package model;
 
+import Utilities.Utilities;
 import exception.InvalidPrimaryKeyException;
 import impresario.IView;
 
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
 
 public class Worker extends EntityBase implements IView {
-
+	public enum DATABASE{
+		BannerId, Password, FirstName, LastName, Phone, Email, Credentials, DateOfLatestCredentialStatus, DateOfHire,
+		Status
+	}
+	
 	private static final String myTableName = "Worker";
 
 	protected Properties dependencies;
@@ -56,6 +62,20 @@ public class Worker extends EntityBase implements IView {
 		}
 	}
 
+	public static HashMap<DATABASE, String> getFields(){
+		HashMap<DATABASE, String> fieldsStr = new HashMap<>();
+		fieldsStr.put(DATABASE.BannerId, Utilities.getStringLang("bid"));
+		fieldsStr.put(DATABASE.Password, Utilities.getStringLang("login_pass"));
+		fieldsStr.put(DATABASE.FirstName, Utilities.getStringLang("fname"));
+		fieldsStr.put(DATABASE.LastName, Utilities.getStringLang("lname"));
+		fieldsStr.put(DATABASE.Phone, Utilities.getStringLang("phone_num"));
+		fieldsStr.put(DATABASE.Email, Utilities.getStringLang("email"));
+		fieldsStr.put(DATABASE.Credentials, Utilities.getStringLang("creds"));
+		fieldsStr.put(DATABASE.DateOfLatestCredentialStatus, Utilities.getStringLang("date_latest_creds_status"));
+		fieldsStr.put(DATABASE.DateOfHire, Utilities.getStringLang("date_hire"));
+		fieldsStr.put(DATABASE.Status, Utilities.getStringLang("status"));
+		return fieldsStr;
+	}
 
 	// Can also be used to create a NEW Worker (if the system it is part of
 	// allows for a new worker to be set up)
@@ -85,7 +105,9 @@ public class Worker extends EntityBase implements IView {
 	{
 		if(key.equals("ProcessNewWorker")){
 		    processNewWorker((Properties) value);
-        }
+        } else if(key.equals("ProcessModifyWorker")){
+			processModifyWorker((Properties) value);
+		}
 	    myRegistry.updateSubscribers(key, this);
 	}
 	
@@ -95,6 +117,7 @@ public class Worker extends EntityBase implements IView {
 		dependencies.setProperty("AddWorkerCancelled","ViewCancelled");
 		dependencies.setProperty("ModifyWorkerCancelled","ViewCancelled");
         dependencies.setProperty("ProcessNewWorker","UpdateStatusMessage");
+		dependencies.setProperty("ProcessModifyWorker","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}
 
@@ -124,6 +147,33 @@ public class Worker extends EntityBase implements IView {
 		//DEBUG System.out.println("updateStateInDatabase " + updateStatusMessage);
 	}
 
+	private void createNewWorker(){
+		try {
+			successFlag = true;
+			insertPersistentState(mySchema, persistentState);
+			updateStatusMessage = "Worker added to Database";
+		} catch (SQLException e) {
+			successFlag = false;
+			updateStatusMessage = e.getMessage();
+		}
+
+	}
+
+	private void modifyWorker(){
+		try {
+			successFlag = true;
+			Properties whereClause = new Properties();
+			whereClause.setProperty("BannerId",
+					persistentState.getProperty("BannerId"));
+			updatePersistentState(mySchema, persistentState, whereClause);
+			updateStatusMessage = "Worker data for BannerId : " + persistentState.getProperty("BannerId") + " updated successfully in database!";
+		} catch (SQLException e) {
+			successFlag = false;
+			updateStatusMessage = e.getMessage();
+		}
+
+	}
+
 	/**
 	 * This method is needed solely to enable the Worker information to be displayable in a table
 	 *
@@ -132,23 +182,32 @@ public class Worker extends EntityBase implements IView {
 	public Vector<String> getEntryListView()
 	{
 		Vector<String> v = new Vector<String>();
-		v.addElement(persistentState.getProperty("BannerId"));
-		v.addElement(persistentState.getProperty("FirstName"));
-		v.addElement(persistentState.getProperty("LastName"));
-		v.addElement(persistentState.getProperty("Phone"));
-		v.addElement(persistentState.getProperty("E-mail"));
-		v.addElement(persistentState.getProperty("Credentials"));
-		v.addElement(persistentState.getProperty("DateOfLatestCredentialStatus"));
-		v.addElement(persistentState.getProperty("DateOfHire"));
-		v.addElement(persistentState.getProperty("Status"));
+		for(DATABASE d : DATABASE.values()){
+			v.addElement(persistentState.getProperty(d.name()));
+		}
+//		v.addElement(persistentState.getProperty("BannerId"));
+//		v.addElement(persistentState.getProperty("Password"));
+//		v.addElement(persistentState.getProperty("FirstName"));
+//		v.addElement(persistentState.getProperty("LastName"));
+//		v.addElement(persistentState.getProperty("Phone"));
+//		v.addElement(persistentState.getProperty("Email"));
+//		v.addElement(persistentState.getProperty("Credentials"));
+//		v.addElement(persistentState.getProperty("DateOfLatestCredentialStatus"));
+//		v.addElement(persistentState.getProperty("DateOfHire"));
+//		v.addElement(persistentState.getProperty("Status"));
 
 		return v;
 	}
 
 	public void processNewWorker(Properties props){
         processNewWorkerHelper(props);
-        updateStateInDatabase();
+        createNewWorker();
     }
+
+	public void processModifyWorker(Properties props){
+		processNewWorkerHelper(props);
+		modifyWorker();
+	}
 
     private void processNewWorkerHelper(Properties props){
         persistentState = new Properties();
@@ -160,7 +219,7 @@ public class Worker extends EntityBase implements IView {
 
             if (nextValue != null)
             {
-            	System.out.println(nextKey + "  " + nextValue);
+//            	System.out.println(nextKey + "  " + nextValue);
                 persistentState.setProperty(nextKey, nextValue);
             }
         }

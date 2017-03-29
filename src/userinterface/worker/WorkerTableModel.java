@@ -23,14 +23,14 @@ public class WorkerTableModel {
     public WorkerTableModel(Vector<String> bookData)
     {
         bannerId =  new SimpleStringProperty(bookData.elementAt(0));
-        firstName =  new SimpleStringProperty(bookData.elementAt(1));
-        lastName =  new SimpleStringProperty(bookData.elementAt(2));
-        phone =  new SimpleStringProperty(bookData.elementAt(3));
-        email =  new SimpleStringProperty(bookData.elementAt(4));
-        credentials =  new SimpleStringProperty(bookData.elementAt(5));
-        dateOfLastestCredentialStatus =  new SimpleStringProperty(bookData.elementAt(6));
-        dateOfHire =  new SimpleStringProperty(bookData.elementAt(7));
-        status =  new SimpleStringProperty(bookData.elementAt(8));
+        firstName =  new SimpleStringProperty(bookData.elementAt(2));
+        lastName =  new SimpleStringProperty(bookData.elementAt(3));
+        phone =  new SimpleStringProperty(bookData.elementAt(4));
+        email =  new SimpleStringProperty(bookData.elementAt(5));
+        credentials =  new SimpleStringProperty(bookData.elementAt(6));
+        dateOfLastestCredentialStatus =  new SimpleStringProperty(bookData.elementAt(7));
+        dateOfHire =  new SimpleStringProperty(bookData.elementAt(8));
+        status =  new SimpleStringProperty(bookData.elementAt(9));
     }
 
     public String getBannerId() {

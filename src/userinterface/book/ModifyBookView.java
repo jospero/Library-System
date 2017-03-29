@@ -5,9 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import userinterface.TitleView;
+
+import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -15,18 +19,21 @@ import userinterface.TitleView;
 public class ModifyBookView extends BookInformationView {
 
     public ModifyBookView(IModel model) {
-        super(model, false, "ModifyBookView");
+        super(model, true, "ModifyBookView");
 
-        VBox box = new VBox();
-        box.setStyle("-fx-background-color: #93ffa8");
 
-        box.getChildren().add(TitleView.createTitle(messages.getString("mod_book")));
+    }
 
-        box.getChildren().add(getBookInformation());
+    @Override
+    protected HBox getHeading() {
+        return TitleView.createTitle("Modify Book");
+    }
 
+    @Override
+    protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
-        Button submit = new Button(messages.getString("sub_btn"));
+        Button submit = new Button("Submit");
         Button cancel = new Button("Back to Search Results");
 //        Button cancel = new Button("Back to Search");
 
@@ -36,12 +43,7 @@ public class ModifyBookView extends BookInformationView {
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Book has been modified");
-                alert.setHeaderText(null);
-                alert.setContentText("I have a great message for you!");
-
-                alert.showAndWait();
+                modifyBook();
             }
         });
         cancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -50,15 +52,49 @@ public class ModifyBookView extends BookInformationView {
                 myModel.stateChangeRequest("ViewBookCancelled", null);
             }
         });
+        return buttonBox;
+    }
 
-        box.getChildren().add(buttonBox);
+    private void modifyBook() {
+        Properties book = validateBook();
+        if(book.size() > 0 ){
+            myModel.stateChangeRequest("ProcessModifyBook", book);
+        }
+    }
 
-        getChildren().add(box);
+    @Override
+    protected void confirmDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Book Confirmation");
+        alert.setHeaderText("Book Successfully Added");
+        alert.setContentText("Would you like to continue modification of Worker");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+       if (result.get() == noButton) {
+            myModel.stateChangeRequest("ViewBookCancelled", null);
+        }
+    }
+
+    @Override
+    protected void errorDialog(String value) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Book Error");
+        alert.setHeaderText("Book failed to be added");
+        alert.setContentText("An error occurred while adding book to database. " + value );
+
+        ButtonType okButton = new ButtonType("Ok");
+
+        alert.getButtonTypes().setAll(okButton);
     }
 
     @Override
     public void updateState(String key, Object value) {
-
+        super.updateState(key, value);
     }
 
 
