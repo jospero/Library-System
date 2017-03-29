@@ -171,15 +171,15 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
 
     private ComboBox getBorrowerStatusNode(){
         ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll("Good Standing", "Delinquent");
-        comboBox.setValue("Good Standing");
+        comboBox.getItems().addAll(Utilities.getStringLang("borrowstat"), Utilities.getStringLang("borrowstatdel"));
+        comboBox.setValue(Utilities.getStringLang("borrowstat"));
         return comboBox;
     }
 
     private ComboBox getStatusNode(){
         ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll("Active", "Inactive");
-        comboBox.setValue("Active");
+        comboBox.getItems().addAll(Utilities.getStringLang("statusact"), Utilities.getStringLang("statusinact"));
+        comboBox.setValue(Utilities.getStringLang("statusact"));
         return comboBox;
     }
 

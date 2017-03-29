@@ -1,5 +1,6 @@
 package userinterface.studentborrower;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,15 +27,15 @@ public class AddStudentBorrowerView extends StudentBorrowerInformationView {
 
     @Override
     protected HBox getHeading() {
-        return TitleView.createTitle("Add New Student Borrower");
+        return TitleView.createTitle(Utilities.getStringLang("add_sb"));
     }
 
     @Override
     protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Cancel");
+        Button submit = new Button(Utilities.getStringLang("sub_btn"));
+        Button cancel = new Button(Utilities.getStringLang("cancel_btn"));
 
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);

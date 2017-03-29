@@ -32,7 +32,7 @@ public class LoginView extends View{
         VBox container = new VBox();
         container.setPadding(new Insets(40));
         container.setSpacing(15);
-        HBox title = TitleView.createTitle("Brockport EOP Library");
+        HBox title = TitleView.createTitle(Utilities.getStringLang("brockport_library"));
 
         container.setId("login");
         container.setPrefWidth(450);
@@ -42,10 +42,10 @@ public class LoginView extends View{
         VBox fields = new VBox();
         fields.setSpacing(10);
         //  BannerId
-        Label userLabel = new Label("BannerId");
+        Label userLabel = new Label(Utilities.getStringLang("bid"));
 
         bannerId = new TextField();
-        bannerId.setPromptText("BannerId");
+        bannerId.setPromptText(Utilities.getStringLang("bid"));
         bannerId.setId("bannerIdtf");
         bannerId.getStyleClass().add("textfield");
         bannerId.setPadding(new Insets(10,0, 10,40));
@@ -53,10 +53,10 @@ public class LoginView extends View{
         fields.getChildren().addAll(userLabel, bannerId);
 
         // Password
-        Label passwordLabel = new Label(Utilities.convertToTitleCase(messages.getString("login_pass")));
+        Label passwordLabel = new Label(Utilities.convertToTitleCase(Utilities.getStringLang("login_pass")));
 
         password = new PasswordField();
-        password.setPromptText(Utilities.convertToTitleCase(messages.getString("login_pass")));
+        password.setPromptText(Utilities.convertToTitleCase(Utilities.getStringLang("login_pass")));
         password.getStyleClass().add("textfield");
         password.setId("passwordtf");
         password.setPadding(new Insets(10,0, 10,40));

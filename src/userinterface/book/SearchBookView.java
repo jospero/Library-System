@@ -1,5 +1,6 @@
 package userinterface.book;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -55,7 +56,7 @@ public class SearchBookView extends View {
 //        HBox title = TitleView.createTitle("Enter Book Information");
 //        title.setStyle("-fx-background-color:#0c7a79");
 //        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label("Enter Book Information");
+        Label title = new Label(Utilities.getStringLang("search_book"));
         title.setPrefWidth(Double.MAX_VALUE);
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.setPadding(new Insets(0,0,20,0));
@@ -69,8 +70,8 @@ public class SearchBookView extends View {
         grid.add(barcode, 1, 1);
 
         VBox oneFieldHead = new VBox();
-        Label oneFieldOr = new Label("OR");
-        Label oneFieldText = new Label("(ENTER AT LEAST ONE FIELD)");
+        Label oneFieldOr = new Label(Utilities.getStringLang("or"));
+        Label oneFieldText = new Label(Utilities.getStringLang("one_field"));
 
         oneFieldOr.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         oneFieldText.setFont(Font.font("Arial", FontWeight.BOLD, 15));
@@ -135,8 +136,8 @@ public class SearchBookView extends View {
         row++;
         HBox buttonPane = new HBox();
         buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button("Submit");
-        Button cancelButton = new Button("Cancel");
+        Button searchButton = new Button(Utilities.getStringLang("sub_btn"));
+        Button cancelButton = new Button(Utilities.getStringLang("cancel_btn"));
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override

@@ -347,9 +347,14 @@ public class Utilities
 		}
 
 		currentLocale = new Locale(language, country);
-
-		messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
-		return convertToTitleCase(messages.getString(key));
+		String result = "";
+		try {
+			messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
+			result = convertToTitleCase(messages.getString(key));
+		} catch (MissingResourceException ex){
+			result = "Shit aint right";
+		}
+		return result;
 
 	}
 	public static boolean validateEmail(String email){

@@ -1,5 +1,6 @@
 package userinterface.book;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,16 +27,16 @@ public class ModifyBookView extends BookInformationView {
 
     @Override
     protected HBox getHeading() {
-        return TitleView.createTitle("Modify Book");
+        return TitleView.createTitle(Utilities.getStringLang("mod_book"));
     }
 
     @Override
     protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Back to Search Results");
-//        Button cancel = new Button("Back to Search");
+        Button submit = new Button(Utilities.getStringLang("sub_btn"));
+        Button cancel = new Button(Utilities.getStringLang("back_search_result"));
+//      Button cancel = new Button("Back to Search");
 
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);
@@ -65,12 +66,12 @@ public class ModifyBookView extends BookInformationView {
     @Override
     protected void confirmDialog() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Book Confirmation");
-        alert.setHeaderText("Book Successfully Added");
-        alert.setContentText("Would you like to continue modification of Worker");
+        alert.setTitle(Utilities.getStringLang("book_com"));
+        alert.setHeaderText(Utilities.getStringLang("book_added"));
+        alert.setContentText(Utilities.getStringLang("cont_mod_worker"));
 
-        ButtonType yesButton = new ButtonType("Yes");
-        ButtonType noButton = new ButtonType("No");
+        ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
+        ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));
 
         alert.getButtonTypes().setAll(yesButton, noButton);
 
@@ -83,11 +84,11 @@ public class ModifyBookView extends BookInformationView {
     @Override
     protected void errorDialog(String value) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Book Error");
-        alert.setHeaderText("Book failed to be added");
-        alert.setContentText("An error occurred while adding book to database. " + value );
+        alert.setTitle(Utilities.getStringLang("book_err"));
+        alert.setHeaderText(Utilities.getStringLang("book_mod_fail"));
+        alert.setContentText(Utilities.getStringLang("book_err_occ_mod") + " " + value );
 
-        ButtonType okButton = new ButtonType("Ok");
+        ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 
         alert.getButtonTypes().setAll(okButton);
     }

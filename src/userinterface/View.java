@@ -39,12 +39,6 @@ public abstract class View extends Group
 	protected IModel myModel;
 	protected ControlRegistry myRegistry;
 
-	String language ;
-	String country;
-
-
-	Locale currentLocale;
-	protected ResourceBundle messages;
 	// GUI components
 	protected final ScaleTransition stSmall = new ScaleTransition();
 	protected FadeTransition ft = new FadeTransition();
@@ -53,20 +47,8 @@ public abstract class View extends Group
 	public View(IModel model, String classname)
 	{
 		myModel = model;
-		Properties props;
 		File file = new File("resources/css/common.css");
 		this.getStylesheets().add(file.toURI().toString());
-		props = new PropertyFile("langConfig.ini");
-		if (props != null)
-		{
-			language = props.getProperty("lang");
-			country = props.getProperty("country");
-
-		}
-
-		currentLocale = new Locale(language, country);
-
-		messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
 
 		myRegistry = new ControlRegistry(classname);
 

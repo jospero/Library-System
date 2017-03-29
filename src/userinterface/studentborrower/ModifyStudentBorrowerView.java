@@ -1,5 +1,6 @@
 package userinterface.studentborrower;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,15 +21,15 @@ public class ModifyStudentBorrowerView extends StudentBorrowerInformationView {
 
     @Override
     protected HBox getHeading() {
-        return TitleView.createTitle("Modify Student Borrower");
+        return TitleView.createTitle(Utilities.getStringLang("mod_sb"));
     }
 
     @Override
     protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Back to Search Results");
+        Button submit = new Button(Utilities.getStringLang("sub_btn"));
+        Button cancel = new Button(Utilities.getStringLang("back_search_result"));
 //        Button cancel = new Button("Back to Search");
 
         buttonBox.getChildren().add(submit);
@@ -38,7 +39,7 @@ public class ModifyStudentBorrowerView extends StudentBorrowerInformationView {
             @Override
             public void handle(ActionEvent event) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("StudentBorrower has been modified");
+                alert.setTitle(Utilities.getStringLang("borrow_mod_conf_label"));
                 alert.setHeaderText(null);
                 alert.setContentText("I have a great message for you!");
 

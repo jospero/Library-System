@@ -1,5 +1,6 @@
 package userinterface.book;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -144,14 +145,14 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
     }
     private ComboBox getConditionNode(){
         ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll("Good", "Damaged");
+        comboBox.getItems().addAll(Utilities.getStringLang("condgood"), Utilities.getStringLang("conddmg"));
         comboBox.getSelectionModel().select(0);
         return comboBox;
     }
 
     private ComboBox getStatusNode(){
         ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll("Active", "Inactive");
+        comboBox.getItems().addAll(Utilities.getStringLang("statusact"), Utilities.getStringLang("statusinact"));
         comboBox.getSelectionModel().select(0);
         return comboBox;
     }

@@ -1,5 +1,6 @@
 package userinterface.book;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -48,14 +49,14 @@ public class AddBookView extends BookInformationView {
 
     @Override
     protected HBox getHeading() {
-        return TitleView.createTitle("Add New Book");
+        return TitleView.createTitle(Utilities.getStringLang("add_book"));
     }
 
     @Override
     protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Cancel");
+        Button submit = new Button(Utilities.getStringLang("sub_btn"));
+        Button cancel = new Button(Utilities.getStringLang("cancel_btn"));
 
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);
@@ -89,12 +90,12 @@ public class AddBookView extends BookInformationView {
 
     protected void confirmDialog(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Book Confirmation");
-        alert.setHeaderText("Book Successfully Added");
-        alert.setContentText("Would you like to add a new book?");
+        alert.setTitle(Utilities.getStringLang("book_com"));
+        alert.setHeaderText(Utilities.getStringLang("book_added"));
+        alert.setContentText(Utilities.getStringLang("add_book?"));
 
-        ButtonType yesButton = new ButtonType("Yes");
-        ButtonType noButton = new ButtonType("No");
+        ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
+        ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));
 
         alert.getButtonTypes().setAll(yesButton, noButton);
 
@@ -108,11 +109,11 @@ public class AddBookView extends BookInformationView {
 
     protected void errorDialog(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Book Error");
-        alert.setHeaderText("Book failed to be added");
-        alert.setContentText("An error occurred while adding book to database. " + msg );
+        alert.setTitle(Utilities.getStringLang("book_err"));
+        alert.setHeaderText(Utilities.getStringLang("book_add_fail"));
+        alert.setContentText(Utilities.getStringLang("book_err_occ") + " " + msg );
 
-        ButtonType okButton = new ButtonType("Ok");
+        ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 
         alert.getButtonTypes().setAll(okButton);
 
