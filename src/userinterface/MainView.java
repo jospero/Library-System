@@ -136,7 +136,7 @@ logoutButton.setPrefHeight(40);
         menuBar.getMenus().add(menuBook);
         // --- Menu Worker
         String cred = (String) ((WorkerHolder)myModel.getState("WorkerHolder")).getState("Credentials");
-        if(cred.toLowerCase().equals("administrator") || cred.toLowerCase().equals("administrateur")) {
+        if(cred.toLowerCase().trim().equals("administrator") || cred.trim().toLowerCase().equals("administrateur")) {
             Menu menuWorker = new Menu(Utilities.getStringLang("worker"));
             menuWorker.styleProperty().setValue(style);
             MenuItem addWorker = new MenuItem(Utilities.getStringLang("add_worker"));

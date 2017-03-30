@@ -75,6 +75,8 @@ public class ModifyStudentBorrowerView extends StudentBorrowerInformationView {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == noButton) {
             myModel.stateChangeRequest("ViewStudentBorrowerCancelled", null);
+        } else if(result.get() == yesButton){
+            myModel.stateChangeRequest("ResultViewCancelled", null);
         }
     }
 
