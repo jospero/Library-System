@@ -7,12 +7,14 @@ import impresario.IModel;
 import impresario.IView;
 import impresario.ModelRegistry;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import userinterface.MainStageContainer;
 import userinterface.View;
 import userinterface.ViewFactory;
 import userinterface.WindowPosition;
 
+import javax.swing.*;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -70,7 +72,12 @@ public class Login implements IView, IModel {
     private void createAndShowLoginView()
     {
         Scene currentScene = myViews.get("LoginView");
-
+        myStage.getIcons().add(new Image("resources/images/shield.png"));
+//        try {
+//            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
+//        } catch (Exception e) {
+//            // Won't work on Windows or Linux.
+//        }
         if (currentScene == null)
         {
             // create our initial view

@@ -66,22 +66,27 @@ public class WorkerHolder extends EntityBase implements IView {
         String password = props.getProperty("Password");
 
         String workerPassword = persistentState.getProperty("Password");
+        String workerStatus = persistentState.getProperty("Status");
+        if(workerStatus!=null && workerStatus.toLowerCase().equals("active")){
+            if (workerPassword != null)
+            {
+                boolean passwordCheck = workerPassword.equals(password);
+                if (passwordCheck == false)
+                {
+                    throw new InvalidLoginException(Utilities.getStringLang("invalid_login"));
+                } else{
+                    persistentState.remove("Password");
+                }
 
-        if (workerPassword != null)
-        {
-            boolean passwordCheck = workerPassword.equals(password);
-            if (passwordCheck == false)
+            }
+            else
             {
                 throw new InvalidLoginException(Utilities.getStringLang("invalid_login"));
-            } else{
-                persistentState.remove("Password");
             }
+        } else{
+            throw new InvalidLoginException(Utilities.getStringLang("invalid_status"));
+        }
 
-        }
-        else
-        {
-            throw new InvalidLoginException(Utilities.getStringLang("invalid_login"));
-        }
 
     }
 
