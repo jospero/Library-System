@@ -22,8 +22,6 @@ import java.util.Properties;
 public class AddWorkerView extends WorkerInformationView {
     public AddWorkerView(IModel model) {
         super(model, true,"AddWorkerView");
-
-        myModel.subscribe("UpdateStatusMessage", this);
     }
 
     private void processWorker() {

@@ -81,4 +81,13 @@
 .table-view > .virtual-flow > .scroll-bar > .increment-button,
 .table-view > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-opacity: 0;
-}*
+}
+
+
+#collection_head{
+    -fx-text-fill: white;
+    -fx-font-size: 25px;
+    -fx-fill: white;
+}
+
+

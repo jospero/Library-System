@@ -110,7 +110,8 @@ public class WorkerCollectionView extends View {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Text prompt = new Text(Utilities.getStringLang("list_workers:"));
+        Text prompt = new Text(Utilities.getStringLang("list_workers"));
+        prompt.setId("collection_head");
         prompt.setWrappingWidth(350);
         prompt.setTextAlignment(TextAlignment.CENTER);
         prompt.setFill(Color.BLACK);

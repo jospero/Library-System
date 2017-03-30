@@ -51,7 +51,7 @@ public class SearchWorkerView extends View {
 //        HBox title = TitleView.createTitle("Enter Worker Information");
 //        title.setStyle("-fx-background-color:#0c7a79");
 //        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label(Utilities.getStringLang("search_worker"));
+        Label title = new Label(Utilities.getStringLang("search_worker").toUpperCase());
         title.setPrefWidth(Double.MAX_VALUE);
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.setPadding(new Insets(0,0,20,0));
@@ -109,6 +109,8 @@ public class SearchWorkerView extends View {
 
         row++;
         HBox buttonPane = new HBox();
+        buttonPane.setPadding(new Insets(22));
+        buttonPane.setSpacing(30);
         buttonPane.setAlignment(Pos.CENTER);
         Button searchButton = new Button(Utilities.getStringLang("sub_btn"));
         Button cancelButton = new Button(Utilities.getStringLang("cancel_btn"));

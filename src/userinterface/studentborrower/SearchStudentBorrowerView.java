@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import model.StudentBorrower;
 import model.Worker;
 import userinterface.View;
@@ -51,7 +52,11 @@ public class SearchStudentBorrowerView extends View {
 //        HBox title = TitleView.createTitle("Enter StudentBorrower Information");
 //        title.setStyle("-fx-background-color:#0c7a79");
 //        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label(Utilities.getStringLang("borrow_mod_conf_label"));
+        Label title = new Label(Utilities.getStringLang("borrow_mod_conf_label").toUpperCase());
+        title.setWrapText(true);
+        title.setAlignment(Pos.CENTER);
+        title.setLineSpacing(4);
+        title.setTextAlignment(TextAlignment.CENTER);
         title.setPrefWidth(Double.MAX_VALUE);
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.setPadding(new Insets(0,0,20,0));
@@ -109,6 +114,8 @@ public class SearchStudentBorrowerView extends View {
 
         row++;
         HBox buttonPane = new HBox();
+        buttonPane.setSpacing(30);
+        buttonPane.setPadding(new Insets(22));
         buttonPane.setAlignment(Pos.CENTER);
         Button searchButton = new Button(Utilities.getStringLang("sub_btn"));
         Button cancelButton = new Button(Utilities.getStringLang("cancel_btn"));
