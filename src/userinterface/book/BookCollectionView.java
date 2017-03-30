@@ -24,6 +24,7 @@ import userinterface.MessageView;
 import userinterface.TitleView;
 import userinterface.View;
 
+import javax.rmi.CORBA.Util;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Vector;
@@ -202,7 +203,7 @@ public class BookCollectionView extends View {
         scrollPane.setContent(tableOfBooks);
 
 
-        viewButton = new Button("View Book Information");
+        viewButton = new Button(Utilities.getStringLang("view_book_info"));
         viewButton.setDisable(true);
 
         viewButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -212,7 +213,7 @@ public class BookCollectionView extends View {
             }
         });
 
-        cancelButton = new Button("Back to Search");
+        cancelButton = new Button(Utilities.getStringLang("back_to_search"));
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 

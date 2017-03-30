@@ -37,7 +37,7 @@ public class LibraryGUI extends Application
         mainStage = MainStageContainer.getInstance();
         mainStage.getIcons().add(new Image("resources/images/shield.png"));
         try {
-            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
+            //com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
         } catch (Exception e) {
             // Won't work on Windows or Linux.
         }
