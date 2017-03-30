@@ -1,6 +1,8 @@
 import event.Event;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Login;
@@ -33,7 +35,12 @@ public class LibraryGUI extends Application
         // Create the top-level container (main frame) and add contents to it.
         MainStageContainer.setStage(primaryStage, "EOP Login");
         mainStage = MainStageContainer.getInstance();
-        //com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
+        mainStage.getIcons().add(new Image("resources/images/shield.png"));
+        try {
+            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
+        } catch (Exception e) {
+            // Won't work on Windows or Linux.
+        }
         // Finish setting up the stage (ENABLE THE GUI TO BE CLOSED USING THE TOP RIGHT
         // 'X' IN THE WINDOW), and show it.
         mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
