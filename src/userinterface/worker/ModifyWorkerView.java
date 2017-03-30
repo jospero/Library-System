@@ -84,8 +84,8 @@ public class ModifyWorkerView extends WorkerInformationView {
     protected void errorDialog(String value) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(Utilities.getStringLang("worker_err"));
-        alert.setHeaderText(Utilities.getStringLang("worker_add_fail"));
-        alert.setContentText(Utilities.getStringLang("worker_err_occ") + " " + value );
+        alert.setHeaderText(Utilities.getStringLang("worker_mod_fail"));
+        alert.setContentText(Utilities.getStringLang("worker_err_occ_mod") + " " + value );
 
         ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 
