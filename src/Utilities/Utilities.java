@@ -16,6 +16,15 @@ import java.util.regex.Pattern;
 //==============================================================
 public class Utilities
 {
+
+	private static String language ="";
+	private static String country ="";
+
+
+	private static Locale currentLocale;
+	private static ResourceBundle messages;
+	private static Properties props;
+
 	public static String convertToTitleCase(String word){
 		ArrayList<String> conjuc = new ArrayList<String>(){{
 			add("of");
@@ -329,28 +338,20 @@ public class Utilities
 		else return false;
 	}
 
-	public static String getStringLang(String key){
-		String language ="";
-		String country ="";
-
-
-		Locale currentLocale;
-		ResourceBundle messages;
-		Properties props;
-
-		props = new PropertyFile("langConfig.ini");
-		if (props != null)
-		{
-			language = props.getProperty("lang");
-			country = props.getProperty("country");
-
+	public static String getStringLang(String key) {
+		if (props == null) {
+			props = new PropertyFile("langConfig.ini");
 		}
-
+		language = props.getProperty("lang");
+		country = props.getProperty("country");
 		currentLocale = new Locale(language, country);
-		String result = "";
+		String result;
 		try {
-			messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
+			if(messages == null) {
+				messages = ResourceBundle.getBundle("MessagesBundle", currentLocale, new UTF8Control());
+			}
 			result = convertToTitleCase(messages.getString(key));
+//			result = messages.getString(key);
 		} catch (MissingResourceException ex){
 			result = "Shit aint right";
 		}
@@ -363,6 +364,8 @@ public class Utilities
 		Matcher matcher = VALID_Email_ADDRESS_REGEX.matcher(email);
 		return matcher.find();
 	}
+
+
 
 }
 
