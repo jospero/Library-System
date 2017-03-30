@@ -17,6 +17,7 @@ import javafx.scene.text.FontWeight;
 import model.Worker;
 import userinterface.View;
 
+import javax.rmi.CORBA.Util;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -50,7 +51,7 @@ public class SearchWorkerView extends View {
 //        HBox title = TitleView.createTitle("Enter Worker Information");
 //        title.setStyle("-fx-background-color:#0c7a79");
 //        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label("Enter Worker Information");
+        Label title = new Label(Utilities.getStringLang("search_worker"));
         title.setPrefWidth(Double.MAX_VALUE);
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.setPadding(new Insets(0,0,20,0));
@@ -109,8 +110,8 @@ public class SearchWorkerView extends View {
         row++;
         HBox buttonPane = new HBox();
         buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button("Submit");
-        Button cancelButton = new Button("Cancel");
+        Button searchButton = new Button(Utilities.getStringLang("submit_btn"));
+        Button cancelButton = new Button(Utilities.getStringLang("cancel_btn"));
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
