@@ -5,15 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import userinterface.book.BookInformationView;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 
 /**
@@ -58,13 +56,13 @@ public abstract class InformationView<T> extends View {
 
     protected GridPane getInformation(){
         GridPane info = new GridPane();
-        info.setHgap(10);
+        info.setHgap(20);
         info.setVgap(10);
         info.setPadding(new Insets(0, 10, 0, 10));
         ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(35);
+        col1.setPercentWidth(40);
         ColumnConstraints col2 = new ColumnConstraints();
-        col2.setPercentWidth(100-col1.getPercentWidth());
+        col2.setPercentWidth(100 - col1.getPercentWidth());
         info.getColumnConstraints().addAll(col1, col2);
         return info;
     }
@@ -76,6 +74,15 @@ public abstract class InformationView<T> extends View {
     protected abstract void confirmDialog();
     protected abstract void errorDialog(String value);
 
+    public void clearFields(Node n){
+        if(n instanceof TextField || n instanceof TextArea) {
+            ((TextInputControl) n).setText("");
+        } else if (n instanceof ComboBox){
+            ((ComboBox) n).getSelectionModel().select(0);
+        } else {
+            ((DatePicker) n).setValue(LocalDate.now());
+        }
+    }
     @Override
     public void updateState(String key, Object value) {
         System.out.println(key);

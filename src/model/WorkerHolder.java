@@ -1,5 +1,6 @@
 package model;
 
+import Utilities.Utilities;
 import exception.InvalidLoginException;
 import exception.InvalidPrimaryKeyException;
 import exception.PasswordMismatchException;
@@ -32,7 +33,7 @@ public class WorkerHolder extends EntityBase implements IView {
             // There should be EXACTLY one account. More than that is an error
             if (size != 1)
             {
-                throw new InvalidLoginException("Invalid BannerId/Password");
+                throw new InvalidLoginException(Utilities.getStringLang("invalid_login"));
             }
             else
             {
@@ -59,7 +60,7 @@ public class WorkerHolder extends EntityBase implements IView {
         // If no account found for this user name, throw an exception
         else
         {
-            throw new InvalidLoginException("Invalid BannerId/Password");
+            throw new InvalidLoginException(Utilities.getStringLang("invalid_login"));
         }
 
         String password = props.getProperty("Password");
@@ -71,7 +72,7 @@ public class WorkerHolder extends EntityBase implements IView {
             boolean passwordCheck = workerPassword.equals(password);
             if (passwordCheck == false)
             {
-                throw new InvalidLoginException("Invalid BannerId/Password");
+                throw new InvalidLoginException(Utilities.getStringLang("invalid_login"));
             } else{
                 persistentState.remove("Password");
             }
@@ -79,7 +80,7 @@ public class WorkerHolder extends EntityBase implements IView {
         }
         else
         {
-            throw new InvalidLoginException("Invalid BannerId/Password");
+            throw new InvalidLoginException(Utilities.getStringLang("invalid_login"));
         }
 
     }

@@ -9,8 +9,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
+import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.util.Properties;
 
@@ -33,9 +38,14 @@ public class LoginView extends View{
         container.setPadding(new Insets(40));
         container.setSpacing(15);
         HBox title = TitleView.createTitle(Utilities.getStringLang("brockport_library"));
+        title.setSpacing(30);
+        ImageView lock = new ImageView(new File("resources/images/lock-icon.png").toURI().toString());
+        lock.setFitWidth(80);
+        lock.setPreserveRatio(true);
+        title.getChildren().add(lock);
 
         container.setId("login");
-        container.setPrefWidth(450);
+        container.setPrefWidth(500);
 
 
         //  Fields
@@ -76,10 +86,12 @@ public class LoginView extends View{
         buttonContainer.setPrefHeight(60);
         buttonContainer.setPadding(new Insets(10,0,0,0));
         Button loginButton = new Button(Utilities.getStringLang("login_btn"));
+        loginButton.setFont(Font.font("Verdana", FontWeight.BOLD, 18));
         loginButton.setMaxWidth(Double.MAX_VALUE);
         loginButton.setPrefWidth(buttonContainer.getPrefWidth());
         loginButton.setMaxHeight(buttonContainer.getPrefHeight());
         HBox.setHgrow(loginButton, Priority.ALWAYS);
+
 //        loginButton.setPadding(new Insets(10,0,10,0));
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -91,7 +103,7 @@ public class LoginView extends View{
         container.getChildren().add(buttonContainer);
 
         // MessageView
-        container.getChildren().add(createStatusLog("             "));
+        container.getChildren().add(createStatusLog("            "));
 
         getChildren().add(container);
 
@@ -107,6 +119,9 @@ public class LoginView extends View{
             loginProp.setProperty("BannerId", bannerId_str);
             loginProp.setProperty("Password", password_str);
             myModel.stateChangeRequest("ProcessLogin", loginProp);
+        } else {
+            displayErrorMessage(Utilities.getStringLang("error_string") + ": "+
+                    Utilities.getStringLang("invalid_login"));
         }
 
     }
@@ -121,7 +136,6 @@ public class LoginView extends View{
 
     @Override
     public void updateState(String key, Object value) {
-//        System.out.println(key + " : " + value);
         if(key.equals("LoginError")){
             displayErrorMessage((String) value);
         }

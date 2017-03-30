@@ -1,5 +1,6 @@
 package model;
 
+import Utilities.Utilities;
 import event.Event;
 import exception.InvalidLoginException;
 import impresario.IModel;
@@ -62,6 +63,7 @@ public class Login implements IView, IModel {
     {
         dependencies = new Properties();
         dependencies.setProperty("ProcessLogin", "LoginError");
+        dependencies.setProperty("Logout", "Logout");
         myRegistry.setDependencies(dependencies);
     }
 
@@ -120,6 +122,9 @@ public class Login implements IView, IModel {
                 }
 
             }
+        } else if(key.equals("Logout")){
+            myWorkerHolder = null;
+            createAndShowLoginView();
         }
 
     }
@@ -146,7 +151,7 @@ public class Login implements IView, IModel {
         }
         catch (InvalidLoginException ex)
         {
-            loginErrorMessage = "ERROR: " + ex.getMessage();
+            loginErrorMessage = Utilities.getStringLang("error_string")+ ": " + ex.getMessage();
             return false;
         }
     }

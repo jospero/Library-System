@@ -76,7 +76,7 @@ public class SearchStudentBorrower implements IView, IModel {
         if(key.equals("ProcessSearch")){
             StudentBorrowerCollection studentBorrowerCollection = new StudentBorrowerCollection();
             try {
-                studentBorrowerCollection.findStudentBorrowers();
+                studentBorrowerCollection.findBooksCriteria((Properties) value);
             } catch (InvalidPrimaryKeyException e) {
                 e.printStackTrace();
             }

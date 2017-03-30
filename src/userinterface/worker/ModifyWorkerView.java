@@ -66,8 +66,8 @@ public class ModifyWorkerView extends WorkerInformationView {
     protected void confirmDialog() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(Utilities.getStringLang("worker_com"));
-        alert.setHeaderText(Utilities.getStringLang("worker_added"));
-        alert.setContentText(Utilities.getStringLang("add_worker?"));
+        alert.setHeaderText(Utilities.getStringLang("worker_mod"));
+        alert.setContentText(Utilities.getStringLang("cont_string"));
 
         ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
         ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));

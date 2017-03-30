@@ -7,9 +7,15 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import model.WorkerHolder;
+
+import java.io.File;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -20,11 +26,42 @@ public class MainView extends View {
 
     public MainView(IModel model) {
         super(model, "MainView");
-        this.getStylesheets().add("resources/css/common.css");
+        File file = new File("resources/css/common.css");
+        this.getStylesheets().add(file.toURI().toString());
+        file = new File("resources/css/main.css");
+        this.getStylesheets().add(file.toURI().toString());
         container = new VBox();
 //        container.setPrefWidth(WIDTH);
 
-        container.getChildren().add(createMenu());
+        HBox menu = new HBox();
+        menu.setId("menuContainer");
+        menu.setMaxWidth(Double.MAX_VALUE);
+        menu.setPrefHeight(40);
+        final ImageView imageView = new ImageView(
+                new Image(new File("resources/images/logout.png").toURI().toString())
+        );
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(20);
+
+        Button logoutButton = new Button(Utilities.getStringLang("logout_btn"), imageView);
+        logoutButton.setContentDisplay(ContentDisplay.LEFT);
+        logoutButton.setFocusTraversable(false);
+        logoutButton.setId("logout");
+        MenuBar menuBar = createMenu();
+        menuBar.prefHeightProperty().bind(menu.heightProperty());
+        menuBar.setId("menubar");
+menuBar.setPrefWidth(40);
+logoutButton.setPrefHeight(40);
+        menu.getChildren().addAll(menuBar, logoutButton);
+        HBox.setHgrow(menuBar, Priority.ALWAYS);
+        container.getChildren().add(menu);
+
+        logoutButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                myModel.stateChangeRequest("Logout", null);
+            }
+        });
 
         swapContentView((View) myModel.getState("ChangeView"));
 //        container.getChildren().add(mainView);
@@ -35,10 +72,12 @@ public class MainView extends View {
 
     private MenuBar createMenu(){
         MenuBar menuBar = new MenuBar();
-
+        String style = "-fx-pref-height: 40; -fx-text-fill:#ffffff;";
         // --- Menu Book
         Menu menuBook = new Menu(Utilities.getStringLang("book"));
+        menuBook.styleProperty().setValue(style);
         MenuItem addBook = new MenuItem(Utilities.getStringLang("add_book"));
+
         addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+B"));
         addBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -98,6 +137,7 @@ public class MainView extends View {
         // --- Menu Worker
         if(((WorkerHolder)myModel.getState("WorkerHolder")).getState("Credentials").equals("Administrator")) {
             Menu menuWorker = new Menu(Utilities.getStringLang("worker"));
+            menuWorker.styleProperty().setValue(style);
             MenuItem addWorker = new MenuItem(Utilities.getStringLang("add_worker"));
             addWorker.setAccelerator(KeyCombination.keyCombination("Ctrl+W"));
             addWorker.setOnAction(new EventHandler<ActionEvent>() {
@@ -130,6 +170,7 @@ public class MainView extends View {
         }
         // --- Menu Student
         Menu menuStudent = new Menu(Utilities.getStringLang("sb"));
+        menuStudent.styleProperty().setValue(style);
         MenuItem addStudent = new MenuItem(Utilities.getStringLang("add_sb"));
         addStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
         addStudent.setOnAction(new EventHandler<ActionEvent>() {
@@ -160,7 +201,10 @@ public class MainView extends View {
         menuStudent.getItems().addAll(addStudent, modifyStudent, deleteStudent);
 
 
+
         menuBar.getMenus().add( menuStudent);
+
+        menuBar.setMaxWidth(Double.MAX_VALUE);
         return menuBar;
     }
 

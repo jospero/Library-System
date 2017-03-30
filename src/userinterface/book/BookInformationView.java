@@ -84,6 +84,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
     final public Properties validateBook(){
         Properties book = new Properties();
         boolean errorFound = false;
+        System.out.println("Checking");
         for(Book.DATABASE fieldsEnum: fieldsList.keySet()){
              if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
                  String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
@@ -96,8 +97,8 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                  } else if (fieldsEnum == Book.DATABASE.Barcode || fieldsEnum == Book.DATABASE.YearOfPublication ||
                          fieldsEnum == Book.DATABASE.ISBN) {
                      if (str.matches("[0-9]+")) {
+                         fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                          if (!errorFound) {
-                             fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                              book.setProperty(fieldsEnum.name(), str);
                          }
                      } else {
@@ -110,8 +111,8 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                  } else if (fieldsEnum == Book.DATABASE.SuggestedPrice){
                      try {
                          double i = Double.parseDouble(str);
+                         fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                          if (!errorFound) {
-                             fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                              book.setProperty(fieldsEnum.name(), str);
                          }
                      } catch (NumberFormatException ex) {
@@ -123,8 +124,8 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                      }
                 }
                  else {
-                    if(!errorFound){
-                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                     fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
+                     if(!errorFound){
                         book.setProperty(fieldsEnum.name(), str);
                     }
                  }

@@ -107,7 +107,9 @@ public class StudentBorrower extends EntityBase implements IView {
 	{
 		if(key.equals("ProcessNewStudentBorrower")){
 		    processNewStudentBorrower((Properties) value);
-        }
+        } else if(key.equals("ProcessModifyStudentBorrower")){
+			processModifyStudentBorrower((Properties) value);
+		}
 	    myRegistry.updateSubscribers(key, this);
 	}
 	
@@ -117,6 +119,7 @@ public class StudentBorrower extends EntityBase implements IView {
 		dependencies.setProperty("AddStudentBorrowerCancelled","ViewCancelled");
 		dependencies.setProperty("ModifyStudentBorrowerCancelled","ViewCancelled");
         dependencies.setProperty("ProcessNewStudentBorrower","UpdateStatusMessage");
+		dependencies.setProperty("ProcessModifyStudentBorrower","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}
 
@@ -188,6 +191,10 @@ public class StudentBorrower extends EntityBase implements IView {
 		createNewStudentBorrower();
     }
 
+	public void processModifyStudentBorrower(Properties props){
+		processNewStudentBorrowerHelper(props);
+		modifyStudentBorrower();
+	}
 
 	private void createNewStudentBorrower(){
 		try {
@@ -198,6 +205,22 @@ public class StudentBorrower extends EntityBase implements IView {
 			successFlag = false;
 			updateStatusMessage = e.getMessage();
 		}
+	}
+
+	private void modifyStudentBorrower(){
+		try {
+			successFlag = true;
+			Properties whereClause = new Properties();
+			whereClause.setProperty("BannerId",
+					persistentState.getProperty("BannerId"));
+			System.out.println("get it");
+			updatePersistentState(mySchema, persistentState, whereClause);
+			updateStatusMessage = "Student Borrower data for BannerId : " + persistentState.getProperty("BannerId") + " updated successfully in database!";
+		} catch (SQLException e) {
+			successFlag = false;
+			updateStatusMessage = e.getMessage();
+		}
+
 	}
 
     private void processNewStudentBorrowerHelper(Properties props){

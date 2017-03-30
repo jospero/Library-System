@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
+import model.Book;
 import model.Worker;
 import userinterface.InformationView;
 
@@ -87,10 +88,15 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                     fTF.setPromptText(str);
                     if(worker.get(row) != null && !worker.get(row).isEmpty())
                         fTF.setText(worker.get(row));
+                    if(fEnum == Worker.DATABASE.BannerId){
+                        fTF.setEditable(!modify);
+                    }
                     field.field = fTF;
                     fTF.setEditable(enableFields);
                 }
                 fieldsList.put(fEnum, field);
+                field.label.setPrefHeight(400);
+                field.label.setWrapText(true);
                 workerInfo.add(field.label, 0, row);
                 workerInfo.add(field.field, 1, row);
 //                workerInfo.add(field.label, 0, row);
@@ -124,8 +130,8 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                     }
                 } else if (fieldsEnum == Worker.DATABASE.BannerId) {
                     if (str.matches("[0-9]+")) {
+                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                         if (!errorFound) {
-                            fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                             worker.setProperty(fieldsEnum.name(), str);
                         }
                     } else {
@@ -138,8 +144,8 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
 
                 } else if (fieldsEnum == Worker.DATABASE.Phone) {
                     if (Utilities.validatePhoneNumber(str)) {
+                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                         if (!errorFound) {
-                            fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                             worker.setProperty(fieldsEnum.name(), str);
                         }
                     } else {
@@ -152,8 +158,8 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                 }
                 else if (fieldsEnum == Worker.DATABASE.Email){
                     if(Utilities.validateEmail(str)){
+                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                         if (!errorFound) {
-                            fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                             worker.setProperty(fieldsEnum.name(), str);
                         }
                     } else {
@@ -166,8 +172,8 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
 
                 }
                 else {
+                    fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                     if(!errorFound){
-                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                         worker.setProperty(fieldsEnum.name(), str);
                     }
                 }
@@ -184,7 +190,6 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                 }
             }
         }
-        System.out.println(worker.toString());
         return worker;
     }
 

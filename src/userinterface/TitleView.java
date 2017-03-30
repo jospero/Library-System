@@ -18,10 +18,10 @@ public class TitleView {
         container.setPadding(new Insets(10, 0,10,0));
         container.setAlignment(Pos.CENTER);
 
-        Text titleText = new Text(" "+title+" ");
+        Text titleText = new Text(" "+title.toUpperCase()+" ");
         titleText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         titleText.setId("title");
-//        titleText.setStyle("-fx-fill: #FEFEFE;");
+        titleText.setStyle("-fx-fill: #FEFEFE;");
 //        titleText.setWrappingWidth(300);
         titleText.setTextAlignment(TextAlignment.CENTER);
 //        titleText.setFill(Color.DARKGREEN);

@@ -35,13 +35,7 @@ public class AddWorkerView extends WorkerInformationView {
 
     void clearFields(){
         for(Worker.DATABASE fEnum : Worker.DATABASE.values()){
-            if(fieldsList.get(fEnum).field instanceof TextField || fieldsList.get(fEnum).field instanceof TextArea) {
-                ((TextInputControl) fieldsList.get(fEnum).field).setText("");
-            } else if (fieldsList.get(fEnum).field instanceof ComboBox){
-                ((ComboBox) fieldsList.get(fEnum).field).getSelectionModel().select(0);
-            } else {
-                ((DatePicker) fieldsList.get(fEnum).field).setValue(LocalDate.now());
-            }
+            clearFields(fieldsList.get(fEnum).field);
         }
     }
 

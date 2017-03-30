@@ -4,14 +4,14 @@ import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import model.StudentBorrower;
+import model.Worker;
 import userinterface.TitleView;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -66,12 +66,41 @@ public class AddStudentBorrowerView extends StudentBorrowerInformationView {
 
     @Override
     protected void confirmDialog() {
-        System.out.println("Confirm");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(Utilities.getStringLang("sb_com"));
+        alert.setHeaderText(Utilities.getStringLang("sb_added"));
+        alert.setContentText(Utilities.getStringLang("add_sb?"));
+        ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
+        ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == yesButton){
+            clearFields();
+        } else if (result.get() == noButton) {
+            myModel.stateChangeRequest("AddStudentBorrowerCancelled", null);
+        }
+    }
+
+    void clearFields(){
+        for(StudentBorrower.DATABASE fEnum : StudentBorrower.DATABASE.values()){
+            clearFields(fieldsList.get(fEnum).field);
+        }
     }
 
     @Override
-    protected void errorDialog(String value) {
-        System.out.println("error");
+    protected void errorDialog(String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(Utilities.getStringLang("sb_err"));
+        alert.setHeaderText(Utilities.getStringLang("sb_add_fail"));
+        alert.setContentText(Utilities.getStringLang("sb_err_occ") + " "  + msg );
+
+        ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
+
+        alert.getButtonTypes().setAll(okButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
     }
 
     @Override

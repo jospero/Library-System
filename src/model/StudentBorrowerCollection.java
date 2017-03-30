@@ -5,6 +5,7 @@ import impresario.IView;
 import userinterface.View;
 import userinterface.ViewFactory;
 
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -65,34 +66,23 @@ public class StudentBorrowerCollection extends EntityBase implements IView {
     }
 
 
-    public void findStudentBorrowersOlderThanDate(String year) throws InvalidPrimaryKeyException{
-        String query = "SELECT * FROM " + myTableName + " WHERE (pubYear <= " + year + ")";
-        retrieveHelper(query);
-
-    }
-
     public void findStudentBorrowers() throws InvalidPrimaryKeyException{
         String query = "SELECT * FROM " + myTableName;
         retrieveHelper(query);
 
     }
 
-    public void findStudentBorrowersNewerThanDate(String year) throws InvalidPrimaryKeyException{
-        String query = "SELECT * FROM " + myTableName + " WHERE (pubYear >= " + year + ")";
+    public void findBooksCriteria(Properties props) throws InvalidPrimaryKeyException {
+        String query = "SELECT * FROM " + myTableName + " WHERE (";
+        Enumeration theWhereFields = props.propertyNames();
+        while (theWhereFields.hasMoreElements()){
+            String theFieldName = (String)theWhereFields.nextElement();
+            String theFieldValue = props.getProperty(theFieldName).replace("'", "\'");
+            query += "`"+ theFieldName + "` = '" + theFieldValue.trim() + "' AND ";
+        }
+        query = query.substring(0, query.lastIndexOf("AND")) + ")";
+        System.out.println(query);
         retrieveHelper(query);
-
-    }
-
-    public void findStudentBorrowersWithTitleLike(String title) throws InvalidPrimaryKeyException{
-        String query = "SELECT * FROM " + myTableName + " WHERE (title LIKE '%" + title + "%')";
-        retrieveHelper(query);
-
-    }
-
-    public void findStudentBorrowersWithAuthorLike(String author) throws InvalidPrimaryKeyException{
-        String query = "SELECT * FROM " + myTableName + " WHERE (author LIKE %" + author + "%)";
-        retrieveHelper(query);
-
     }
 
 

@@ -6,9 +6,13 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import userinterface.TitleView;
+
+import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -16,7 +20,7 @@ import userinterface.TitleView;
 public class ModifyStudentBorrowerView extends StudentBorrowerInformationView {
 
     public ModifyStudentBorrowerView(IModel model) {
-        super(model, false, "ModifyStudentBorrowerView");
+        super(model, true, "ModifyStudentBorrowerView");
     }
 
     @Override
@@ -38,12 +42,7 @@ public class ModifyStudentBorrowerView extends StudentBorrowerInformationView {
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(Utilities.getStringLang("borrow_mod_conf_label"));
-                alert.setHeaderText(null);
-                alert.setContentText("I have a great message for you!");
-
-                alert.showAndWait();
+                modifyStudentBorrower();
             }
         });
         cancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -55,20 +54,45 @@ public class ModifyStudentBorrowerView extends StudentBorrowerInformationView {
 
         return buttonBox;
     }
-
+    private void modifyStudentBorrower() {
+        Properties studentBorrower = validateStudentBorrower();
+        if(studentBorrower.size() > 0 ){
+            myModel.stateChangeRequest("ProcessModifyStudentBorrower", studentBorrower);
+        }
+    }
     @Override
     protected void confirmDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(Utilities.getStringLang("sb_com"));
+        alert.setHeaderText(Utilities.getStringLang("sb_mod"));
+        alert.setContentText(Utilities.getStringLang("cont_string"));
 
+        ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
+        ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == noButton) {
+            myModel.stateChangeRequest("ViewStudentBorrowerCancelled", null);
+        }
     }
 
     @Override
     protected void errorDialog(String value) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(Utilities.getStringLang("sb_err"));
+        alert.setHeaderText(Utilities.getStringLang("sb_mod_fail"));
+        alert.setContentText(Utilities.getStringLang("sb_err_occ_mod") + " " + value );
 
+        ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
+
+        alert.getButtonTypes().setAll(okButton);
     }
 
 
     @Override
     public void updateState(String key, Object value) {
-
+        super.updateState(key, value);
     }
 }

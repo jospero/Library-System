@@ -14,9 +14,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import model.StudentBorrower;
+import model.Worker;
 import userinterface.View;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 import static model.StudentBorrower.getFields;
 import Utilities.Utilities;
@@ -137,9 +139,35 @@ public class SearchStudentBorrowerView extends View {
 
     }
 
+    private Properties validateSearch(){
+        Properties search = new Properties();
+        String firstNameStr = firstName.getText();
+        String lastNameStr = lastName.getText();
+        String phoneStr = phone.getText();
+        String emailStr = email.getText();
+        if(firstNameStr.trim().isEmpty() && lastNameStr.trim().isEmpty() && phoneStr.trim().isEmpty() && emailStr.trim().isEmpty()){
+//Error
+        } else{
+            if(!firstNameStr.trim().isEmpty()){
+                search.setProperty(Worker.DATABASE.FirstName.name(), firstNameStr);
+            }
+            if(!lastNameStr.trim().isEmpty()){
+                search.setProperty(Worker.DATABASE.LastName.name(), lastNameStr);
+            }
+            if(!phoneStr.trim().isEmpty() && Utilities.validatePhoneNumber(phoneStr)){
+                search.setProperty(Worker.DATABASE.Phone.name(), phoneStr);
+            }
+            if(!emailStr.trim().isEmpty()){
+                search.setProperty(Worker.DATABASE.Email.name(), emailStr);
+            }
+        }
+        return search;
+    }
     private void processSearch() {
-
-        myModel.stateChangeRequest("ProcessSearch", null);
+        Properties prop = validateSearch();
+        if(prop.size() > 0) {
+            myModel.stateChangeRequest("ProcessSearch", prop);
+        }
     }
 
     @Override

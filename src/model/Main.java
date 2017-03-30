@@ -12,6 +12,7 @@ import userinterface.ViewFactory;
 import userinterface.WindowPosition;
 
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -94,10 +95,11 @@ public class Main implements IView, IModel {
                 model = new StudentBorrower(new Properties());
                 viewName = "AddStudentBorrowerView";
             }
-            if(model != null){
+            if(model != null && myViews.get(viewName) == null){
+                myViews.clear();
                 model.subscribe("ViewCancelled", this);
                 currentView = ViewFactory.createView(viewName, model);
-//            myViews.put("AddBookView", currentView);
+                myViews.put(viewName, currentView);
             }
         } else if (key.equals("Modify") || key.equals("Delete")) {
             SearchFor search;
@@ -117,7 +119,8 @@ public class Main implements IView, IModel {
                 searchModel = new SearchStudentBorrower(search);
                 viewName = "SearchStudentBorrowerView";
             }
-            if(searchModel != null) {
+            if(searchModel != null && myViews.get(viewName) == null) {
+                myViews.clear();
                 searchModel.subscribe("SubViewChange", this);
                 searchModel.subscribe("ParentView", this);
                 searchModel.subscribe("ViewCancelled", this);
@@ -125,8 +128,9 @@ public class Main implements IView, IModel {
                 myViews.put(viewName, currentView);
             }
         } else if (key.equals("Welcome") || key.equals("ViewCancelled")) {
+            myViews.clear();
             currentView = ViewFactory.createView("WelcomeView", myWorkerHolder);
-//            myViews.put("AddBookView", currentView);
+            myViews.put("WelcomeView", currentView);
         } else if (key.equals("SubViewChange")){
             currentView = (View) value;
         } else if(key.equals("ParentView")){
