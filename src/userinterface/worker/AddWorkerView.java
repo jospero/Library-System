@@ -69,8 +69,8 @@ public class AddWorkerView extends WorkerInformationView {
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setSpacing(20);
 
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Cancel");
+        Button submit = new Button(Utilities.getStringLang("sub_btn"));
+        Button cancel = new Button(Utilities.getStringLang("cancel_btn"));
 
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);

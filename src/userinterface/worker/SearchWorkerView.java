@@ -110,7 +110,7 @@ public class SearchWorkerView extends View {
         row++;
         HBox buttonPane = new HBox();
         buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button(Utilities.getStringLang("submit_btn"));
+        Button searchButton = new Button(Utilities.getStringLang("sub_btn"));
         Button cancelButton = new Button(Utilities.getStringLang("cancel_btn"));
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
