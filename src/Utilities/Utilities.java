@@ -355,7 +355,7 @@ public class Utilities
 		} catch (MissingResourceException ex){
 			result = "Shit aint right";
 		}
-		return result;
+		return result.trim();
 
 	}
 	public static boolean validateEmail(String email){

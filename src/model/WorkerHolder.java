@@ -67,7 +67,7 @@ public class WorkerHolder extends EntityBase implements IView {
 
         String workerPassword = persistentState.getProperty("Password");
         String workerStatus = persistentState.getProperty("Status");
-        if(workerStatus!=null && workerStatus.toLowerCase().equals("active") || workerStatus.toLowerCase().equals("actif")){
+        if(workerStatus!=null && (workerStatus.toLowerCase().trim().equals("active") || workerStatus.toLowerCase().trim().equals("actif"))){
             if (workerPassword != null)
             {
                 boolean passwordCheck = workerPassword.equals(password);
