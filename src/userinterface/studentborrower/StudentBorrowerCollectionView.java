@@ -1,5 +1,6 @@
 package userinterface.studentborrower;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -105,7 +106,7 @@ public class StudentBorrowerCollectionView extends View {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Text prompt = new Text("LIST OF WORKERS");
+        Text prompt = new Text(Utilities.getStringLang("list_sb"));
         prompt.setWrappingWidth(350);
         prompt.setTextAlignment(TextAlignment.CENTER);
         prompt.setFill(Color.BLACK);
@@ -196,7 +197,7 @@ public class StudentBorrowerCollectionView extends View {
         scrollPane.setContent(tableOfStudentBorrowers);
 
 
-        viewButton = new Button("View StudentBorrower Information");
+        viewButton = new Button(Utilities.getStringLang("view_sb_info"));
         viewButton.setDisable(true);
 
         viewButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -206,7 +207,7 @@ public class StudentBorrowerCollectionView extends View {
             }
         });
 
-        cancelButton = new Button("Back to Search");
+        cancelButton = new Button(Utilities.getStringLang("back_to_search"));
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 
