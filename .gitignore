@@ -1,1 +1,7 @@
 .idea/*
+.DS_Store
+ErrorLog.txt
+hs_err_pid90012.log
+out/
+ssh_tunnel
+
