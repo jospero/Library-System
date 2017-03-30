@@ -148,7 +148,7 @@ logoutButton.setPrefHeight(40);
             });
 
             MenuItem modifyWorker = new MenuItem(Utilities.getStringLang("mod_worker"));
-//        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
+            modifyWorker.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+W"));
             modifyWorker.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
@@ -181,7 +181,7 @@ logoutButton.setPrefHeight(40);
         });
 
         MenuItem modifyStudent = new MenuItem(Utilities.getStringLang("mod_sb"));
-        modifyStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+S"));
+        modifyStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+S"));
         modifyStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
@@ -190,7 +190,7 @@ logoutButton.setPrefHeight(40);
         });
 
         MenuItem deleteStudent = new MenuItem(Utilities.getStringLang("del_sb"));
-        deleteStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+S"));
+        deleteStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+S"));
         deleteStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
