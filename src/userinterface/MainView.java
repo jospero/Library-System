@@ -135,7 +135,8 @@ logoutButton.setPrefHeight(40);
         menuBook.getItems().addAll(addBook,modifyBook,deleteBook, separatorMenuItem, listBook, checkInBook, checkOutBook);
         menuBar.getMenus().add(menuBook);
         // --- Menu Worker
-        if(((WorkerHolder)myModel.getState("WorkerHolder")).getState("Credentials").equals("Administrator")) {
+        String cred = (String) ((WorkerHolder)myModel.getState("WorkerHolder")).getState("Credentials");
+        if(cred.toLowerCase().trim().equals("administrator") || cred.trim().toLowerCase().equals("administrateur")) {
             Menu menuWorker = new Menu(Utilities.getStringLang("worker"));
             menuWorker.styleProperty().setValue(style);
             MenuItem addWorker = new MenuItem(Utilities.getStringLang("add_worker"));

@@ -25,7 +25,7 @@ public class WelcomeView extends View {
         box.setStyle("-fx-background-color: #00533e");
 
         box.setAlignment(Pos.CENTER);
-        String labelString = Utilities.getStringLang("welcome_string") + myModel.getState("FirstName") + " " + myModel.getState("LastName");
+        String labelString = Utilities.getStringLang("welcome_string") +" "+ myModel.getState("FirstName") + " " + myModel.getState("LastName");
         Label label = new Label(labelString.toUpperCase());
         label.setFont(Font.font(40));
         label.setId("welcome");

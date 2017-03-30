@@ -87,6 +87,7 @@ public class SearchStudentBorrower implements IView, IModel {
             if(searchFor == SearchFor.MODIFY){
                 StudentBorrower studentBorrower = (StudentBorrower) value;
                 studentBorrower.subscribe("ViewStudentBorrowerCancelled", this);
+                studentBorrower.subscribe("ResultViewCancelled", this);
                 nextView.add(ViewFactory.createView("ModifyStudentBorrowerView", studentBorrower));
             }
         } else if(key.equals("ViewStudentBorrowerCancelled")){

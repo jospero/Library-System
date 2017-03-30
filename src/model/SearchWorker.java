@@ -41,6 +41,7 @@ public class SearchWorker implements IView, IModel {
         dependencies.setProperty("ResultViewCancelled", "ParentView");
         dependencies.setProperty("SearchWorkerCancelled", "ViewCancelled");
         dependencies.setProperty("ViewWorker", "SubViewChange");
+        dependencies.setProperty("ShowParent", "ParentView");
         myRegistry.setDependencies(dependencies);
     }
 
@@ -88,6 +89,7 @@ public class SearchWorker implements IView, IModel {
                 System.out.println(searchFor);
                 Worker worker = (Worker) value;
                 worker.subscribe("ViewWorkerCancelled", this);
+                worker.subscribe("ShowParent", this);
                 nextView.add(ViewFactory.createView("ModifyWorkerView", worker));
             }
         } else if(key.equals("ViewWorkerCancelled")){

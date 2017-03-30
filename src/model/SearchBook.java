@@ -98,6 +98,7 @@ public class SearchBook implements IView, IModel {
             if(searchFor == SearchFor.MODIFY){
                 Book book = (Book) value;
                 book.subscribe("ViewBookCancelled", this);
+                book.subscribe("ResultViewCancelled", this);
                 nextView.add(ViewFactory.createView("ModifyBookView", book));
             }
         } else if(key.equals("ViewBookCancelled")){
