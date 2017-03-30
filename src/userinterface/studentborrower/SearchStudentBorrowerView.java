@@ -19,6 +19,7 @@ import userinterface.View;
 import java.util.HashMap;
 
 import static model.StudentBorrower.getFields;
+import Utilities.Utilities;
 
 /**
  * Created by Sammytech on 3/11/17.
@@ -48,7 +49,7 @@ public class SearchStudentBorrowerView extends View {
 //        HBox title = TitleView.createTitle("Enter StudentBorrower Information");
 //        title.setStyle("-fx-background-color:#0c7a79");
 //        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label("Enter Student Borrower Information");
+        Label title = new Label(Utilities.getStringLang("borrow_mod_conf_label"));
         title.setPrefWidth(Double.MAX_VALUE);
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.setPadding(new Insets(0,0,20,0));
@@ -107,8 +108,8 @@ public class SearchStudentBorrowerView extends View {
         row++;
         HBox buttonPane = new HBox();
         buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button("Submit");
-        Button cancelButton = new Button("Cancel");
+        Button searchButton = new Button(Utilities.getStringLang("sub_btn"));
+        Button cancelButton = new Button(Utilities.getStringLang("cancel_btn"));
 
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override

@@ -1,5 +1,6 @@
 package userinterface.worker;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,15 +26,15 @@ public class ModifyWorkerView extends WorkerInformationView {
 
     @Override
     protected HBox getHeading() {
-        return TitleView.createTitle("Modify Worker");
+        return TitleView.createTitle(Utilities.getStringLang("mod_worker"));
     }
 
     @Override
     protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Back to Search Results");
+        Button submit = new Button(Utilities.getStringLang("sub_btn"));
+        Button cancel = new Button(Utilities.getStringLang("back_search_result"));
 //        Button cancel = new Button("Back to Search");
 
         buttonBox.getChildren().add(submit);
@@ -64,12 +65,12 @@ public class ModifyWorkerView extends WorkerInformationView {
     @Override
     protected void confirmDialog() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Worker Confirmation");
-        alert.setHeaderText("Worker Successfully Added");
-        alert.setContentText("Would you like to add a new worker?");
+        alert.setTitle(Utilities.getStringLang("worker_com"));
+        alert.setHeaderText(Utilities.getStringLang("worker_added"));
+        alert.setContentText(Utilities.getStringLang("add_worker?"));
 
-        ButtonType yesButton = new ButtonType("Yes");
-        ButtonType noButton = new ButtonType("No");
+        ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
+        ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));
 
         alert.getButtonTypes().setAll(yesButton, noButton);
 
@@ -82,11 +83,11 @@ public class ModifyWorkerView extends WorkerInformationView {
     @Override
     protected void errorDialog(String value) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Worker Error");
-        alert.setHeaderText("Worker failed to be added");
-        alert.setContentText("An error occurred while adding worker to database. " + value );
+        alert.setTitle(Utilities.getStringLang("worker_err"));
+        alert.setHeaderText(Utilities.getStringLang("worker_mod_fail"));
+        alert.setContentText(Utilities.getStringLang("worker_err_occ_mod") + " " + value );
 
-        ButtonType okButton = new ButtonType("Ok");
+        ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 
         alert.getButtonTypes().setAll(okButton);
     }

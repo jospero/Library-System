@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.Worker;
 import userinterface.TitleView;
+import Utilities.Utilities;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -58,7 +59,7 @@ public class AddWorkerView extends WorkerInformationView {
 
     @Override
     protected HBox getHeading() {
-        return TitleView.createTitle("Add New Worker");
+        return TitleView.createTitle(Utilities.getStringLang("add_worker"));
     }
 
     @Override
@@ -68,8 +69,8 @@ public class AddWorkerView extends WorkerInformationView {
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setSpacing(20);
 
-        Button submit = new Button("Submit");
-        Button cancel = new Button("Cancel");
+        Button submit = new Button(Utilities.getStringLang("sub_btn"));
+        Button cancel = new Button(Utilities.getStringLang("cancel_btn"));
 
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);
@@ -92,12 +93,12 @@ public class AddWorkerView extends WorkerInformationView {
 
     protected void confirmDialog(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Worker Confirmation");
-        alert.setHeaderText("Worker Successfully Added");
-        alert.setContentText("Would you like to add a new book?");
+        alert.setTitle(Utilities.getStringLang("worker_com"));
+        alert.setHeaderText(Utilities.getStringLang("worker_added"));
+        alert.setContentText(Utilities.getStringLang("add_worker?"));
 
-        ButtonType yesButton = new ButtonType("Yes");
-        ButtonType noButton = new ButtonType("No");
+        ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
+        ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));
 
         alert.getButtonTypes().setAll(yesButton, noButton);
 
@@ -111,11 +112,11 @@ public class AddWorkerView extends WorkerInformationView {
 
     protected void errorDialog(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Worker Error");
-        alert.setHeaderText("Worker failed to be added");
-        alert.setContentText("An error occurred while adding book to database. " + msg );
+        alert.setTitle(Utilities.getStringLang("worker_err"));
+        alert.setHeaderText(Utilities.getStringLang("worker_add_fail"));
+        alert.setContentText(Utilities.getStringLang("worker_err_occ") + " "  + msg );
 
-        ButtonType okButton = new ButtonType("Ok");
+        ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 
         alert.getButtonTypes().setAll(okButton);
 

@@ -190,14 +190,14 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
 
     private ComboBox getCredentialsNode(){
         ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll("Ordinary", "Administrator");
+        comboBox.getItems().addAll(Utilities.getStringLang("credsord"),Utilities.getStringLang("credsadmin"));
         comboBox.getSelectionModel().select(0);
         return comboBox;
     }
 
     private ComboBox getStatusNode(){
         ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll("Active", "Inactive");
+        comboBox.getItems().addAll(Utilities.getStringLang("statusact"), Utilities.getStringLang("statusinact"));
         comboBox.getSelectionModel().select(0);
         return comboBox;
     }
