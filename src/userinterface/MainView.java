@@ -1,5 +1,6 @@
 package userinterface;
 
+import Utilities.Utilities;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,8 +37,8 @@ public class MainView extends View {
         MenuBar menuBar = new MenuBar();
 
         // --- Menu Book
-        Menu menuBook = new Menu("Book");
-        MenuItem addBook = new MenuItem("Add Book");
+        Menu menuBook = new Menu(Utilities.getStringLang("book"));
+        MenuItem addBook = new MenuItem(Utilities.getStringLang("add_book"));
         addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+B"));
         addBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -46,7 +47,7 @@ public class MainView extends View {
             }
         });
 
-        MenuItem modifyBook = new MenuItem("Modify Book");
+        MenuItem modifyBook = new MenuItem(Utilities.getStringLang("mod_book"));
         modifyBook.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+B"));
         modifyBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -55,7 +56,7 @@ public class MainView extends View {
             }
         });
 
-        MenuItem deleteBook = new MenuItem("Delete Book");
+        MenuItem deleteBook = new MenuItem(Utilities.getStringLang("del_book"));
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
         deleteBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -64,7 +65,7 @@ public class MainView extends View {
             }
         });
 
-        MenuItem listBook = new MenuItem("List Books Checked Out");
+        MenuItem listBook = new MenuItem(Utilities.getStringLang("list_check_outs"));
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
         listBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -73,7 +74,7 @@ public class MainView extends View {
             }
         });
 
-        MenuItem checkOutBook = new MenuItem("Check out Book");
+        MenuItem checkOutBook = new MenuItem(Utilities.getStringLang("check_out_book"));
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
         checkOutBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -82,7 +83,7 @@ public class MainView extends View {
             }
         });
 
-        MenuItem checkInBook = new MenuItem("Check in Book");
+        MenuItem checkInBook = new MenuItem(Utilities.getStringLang("check_in_book"));
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
         checkInBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -96,8 +97,8 @@ public class MainView extends View {
         menuBar.getMenus().add(menuBook);
         // --- Menu Worker
         if(((WorkerHolder)myModel.getState("WorkerHolder")).getState("Credentials").equals("Administrator")) {
-            Menu menuWorker = new Menu("Worker");
-            MenuItem addWorker = new MenuItem("Add Worker");
+            Menu menuWorker = new Menu(Utilities.getStringLang("worker"));
+            MenuItem addWorker = new MenuItem(Utilities.getStringLang("add_worker"));
             addWorker.setAccelerator(KeyCombination.keyCombination("Ctrl+W"));
             addWorker.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
@@ -106,7 +107,7 @@ public class MainView extends View {
                 }
             });
 
-            MenuItem modifyWorker = new MenuItem("Modify Worker");
+            MenuItem modifyWorker = new MenuItem(Utilities.getStringLang("mod_worker"));
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
             modifyWorker.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
@@ -115,7 +116,7 @@ public class MainView extends View {
                 }
             });
 
-            MenuItem deleteWorker = new MenuItem("Delete Worker");
+            MenuItem deleteWorker = new MenuItem(Utilities.getStringLang("del_worker"));
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
             deleteWorker.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent t) {
@@ -128,8 +129,8 @@ public class MainView extends View {
             menuBar.getMenus().add(menuWorker);
         }
         // --- Menu Student
-        Menu menuStudent = new Menu("Student Borrower");
-        MenuItem addStudent = new MenuItem("Add Student Borrower");
+        Menu menuStudent = new Menu(Utilities.getStringLang("sb"));
+        MenuItem addStudent = new MenuItem(Utilities.getStringLang("add_sb"));
         addStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
         addStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -138,7 +139,7 @@ public class MainView extends View {
             }
         });
 
-        MenuItem modifyStudent = new MenuItem("Modify Student Borrower");
+        MenuItem modifyStudent = new MenuItem(Utilities.getStringLang("mod_sb"));
         modifyStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+S"));
         modifyStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -147,7 +148,7 @@ public class MainView extends View {
             }
         });
 
-        MenuItem deleteStudent = new MenuItem("Delete Student Borrower");
+        MenuItem deleteStudent = new MenuItem(Utilities.getStringLang("del_sb"));
         deleteStudent.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+S"));
         deleteStudent.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {

@@ -75,7 +75,7 @@ public class LoginView extends View{
         HBox buttonContainer = new HBox();
         buttonContainer.setPrefHeight(60);
         buttonContainer.setPadding(new Insets(10,0,0,0));
-        Button loginButton = new Button("Login");
+        Button loginButton = new Button(Utilities.getStringLang("login_btn"));
         loginButton.setMaxWidth(Double.MAX_VALUE);
         loginButton.setPrefWidth(buttonContainer.getPrefWidth());
         loginButton.setMaxHeight(buttonContainer.getPrefHeight());
