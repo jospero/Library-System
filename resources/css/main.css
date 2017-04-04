@@ -1,0 +1,20 @@
+#logout{
+    /*-fx-padding: 20px;*/
+    -fx-border-color: transparent;
+    -fx-background-color: #ff565d;
+    /*-fx-graphic: url("../images/logout.png");*/
+}
+#logout:hover{
+    -fx-background-color: #ff7b80;
+}
+
+#menubar{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+#menuContainer{
+    -fx-background-color: #676565;
+}
+.main_menus{
+    -fx-pref-height: 40;
+}

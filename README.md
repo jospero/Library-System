@@ -1,4 +1,10 @@
 #**CSC 429 LIBRARY SYSTEM**
+###TODO
+- [ ] Refactoring of LoginView
+- [ ] Error handling for search view (Search Book)
+- [ ] Feedback for modify book 
+- [ ] Relaying modify book code to modify worker and modify student borrower
+
 
 ###TUTORIAL
 [GITHUB PULL REQUEST TUTORIAL](https://www.youtube.com/watch?v=oFYyTZwMyAg)

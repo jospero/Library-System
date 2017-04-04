@@ -2,10 +2,13 @@
 package Utilities;
 
 // system imports
+import common.PropertyFile;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // project imports
 
@@ -13,6 +16,48 @@ import java.util.Date;
 //==============================================================
 public class Utilities
 {
+
+	private static String language ="";
+	private static String country ="";
+
+
+	private static Locale currentLocale;
+	private static ResourceBundle messages;
+	private static Properties props;
+
+	public static String convertToTitleCase(String word){
+		ArrayList<String> conjuc = new ArrayList<String>(){{
+			add("of");
+			add("a");
+			add("for");
+			add("so");
+			add("an");
+			add("in");
+			add("the");
+			add("and");
+			add("nor");
+			add("to");
+			add("at");
+			add("up");
+			add("but");
+			add("on");
+			add("yet");
+			add("by");
+			add("or");
+		}};
+		String finalResult = "";
+		String[] words = word.split(" ");
+		for(int i = 0; i < words.length; i++){
+			if(i != 0 && conjuc.contains(words[i])){
+				finalResult += words[i] + " ";
+			} else{
+				if(!words[i].trim().isEmpty()){
+					finalResult += words[i].substring(0,1).toUpperCase() + words[i].substring(1).toLowerCase() + " ";
+				}
+			}
+		}
+		return finalResult;
+	}
 	//----------------------------------------------------------
 	public static String convertToDefaultDateFormat(Date theDate)
 	{
@@ -48,52 +93,52 @@ public class Utilities
 	//----------------------------------------------------------
 	protected static Date validateDateString(String str)
 	{
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 
-			Date theDate = null;
+		Date theDate = null;
+
+		try
+		{
+			theDate = formatter.parse(str);
+			return theDate;
+		}
+		catch (ParseException ex)
+		{
+			SimpleDateFormat formatter2 =
+					new SimpleDateFormat("yyyy-MM-dd");
 
 			try
 			{
-				theDate = formatter.parse(str);
+				theDate = formatter2.parse(str);
 				return theDate;
 			}
-			catch (ParseException ex)
+			catch (ParseException ex2)
 			{
-				SimpleDateFormat formatter2 =
-					new SimpleDateFormat("yyyy-MM-dd");
+				SimpleDateFormat formatter3 =
+						new SimpleDateFormat("yyyy/MMdd");
 
 				try
 				{
-					theDate = formatter2.parse(str);
+					theDate = formatter3.parse(str);
 					return theDate;
 				}
-				catch (ParseException ex2)
+				catch (ParseException ex3)
 				{
-					SimpleDateFormat formatter3 =
-						new SimpleDateFormat("yyyy/MMdd");
+					SimpleDateFormat formatter4 =
+							new SimpleDateFormat("yyyyMM/dd");
 
 					try
 					{
-						theDate = formatter3.parse(str);
+						theDate = formatter4.parse(str);
 						return theDate;
 					}
-					catch (ParseException ex3)
+					catch (ParseException ex4)
 					{
-						SimpleDateFormat formatter4 =
-							new SimpleDateFormat("yyyyMM/dd");
-
-						try
-						{
-							theDate = formatter4.parse(str);
-							return theDate;
-						}
-						catch (ParseException ex4)
-						{
-							return null;
-						}
+						return null;
 					}
 				}
 			}
+		}
 	}
 
 	//----------------------------------------------------------
@@ -158,7 +203,7 @@ public class Utilities
 		{
 			return "December";
 		}
-		
+
 		return "";
 	}
 
@@ -224,61 +269,103 @@ public class Utilities
 		{
 			return Calendar.DECEMBER;
 		}
-		
+
 		return -1;
 	}
-	
-	
+
+
 	//----------------------------------------------------
-   	protected boolean checkProperLetters(String value)
-   	{
-   		for (int cnt = 0; cnt < value.length(); cnt++)
-   		{
-   			char ch = value.charAt(cnt);
-   			
-   			if ((ch >= 'A') && (ch <= 'Z') || (ch >= 'a') && (ch <= 'z'))
-   			{
-   			}
-   			else
-   			if ((ch == '-') || (ch == ',') || (ch == '.') || (ch == ' '))
-   			{
-   			}
-   			else
-   			{
-   				return false;
-   			}
-   		}
-   		
-   		return true;
-   	}
-   	
-   	//----------------------------------------------------
-   	protected boolean checkProperPhoneNumber(String value)
-   	{
-   		if ((value == null) || (value.length() < 7))
-   		{
-   			return false;
-   		}
-   		
-   		for (int cnt = 0; cnt < value.length(); cnt++)
-   		{
-   			char ch = value.charAt(cnt);
-   			
-   			if ((ch >= '0') && (ch <= '9'))
-   			{
-   			}
-   			else
-   			if ((ch == '-') || (ch == '(') || (ch == ')') || (ch == ' '))
-   			{
-   			}
-   			else
-   			{
-   				return false;
-   			}
-   		}
-   		
-   		return true;
-   	}
+	protected boolean checkProperLetters(String value)
+	{
+		for (int cnt = 0; cnt < value.length(); cnt++)
+		{
+			char ch = value.charAt(cnt);
+
+			if ((ch >= 'A') && (ch <= 'Z') || (ch >= 'a') && (ch <= 'z'))
+			{
+			}
+			else
+			if ((ch == '-') || (ch == ',') || (ch == '.') || (ch == ' '))
+			{
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	//----------------------------------------------------
+	protected boolean checkProperPhoneNumber(String value)
+	{
+		if ((value == null) || (value.length() < 7))
+		{
+			return false;
+		}
+
+		for (int cnt = 0; cnt < value.length(); cnt++)
+		{
+			char ch = value.charAt(cnt);
+
+			if ((ch >= '0') && (ch <= '9'))
+			{
+			}
+			else
+			if ((ch == '-') || (ch == '(') || (ch == ')') || (ch == ' '))
+			{
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean validatePhoneNumber(String phoneNo) {
+		//validate phone numbers of format "1234567890"
+		if (phoneNo.matches("\\d{10}")) return true;
+			//validating phone number with -, . or spaces
+		else if(phoneNo.matches("\\d{3}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}")) return true;
+			//validating phone number with extension length from 3 to 5
+		else if(phoneNo.matches("\\d{3}-\\d{3}-\\d{4}\\s(x|(ext))\\d{3,5}")) return true;
+			//validating phone number where area code is in braces ()
+		else if(phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}")) return true;
+			//return false if nothing matches the input
+		else return false;
+	}
+
+	public static String getStringLang(String key) {
+		if (props == null) {
+			props = new PropertyFile("langConfig.ini");
+		}
+		language = props.getProperty("lang");
+		country = props.getProperty("country");
+		currentLocale = new Locale(language, country);
+		String result;
+		try {
+			if(messages == null) {
+				messages = ResourceBundle.getBundle("MessagesBundle", currentLocale, new UTF8Control());
+			}
+			result = convertToTitleCase(messages.getString(key));
+//			result = messages.getString(key);
+		} catch (MissingResourceException ex){
+			result = "Shit aint right";
+		}
+		return result.trim();
+
+	}
+	public static boolean validateEmail(String email){
+		Pattern VALID_Email_ADDRESS_REGEX =
+				Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = VALID_Email_ADDRESS_REGEX.matcher(email);
+		return matcher.find();
+	}
+
+
 
 }
 
