@@ -131,7 +131,9 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                  }
              } else {
                  if(!errorFound) {
+//                    int index =  ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedIndex();
                      String str = ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
+//                    String str =
                      book.setProperty(fieldsEnum.name(), str);
                  }
              }
@@ -144,6 +146,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
     private String Databasify(String field){
         return field.replaceAll("[^a-zA-Z0-9]", "");
     }
+
     private ComboBox getConditionNode(){
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll(Utilities.getStringLang("condgood"), Utilities.getStringLang("conddmg"));

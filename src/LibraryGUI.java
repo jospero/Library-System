@@ -57,7 +57,7 @@ public class LibraryGUI extends Application
         catch(Exception exc)
         {
             System.err.println("LIBRARY - could not create Login!");
-            new Event(Event.getLeafLevelClassName(this), "Login.<init>", "Unable to create Librarian object", Event.ERROR);
+            new Event(Event.getLeafLevelClassName(this), "Login.<init>", exc+"Unable to create Librarian object" + exc.getMessage() +"  what", Event.ERROR);
             exc.printStackTrace();
         }
 

@@ -1,6 +1,7 @@
 package userinterface;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,7 +27,7 @@ import java.util.Properties;
 
 
 public class LoginView extends View{
-    private TextField bannerId;
+    private JFXTextField bannerId;
     private PasswordField password;
     private MessageView statusLog;
 
@@ -52,15 +53,17 @@ public class LoginView extends View{
         VBox fields = new VBox();
         fields.setSpacing(10);
         //  BannerId
-        Label userLabel = new Label(Utilities.getStringLang("bid"));
+//        Label userLabel = new Label(Utilities.getStringLang("bid"));
 
-        bannerId = new TextField();
+        bannerId = new JFXTextField();
         bannerId.setPromptText(Utilities.getStringLang("bid"));
-        bannerId.setId("bannerIdtf");
-        bannerId.getStyleClass().add("textfield");
+        bannerId.setLabelFloat(true);
+//        bannerId.setId("bannerIdtf");
+//        bannerId.getStyleClass().add("textfield");
         bannerId.setPadding(new Insets(10,0, 10,40));
         bannerId.setPrefHeight(40);
-        fields.getChildren().addAll(userLabel, bannerId);
+//        fields.getChildren().addAll(userLabel, bannerId);
+        fields.getChildren().addAll(bannerId);
 
         // Password
         Label passwordLabel = new Label(Utilities.convertToTitleCase(Utilities.getStringLang("login_pass")));
