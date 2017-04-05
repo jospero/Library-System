@@ -1,7 +1,15 @@
 package userinterface.book;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.validation.DoubleValidator;
+import com.jfoenix.validation.NumberValidator;
+import com.jfoenix.validation.RequiredFieldValidator;
 import impresario.IModel;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -11,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import model.Book;
 import userinterface.InformationView;
 
+import java.time.Year;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -39,8 +48,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         int row = 0;
         Vector<String> book = ((Book) myModel).getEntryListView();
         for(Book.DATABASE fEnum : Book.DATABASE.values()){
-
-            if(fieldsStr.containsKey(fEnum)){
+            if(fEnum != Book.DATABASE.Status && fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
@@ -48,16 +56,46 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                     field.field = getConditionNode();
                     if(book.get(row) != null && !book.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(book.get(row));
-                } else if(fEnum == Book.DATABASE.Status){
-                    field.field = getStatusNode();
-                    if(book.get(row) != null && !book.get(row).isEmpty())
-                        ((ComboBox)field.field).setValue(book.get(row));
                 } else if(fEnum == Book.DATABASE.Notes) {
-                    TextArea ta = new TextArea();
+                    JFXTextArea ta = new JFXTextArea();
                     field.field = ta;
                 } else {
-                    TextField fTF = new TextField();
+                    JFXTextField fTF = new JFXTextField();
+                    RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator();
+                    fTF.getValidators().add(requiredFieldValidator);
+//                    requiredFieldValidator.setErrorStyleClass("field-error");
+                    if(fEnum == Book.DATABASE.Barcode || fEnum == Book.DATABASE.ISBN || fEnum == Book.DATABASE.YearOfPublication){
+                        NumberValidator numberValidator = new NumberValidator();
+                        fTF.getValidators().add(numberValidator);
+                        numberValidator.setMessage(fieldsStr.get(fEnum)+" must be a number");
+                        if(fEnum == Book.DATABASE.YearOfPublication){
+                            Utilities.addTextLimiter(fTF, 4);
+                        }
+                        if(fEnum == Book.DATABASE.Barcode){
+                            Utilities.addTextLimiter(fTF, 5);
+                        }
+                        if(fEnum == Book.DATABASE.ISBN){
+                            Utilities.addTextLimiter(fTF, 13);
+                        }
+
+                    }
+                    if(fEnum == Book.DATABASE.SuggestedPrice){
+                        DoubleValidator doubleValidator = new DoubleValidator();
+                        fTF.getValidators().add(doubleValidator);
+                        doubleValidator.setMessage(fieldsStr.get(fEnum)+" must be a decimal");
+                    }
+
+                    requiredFieldValidator.setMessage(fieldsStr.get(fEnum)+" must not be empty");
+                    fTF.focusedProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            if(!newValue)
+                                fTF.validate();
+                        }
+                    });
+
                     fTF.setPromptText(str);
+//                    fTF.setLabelFloat(true);
                     fTF.setEditable(enableFields);
                     if(fEnum == Book.DATABASE.Barcode){
                         fTF.setEditable(!modify);
@@ -75,34 +113,28 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         return bookInfo;
     }
 
-    private void error(Node n){
-        if(!n.getStyleClass().contains("error")){
-            n.getStyleClass().add("error");
-        }
-    }
-
     final public Properties validateBook(){
         Properties book = new Properties();
         boolean errorFound = false;
         System.out.println("Checking");
         for(Book.DATABASE fieldsEnum: fieldsList.keySet()){
-             if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
+             if(fieldsList.get(fieldsEnum).field instanceof JFXTextField || fieldsList.get(fieldsEnum).field instanceof JFXTextArea) {
                  String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
                  if (str.isEmpty() && fieldsEnum != Book.DATABASE.Notes) {
-                     error(fieldsList.get(fieldsEnum).field);
+
                      if (!errorFound) {
                          errorFound = true;
                          book = new Properties();
                      }
                  } else if (fieldsEnum == Book.DATABASE.Barcode || fieldsEnum == Book.DATABASE.YearOfPublication ||
                          fieldsEnum == Book.DATABASE.ISBN) {
+
+
                      if (str.matches("[0-9]+")) {
-                         fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                          if (!errorFound) {
                              book.setProperty(fieldsEnum.name(), str);
                          }
                      } else {
-                         error(fieldsList.get(fieldsEnum).field);
                          if (!errorFound) {
                              errorFound = true;
                              book = new Properties();
@@ -111,12 +143,10 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                  } else if (fieldsEnum == Book.DATABASE.SuggestedPrice){
                      try {
                          double i = Double.parseDouble(str);
-                         fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                          if (!errorFound) {
                              book.setProperty(fieldsEnum.name(), str);
                          }
                      } catch (NumberFormatException ex) {
-                         error(fieldsList.get(fieldsEnum).field);
                          if (!errorFound) {
                              errorFound = true;
                              book = new Properties();
@@ -132,7 +162,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
              } else {
                  if(!errorFound) {
 //                    int index =  ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedIndex();
-                     String str = ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
+                     String str = ((JFXComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
 //                    String str =
                      book.setProperty(fieldsEnum.name(), str);
                  }
@@ -147,16 +177,9 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         return field.replaceAll("[^a-zA-Z0-9]", "");
     }
 
-    private ComboBox getConditionNode(){
-        ComboBox comboBox = new ComboBox();
+    private JFXComboBox getConditionNode(){
+        JFXComboBox comboBox = new JFXComboBox();
         comboBox.getItems().addAll(Utilities.getStringLang("condgood"), Utilities.getStringLang("conddmg"));
-        comboBox.getSelectionModel().select(0);
-        return comboBox;
-    }
-
-    private ComboBox getStatusNode(){
-        ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll(Utilities.getStringLang("statusact"), Utilities.getStringLang("statusinact"));
         comboBox.getSelectionModel().select(0);
         return comboBox;
     }

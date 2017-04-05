@@ -1,6 +1,8 @@
 package userinterface.worker;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -40,7 +42,7 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
         int row = 0;
         Vector<String> worker = ((Worker) myModel).getEntryListView();
         for(Worker.DATABASE fEnum : Worker.DATABASE.values()){
-            if(fieldsStr.containsKey(fEnum)){
+            if(fEnum != Worker.DATABASE.Status && fieldsStr.containsKey(fEnum) ){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
@@ -48,43 +50,23 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                     field.field = getCredentialsNode();
                     if(worker.get(row) != null && !worker.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(worker.get(row));
-                } else if(fEnum == Worker.DATABASE.Status){
-                    field.field = getStatusNode();
-                    if(worker.get(row) != null && !worker.get(row).isEmpty())
-                        ((ComboBox)field.field).setValue(worker.get(row));
                 }
                 else if(fEnum == Worker.DATABASE.DateOfHire || fEnum == Worker.DATABASE.DateOfLatestCredentialStatus) {
                     LocalDate localDate;
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.getStringNorm("dateFormat"));
+
+                    DateTimeFormatter dbformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     if(worker.get(row) != null && !worker.get(row).isEmpty()){
-                        localDate = LocalDate.parse(worker.get(row), formatter);
+                        localDate = LocalDate.parse(worker.get(row), dbformatter);
                     } else {
                         localDate = LocalDate.now();
                     }
-                    DatePicker datePicker = new DatePicker(localDate);
-                    datePicker.setEditable(false);
-                    Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
-                        @Override
-                        public DateCell call(DatePicker param) {
-                            return new DateCell(){
-                                @Override
-                                public void updateItem(LocalDate item, boolean empty) {
-                                    super.updateItem(item, empty);
-                                    // Disable all future date cells
-                                    if (item.isAfter(LocalDate.now()))
-                                    {
-                                        this.setDisable(true);
-                                    }
-
-                                }
-                            };
-                        }
-                    };
-                    datePicker.setDayCellFactory(dayCellFactory);
-                    field.field = datePicker;
+                    JFXTextField fTF = new JFXTextField(localDate.format(formatter));
+                    fTF.setEditable(false);
+                    field.field = fTF;
                 }
                 else {
-                    TextField fTF = new TextField();
+                    JFXTextField fTF = new JFXTextField();
                     fTF.setPromptText(str);
                     if(worker.get(row) != null && !worker.get(row).isEmpty())
                         fTF.setText(worker.get(row));
@@ -95,7 +77,7 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                     fTF.setEditable(enableFields);
                 }
                 fieldsList.put(fEnum, field);
-                field.label.setPrefHeight(400);
+//                field.label.setPrefHeight(400);
                 field.label.setWrapText(true);
                 workerInfo.add(field.label, 0, row);
                 workerInfo.add(field.field, 1, row);
@@ -110,11 +92,11 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
 
     }
 
-    private void error(Node n){
-        if(!n.getStyleClass().contains("error")){
-            n.getStyleClass().add("error");
-        }
-    }
+//    private void error(Node n){
+//        if(!n.getStyleClass().contains("error")){
+//            n.getStyleClass().add("error");
+//        }
+//    }
 
     final public Properties validateWorker(){
         Properties worker = new Properties();
@@ -123,7 +105,6 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
             if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
                 String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
                 if (str.isEmpty()) {
-                    error(fieldsList.get(fieldsEnum).field);
                     if (!errorFound) {
                         errorFound = true;
                         worker = new Properties();
@@ -135,7 +116,6 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                             worker.setProperty(fieldsEnum.name(), str);
                         }
                     } else {
-                        error(fieldsList.get(fieldsEnum).field);
                         if (!errorFound) {
                             errorFound = true;
                             worker = new Properties();
@@ -149,7 +129,6 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                             worker.setProperty(fieldsEnum.name(), str);
                         }
                     } else {
-                        error(fieldsList.get(fieldsEnum).field);
                         if (!errorFound) {
                             errorFound = true;
                             worker = new Properties();
@@ -163,7 +142,6 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                             worker.setProperty(fieldsEnum.name(), str);
                         }
                     } else {
-                        error(fieldsList.get(fieldsEnum).field);
                         if (!errorFound) {
                             errorFound = true;
                             worker = new Properties();
@@ -193,18 +171,18 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
         return worker;
     }
 
-    private ComboBox getCredentialsNode(){
-        ComboBox comboBox = new ComboBox();
+    private JFXComboBox getCredentialsNode(){
+        JFXComboBox comboBox = new JFXComboBox();
         comboBox.getItems().addAll(Utilities.getStringLang("credsord"),Utilities.getStringLang("credsadmin"));
         comboBox.getSelectionModel().select(0);
         return comboBox;
     }
 
-    private ComboBox getStatusNode(){
-        ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll(Utilities.getStringLang("statusact"), Utilities.getStringLang("statusinact"));
-        comboBox.getSelectionModel().select(0);
-        return comboBox;
-    }
+//    private ComboBox getStatusNode(){
+//        ComboBox comboBox = new ComboBox();
+//        comboBox.getItems().addAll(Utilities.getStringLang("statusact"), Utilities.getStringLang("statusinact"));
+//        comboBox.getSelectionModel().select(0);
+//        return comboBox;
+//    }
 
 }

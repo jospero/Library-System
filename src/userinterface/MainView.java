@@ -23,7 +23,7 @@ import java.io.File;
 public class MainView extends View {
     private Group mainView;
     private VBox container;
-
+    ScrollPane sp;
     public MainView(IModel model) {
         super(model, "MainView");
         File file = new File("resources/css/common.css");
@@ -63,8 +63,13 @@ logoutButton.setPrefHeight(40);
             }
         });
 
+        sp = new ScrollPane();
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         swapContentView((View) myModel.getState("ChangeView"));
-//        container.getChildren().add(mainView);
+
+
+//        sp.getStyleClass().add("page-scroll");
+        container.getChildren().add(sp);
         getChildren().add(container);
 
         myModel.subscribe("ChangeView", this);
@@ -221,13 +226,17 @@ logoutButton.setPrefHeight(40);
     }
 
     private void swapContentView(View content){
-        if(mainView != null){
-            container.getChildren().remove(mainView);
-        }
+//        if(mainView != null){
+//            container.getChildren().remove(mainView);
+//        }
         mainView = content;
         mainView.getChildren().get(0).getStyleClass().add("page");
-        container.getChildren().add(mainView);
-//        ((View)mainView).ft.playFromStart();
+        sp.getStyleClass().add("page-scroll");
+        sp.setContent(mainView);
+//        sp.setPrefHeight();
+
+        sp.setFitToWidth(true);
+        sp.setFitToHeight(true);
 
     }
 }

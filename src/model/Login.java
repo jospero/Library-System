@@ -1,6 +1,7 @@
 package model;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXDecorator;
 import event.Event;
 import exception.InvalidLoginException;
 import impresario.IModel;

@@ -63,7 +63,10 @@ public class AddWorkerView extends WorkerInformationView {
 
         Button submit = new Button(Utilities.getStringLang("sub_btn"));
         Button cancel = new Button(Utilities.getStringLang("cancel_btn"));
-
+        submit.getStyleClass().add("button-raised");
+        submit.setId("accept");
+        cancel.getStyleClass().add("button-raised");
+        cancel.setId("cancel");
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);
 

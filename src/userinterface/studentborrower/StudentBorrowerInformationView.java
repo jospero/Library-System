@@ -1,6 +1,8 @@
 package userinterface.studentborrower;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -39,7 +41,7 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
         int row = 0;
         Vector<String> studentBorrower = ((StudentBorrower) myModel).getEntryListView();
         for(StudentBorrower.DATABASE fEnum : StudentBorrower.DATABASE.values()){
-            if(fieldsStr.containsKey(fEnum)){
+            if(fEnum != StudentBorrower.DATABASE.Status && fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
@@ -48,27 +50,26 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                     field.field = getBorrowerStatusNode();
                     if(studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty())
                         ((ComboBox)field.field).setValue(studentBorrower.get(row));
-                } else if(fEnum == StudentBorrower.DATABASE.Status){
-                    field.field = getStatusNode();
-                    if(studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty())
-                        ((ComboBox)field.field).setValue(studentBorrower.get(row));
                 } else if(fEnum == StudentBorrower.DATABASE.DateOfLastBorrowerStatus || fEnum == StudentBorrower.DATABASE.DateOfRegistration) {
 
                     LocalDate localDate;
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.getStringNorm("dateFormat"));
+
+                    DateTimeFormatter dbformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     if(studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty()){
-                        localDate = LocalDate.parse(studentBorrower.get(row), formatter);
+                        localDate = LocalDate.parse(studentBorrower.get(row), dbformatter);
                     } else {
                         localDate = LocalDate.now();
                     }
-                    DatePicker datePicker = new DatePicker(localDate);
-                    field.field = datePicker;
+                    JFXTextField fTF = new JFXTextField(localDate.format(formatter));
+                    fTF.setEditable(false);
+                    field.field = fTF;
                 } else if(fEnum == StudentBorrower.DATABASE.Notes) {
-                    TextArea ta = new TextArea();
+                    JFXTextArea ta = new JFXTextArea();
                     field.field = ta;
                 }   else
                  {
-                    TextField fTF = new TextField();
+                    JFXTextField fTF = new JFXTextField();
                     fTF.setEditable(enableFields);
                     fTF.setPromptText(str);
                     if(studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty())
@@ -79,7 +80,7 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                     field.field = fTF;
                 }
                 fieldsList.put(fEnum, field);
-                field.label.setPrefHeight(400);
+//                field.label.setPrefHeight(400);
                 field.label.setWrapText(true);
 //                field.label.setTextAlignment(TextAlignment.JUSTIFY);
 //                field.label.wrapTextProperty().bind(studentBorrowerInfo.widthProperty().);
@@ -96,11 +97,11 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
 
     }
 
-    private void error(Node n){
-        if(!n.getStyleClass().contains("error")){
-            n.getStyleClass().add("error");
-        }
-    }
+//    private void error(Node n){
+//        if(!n.getStyleClass().contains("error")){
+//            n.getStyleClass().add("error");
+//        }
+//    }
 
     final public Properties validateStudentBorrower() {
         Properties studentBorrower = new Properties();
@@ -110,7 +111,7 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
             if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
                 String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
                 if (str.isEmpty() && fieldsEnum != StudentBorrower.DATABASE.Notes) {
-                    error(fieldsList.get(fieldsEnum).field);
+//                    error(fieldsList.get(fieldsEnum).field);
                     if (!errorFound) {
                         errorFound = true;
                         studentBorrower = new Properties();
@@ -125,7 +126,7 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                         }
                     } else {
                         System.out.println("found student");
-                        error(fieldsList.get(fieldsEnum).field);
+//                        error(fieldsList.get(fieldsEnum).field);
                         if (!errorFound) {
                             errorFound = true;
                             studentBorrower = new Properties();
@@ -139,7 +140,7 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                             studentBorrower.setProperty(fieldsEnum.name(), str);
                         }
                     } else {
-                        error(fieldsList.get(fieldsEnum).field);
+//                        error(fieldsList.get(fieldsEnum).field);
                         if (!errorFound) {
                             errorFound = true;
                             studentBorrower = new Properties();
@@ -153,7 +154,7 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                             studentBorrower.setProperty(fieldsEnum.name(), str);
                         }
                     } else {
-                        error(fieldsList.get(fieldsEnum).field);
+//                        error(fieldsList.get(fieldsEnum).field);
                         if (!errorFound) {
                             errorFound = true;
                             studentBorrower = new Properties();

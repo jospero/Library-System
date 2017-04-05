@@ -49,6 +49,7 @@ public abstract class InformationView<T> extends View {
 
         box.getChildren().add(buttonBox);
 
+
         getChildren().add(box);
 
         myModel.subscribe("UpdateStatusMessage", this);
@@ -57,7 +58,7 @@ public abstract class InformationView<T> extends View {
     protected GridPane getInformation(){
         GridPane info = new GridPane();
         info.setHgap(20);
-        info.setVgap(10);
+        info.setVgap(30);
         info.setPadding(new Insets(0, 10, 0, 10));
         ColumnConstraints col1 = new ColumnConstraints();
         col1.setPercentWidth(40);

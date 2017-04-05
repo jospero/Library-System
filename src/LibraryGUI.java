@@ -53,6 +53,7 @@ public class LibraryGUI extends Application
         try
         {
             myLogin = new Login();
+
         }
         catch(Exception exc)
         {

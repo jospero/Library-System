@@ -3,6 +3,9 @@ package Utilities;
 
 // system imports
 import common.PropertyFile;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TextField;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -339,6 +342,12 @@ public class Utilities
 	}
 
 	public static String getStringLang(String key) {
+		String result = convertToTitleCase(getStringNorm(key));
+		return result.trim();
+
+	}
+
+	public static String getStringNorm(String key) {
 		if (props == null) {
 			props = new PropertyFile("langConfig.ini");
 		}
@@ -350,19 +359,33 @@ public class Utilities
 			if(messages == null) {
 				messages = ResourceBundle.getBundle("MessagesBundle", currentLocale, new UTF8Control());
 			}
-			result = convertToTitleCase(messages.getString(key));
-//			result = messages.getString(key);
+			result = messages.getString(key);
 		} catch (MissingResourceException ex){
 			result = "Shit aint right";
 		}
-		return result.trim();
-
+		return result;
 	}
+
+
+
+
 	public static boolean validateEmail(String email){
 		Pattern VALID_Email_ADDRESS_REGEX =
 				Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 		Matcher matcher = VALID_Email_ADDRESS_REGEX.matcher(email);
 		return matcher.find();
+	}
+
+	public static void addTextLimiter(final TextField tf, final int maxLength) {
+		tf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				if (tf.getText().length() > maxLength) {
+					String s = tf.getText().substring(0, maxLength);
+					tf.setText(s);
+				}
+			}
+		});
 	}
 
 
