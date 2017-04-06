@@ -21,7 +21,7 @@ public class SearchBook implements IView, IModel {
     protected Properties dependencies;
     protected ModelRegistry myRegistry;
     protected ArrayList<View> nextView;
-
+    protected BookCollection bookCollection;
     public SearchBook(SearchFor searchFor) {
         this.searchFor = searchFor;
         nextView = new ArrayList<>();
@@ -38,7 +38,7 @@ public class SearchBook implements IView, IModel {
     protected void setDependencies()
     {
         dependencies = new Properties();
-        dependencies.setProperty("ProcessSearch", "SubViewChange");
+        dependencies.setProperty("ProcessSearch", "UpdateSearch");
         dependencies.setProperty("ViewBookCancelled", "SubViewChange");
         dependencies.setProperty("ResultViewCancelled", "ParentView");
         dependencies.setProperty("SearchBookCancelled", "ViewCancelled");
@@ -58,6 +58,9 @@ public class SearchBook implements IView, IModel {
             return nextView.get(nextView.size()-1);
         } if(key.equals("ParentView")){
             return "SearchBookView";
+        } if(key.equals("Books") || key.equals("UpdateSearch")){
+            if(bookCollection != null)
+                return bookCollection.getState("Books");
         }
         return null;
     }
@@ -76,7 +79,7 @@ public class SearchBook implements IView, IModel {
     public void stateChangeRequest(String key, Object value) {
         System.out.println("SCR "+ key);
         if(key.equals("ProcessSearch")){
-            BookCollection bookCollection = new BookCollection();
+            bookCollection = new BookCollection();
             Properties props = (Properties) value;
             if(props.contains("barcode")) {
                 try {
@@ -91,9 +94,6 @@ public class SearchBook implements IView, IModel {
                     e.printStackTrace();
                 }
             }
-            bookCollection.subscribe("ResultViewCancelled", this);
-            bookCollection.subscribe("ViewBook", this);
-            nextView.add(bookCollection.createView());
         } else if(key.equals("ViewBook")){
             if(searchFor == SearchFor.MODIFY){
                 Book book = (Book) value;

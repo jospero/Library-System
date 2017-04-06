@@ -1,184 +1,133 @@
 package userinterface.book;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.Book;
+import userinterface.SearchView;
 import userinterface.View;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Vector;
 
 import static model.Book.getFields;
 
 /**
  * Created by Sammytech on 3/11/17.
  */
-public class SearchBookView extends View {
+public class SearchBookView extends SearchView<Book.DATABASE> {
 
-    TextField barcode = new TextField();
-    TextField bookTitle = new TextField();
-    TextField author = new TextField();
-    TextField publisher = new TextField();
-    TextField pubYear = new TextField();
-    TextField isbn = new TextField();
-    ComboBox condition;
-    TextField sugPrice = new TextField();
+    private JFXTextField barcode;
+    private JFXTextField bookTitle;
+    private JFXTextField author;
+    private JFXTextField publisher;
+    private JFXTextField pubYear;
+    private JFXTextField isbn;
+    private ComboBox condition;
+    private JFXTextField sugPrice;
+    private static final int MAX_COLUMN = 2;
 
     public SearchBookView(IModel model) {
         super(model, "SearchBookView");
 
-        VBox root = new VBox();
-//        root.setFillWidth(true);
-        root.setAlignment(Pos.CENTER);
+    }
 
-        HashMap<Book.DATABASE, String> fields = getFields();
+    protected GridPane createSearch(){
+        barcode = new JFXTextField();
+        bookTitle = new JFXTextField();
+        author = new JFXTextField();
+        publisher = new JFXTextField();
+        pubYear = new JFXTextField();
+        isbn = new JFXTextField();
+        sugPrice = new JFXTextField();
+
 
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(0,60,0,60));
         grid.setHgap(30);
-        grid.setVgap(10);
-//        grid.setStyle("-fx-background-color: #580e7a");
-
-//        HBox title = TitleView.createTitle("Enter Book Information");
-//        title.setStyle("-fx-background-color:#0c7a79");
-//        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label(Utilities.getStringLang("search_book").toUpperCase());
-        title.setPrefWidth(Double.MAX_VALUE);
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        title.setPadding(new Insets(0,0,20,0));
-        title.setAlignment(Pos.CENTER);
-        grid.add(title,0,0,2,1);
-
-        String barcodeStr = fields.get(Book.DATABASE.Barcode);
-        Label barcodeLabel = new Label(barcodeStr);
-        barcode.setPromptText(barcodeStr);
-        grid.add(barcodeLabel, 0, 1);
-        grid.add(barcode, 1, 1);
-
-        VBox oneFieldHead = new VBox();
-        Label oneFieldOr = new Label(Utilities.getStringLang("or"));
-        Label oneFieldText = new Label(Utilities.getStringLang("one_field"));
-
-        oneFieldOr.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        oneFieldText.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-        oneFieldHead.setPadding(new Insets(20,0,20,0));
-        oneFieldHead.setAlignment(Pos.CENTER);
-
-        oneFieldHead.getChildren().add(oneFieldOr);
-        oneFieldHead.getChildren().add(oneFieldText);
-
-        grid.add(oneFieldHead,0,2,2,1);
-
-
-        int row = 3;
-        String titleStr = fields.get(Book.DATABASE.Title);
-        Label titleLabel = new Label(titleStr);
-        bookTitle.setPromptText(titleStr);
-        grid.add(titleLabel, 0, row);
-        grid.add(bookTitle, 1, row);
-
-        row++;
-        String authorStr = fields.get(Book.DATABASE.Authors);
-        Label authorLabel = new Label(authorStr);
-        author.setPromptText(authorStr);
-        grid.add(authorLabel, 0, row);
-        grid.add(author, 1, row);
-
-        row++;
-        String publisherStr = fields.get(Book.DATABASE.Publisher);
-        Label pubLabel = new Label(publisherStr);
-        publisher.setPromptText(publisherStr);
-        grid.add(pubLabel, 0, row);
-        grid.add(publisher, 1, row);
-
-        row++;
-        String pubYearStr = fields.get(Book.DATABASE.YearOfPublication);
-        Label pubYearLabel = new Label(pubYearStr);
-        pubYear.setPromptText(pubYearStr);
-        grid.add(pubYearLabel, 0, row);
-        grid.add(pubYear, 1, row);
-
-        row++;
-        String isbnStr = fields.get(Book.DATABASE.ISBN);
-        Label isbnLabel = new Label(isbnStr);
-        isbn.setPromptText(isbnStr);
-        grid.add(isbnLabel, 0, row);
-        grid.add(isbn, 1, row);
-
-//        row++;
-//        String conditionStr = "Condition";
-//        Label conditionLabel = new Label(conditionStr);
-//        condition.getItems().addAll("Good","Damaged");
-//        grid.add(conditionLabel, 0, row);
-//        grid.add(condition, 1, row);
-
-        row++;
-        String sugPriceStr = fields.get(Book.DATABASE.SuggestedPrice);
-        Label sugPriceLabel = new Label(sugPriceStr);
-        sugPrice.setPromptText(sugPriceStr);
-        grid.add(sugPriceLabel, 0, row);
-        grid.add(sugPrice, 1, row);
-
-        row++;
-        HBox buttonPane = new HBox();
-        buttonPane.setSpacing(30);
-        buttonPane.setPadding(new Insets(22));
-        buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button(Utilities.getStringLang("sub_btn"));
-        Button cancelButton = new Button(Utilities.getStringLang("cancel_btn"));
-
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-//                MainStageContainer.getInstance().close();
-//                MainStageContainer.setStage(new Stage(), "Here");
-//                MainStageContainer.getInstance().show();
-                myModel.stateChangeRequest("SearchBookCancelled", null);
-            }
-        });
-
-        searchButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                processSearch();
-
-            }
-        });
-        buttonPane.setSpacing(20);
-        buttonPane.setPadding(new Insets(20));
-        buttonPane.getChildren().addAll(searchButton, cancelButton);
-
-        grid.add(buttonPane, 0, row, 2, 1);
-
-
-        root.getChildren().add(grid);
-        getChildren().add(root);
-
-    }
-
-    private void processSearch() {
-        Properties prop = validateSearch();
-        if(prop.size() > 0){
-            myModel.stateChangeRequest("ProcessSearch", prop);
+        grid.setVgap(30);
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPercentWidth(100/MAX_COLUMN);
+        for(int i = 0; i < MAX_COLUMN; i++){
+            grid.getColumnConstraints().add(col1);
         }
 
+        int line = 0;
+        int row = line / MAX_COLUMN;
+        int col = line % MAX_COLUMN;
+        String barcodeStr = fields.get(Book.DATABASE.Barcode);
+        setupField(barcode, barcodeStr);
+        grid.add(barcode, col, row,1,1);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String titleStr = fields.get(Book.DATABASE.Title);
+        setupField(bookTitle, titleStr);
+        grid.add(bookTitle, col, row,1,1);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String authorStr = fields.get(Book.DATABASE.Authors);
+        setupField(author, authorStr);
+        grid.add(author, col, row);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String publisherStr = fields.get(Book.DATABASE.Publisher);
+        setupField(publisher, publisherStr);
+        grid.add(publisher, col, row);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String pubYearStr = fields.get(Book.DATABASE.YearOfPublication);
+        setupField(pubYear, pubYearStr);
+        grid.add(pubYear, col, row);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String isbnStr = fields.get(Book.DATABASE.ISBN);
+        setupField(isbn, isbnStr);
+        grid.add(isbn, col, row);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String sugPriceStr = fields.get(Book.DATABASE.SuggestedPrice);
+        setupField(sugPrice, sugPriceStr);
+        grid.add(sugPrice, col, row);
+
+        return grid;
     }
 
-    private Properties validateSearch(){
+    private void setupField(JFXTextField node, String prompt){
+        node.setPadding(new Insets(30, 0, 30, 0));
+        node.setLabelFloat(true);
+        node.setPromptText(prompt);
+    }
+
+
+
+    protected Properties validateSearch(){
         Properties search = new Properties();
         String bookTitleStr = bookTitle.getText();
         String authorStr = author.getText();
@@ -233,7 +182,40 @@ public class SearchBookView extends View {
     }
 
     @Override
-    public void updateState(String key, Object value) {
-
+    protected HashMap<Book.DATABASE, String> getFields() {
+        return Book.getFields();
     }
+
+    @Override
+    protected ListView getSearchResult() {
+        ListView<BookTableModel> listView = new ListView<>();
+        listView.setCellFactory(new Callback<ListView<BookTableModel>, ListCell<BookTableModel>>() {
+            @Override
+            public ListCell<BookTableModel> call(ListView<BookTableModel> param) {
+                return new BookListViewCell();
+            }
+        });
+        return listView;
+    }
+
+    @Override
+    protected void UpdateSearchResult(Object value) {
+        ObservableList<BookTableModel> tableData = FXCollections.observableArrayList();
+        Vector entryList = (Vector)value;
+        Enumeration entries = entryList.elements();
+
+        while (entries.hasMoreElements())
+        {
+            Book nextBook = (Book)entries.nextElement();
+            Vector<String> view = nextBook.getEntryListView();
+
+            // add this list entry to the list
+            BookTableModel nextRowData = new BookTableModel(view);
+            tableData.add(nextRowData);
+
+        }
+        searchResult.setItems(tableData);
+        searchResult.setVisible(true);
+    }
+
 }

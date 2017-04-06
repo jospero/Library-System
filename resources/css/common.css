@@ -206,4 +206,24 @@
     -fx-background-color: transparent,rgb(96,96,96),rgb(96,96,96);
 }
 
+#searchBox{
+    -fx-padding: 30px;
+}
+#searchBox > *.content {
+    -fx-background-color: transparent;
+}
 
+.titled-pane > .title
+{
+    /*-fx-background-color: transparent;*/
+    -fx-font-size: 20px;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; /* 2 10 3 10 */
+}
+
+.titled-pane:focused > .title > .arrow-button .arrow
+{
+    -fx-effect: none;
+    -fx-focus-color: transparent;
+}
