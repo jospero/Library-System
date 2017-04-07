@@ -11,6 +11,7 @@ import userinterface.ViewFactory;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Vector;
 
 /**
  * Created by Sammytech on 3/11/17.
@@ -21,7 +22,8 @@ public class SearchBook implements IView, IModel {
     protected Properties dependencies;
     protected ModelRegistry myRegistry;
     protected ArrayList<View> nextView;
-    protected BookCollection bookCollection;
+    private BookCollection bookCollection;
+    private int selectedBook = -1;
     public SearchBook(SearchFor searchFor) {
         this.searchFor = searchFor;
         nextView = new ArrayList<>();
@@ -39,10 +41,9 @@ public class SearchBook implements IView, IModel {
     {
         dependencies = new Properties();
         dependencies.setProperty("ProcessSearch", "UpdateSearch");
-        dependencies.setProperty("ViewBookCancelled", "SubViewChange");
-        dependencies.setProperty("ResultViewCancelled", "ParentView");
-        dependencies.setProperty("SearchBookCancelled", "ViewCancelled");
-        dependencies.setProperty("ViewBook", "SubViewChange");
+        dependencies.setProperty("ViewBookCancelled", "ParentView");
+        dependencies.setProperty("SearchCancelled", "ViewCancelled");
+        dependencies.setProperty("View", "SubViewChange");
         myRegistry.setDependencies(dependencies);
     }
 
@@ -94,15 +95,21 @@ public class SearchBook implements IView, IModel {
                     e.printStackTrace();
                 }
             }
-        } else if(key.equals("ViewBook")){
+        } else if(key.equals("View")){
             if(searchFor == SearchFor.MODIFY){
-                Book book = (Book) value;
+                selectedBook = (int) value;
+                Book book = ((Vector<Book>)bookCollection.getState("Books")).get(selectedBook);
                 book.subscribe("ViewBookCancelled", this);
-                book.subscribe("ResultViewCancelled", this);
                 nextView.add(ViewFactory.createView("ModifyBookView", book));
             }
         } else if(key.equals("ViewBookCancelled")){
+            Book book = ((Vector<Book>)bookCollection.getState("Books")).get(selectedBook);
+            book.unSubscribe("ViewBookCancelled", this);
+            if(value != null && (boolean)value){
+                myRegistry.updateSubscribers("UpdateSearch", this);
+            }
             nextView.remove(nextView.size()-1);
+
         }
         myRegistry.updateSubscribers(key, this);
 

@@ -15,7 +15,7 @@ import static Utilities.Utilities.getStringLang;
 public class Book extends EntityBase implements IView {
 
 	public enum DATABASE{
-		Barcode, Title, Authors, Discipline, Publisher, YearOfPublication, ISBN, Condition, SuggestedPrice, Notes, Status
+		Barcode, Title,Discipline, Authors, Publisher, YearOfPublication, ISBN, Condition, SuggestedPrice, Notes, Status
 	}
 
 	private static final String myTableName = "Book";

@@ -1,148 +1,40 @@
 package userinterface.worker;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+import javafx.util.Callback;
 import model.Worker;
-import userinterface.View;
+import userinterface.SearchView;
 
-import javax.rmi.CORBA.Util;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
-
-import static model.Worker.getFields;
+import java.util.Vector;
 
 /**
  * Created by Sammytech on 3/11/17.
  */
-public class SearchWorkerView extends View {
+public class SearchWorkerView extends SearchView<Worker.DATABASE> {
 
-    TextField firstName = new TextField();
-    TextField lastName = new TextField();
-    TextField phone = new TextField();
-    TextField email = new TextField();
+    JFXTextField firstName;
+    JFXTextField lastName;
+    JFXTextField phone;
+    JFXTextField email;
+//    JFXDatePicker
+    private static final int MAX_COLUMN = 2;
 
     public SearchWorkerView(IModel model) {
         super(model, "SearchWorkerView");
-
-        VBox root = new VBox();
-//        root.setFillWidth(true);
-        root.setAlignment(Pos.CENTER);
-
-        HashMap<Worker.DATABASE, String> fields = getFields();
-
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(0,60,0,60));
-        grid.setHgap(30);
-        grid.setVgap(10);
-//        grid.setStyle("-fx-background-color: #580e7a");
-
-//        HBox title = TitleView.createTitle("Enter Worker Information");
-//        title.setStyle("-fx-background-color:#0c7a79");
-//        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label(Utilities.getStringLang("search_worker").toUpperCase());
-        title.setPrefWidth(Double.MAX_VALUE);
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        title.setPadding(new Insets(0,0,20,0));
-        title.setAlignment(Pos.CENTER);
-        grid.add(title,0,0,2,1);
-
-//        String barcodeStr = "First Name";
-//        Label barcodeLabel = new Label(barcodeStr);
-//        barcode.setPromptText(barcodeStr);
-//        grid.add(barcodeLabel, 0, 1);
-//        grid.add(barcode, 1, 1);
-
-//        VBox oneFieldHead = new VBox();
-//        Label oneFieldOr = new Label("OR");
-//        Label oneFieldText = new Label("(ENTER AT LEAST ONE FIELD)");
-//
-//        oneFieldOr.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-//        oneFieldText.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-//        oneFieldHead.setPadding(new Insets(20,0,20,0));
-//        oneFieldHead.setAlignment(Pos.CENTER);
-//
-//        oneFieldHead.getChildren().add(oneFieldOr);
-//        oneFieldHead.getChildren().add(oneFieldText);
-//
-//        grid.add(oneFieldHead,0,2,2,1);
-
-        int row = 1;
-        String firstnameStr = fields.get(Worker.DATABASE.FirstName);
-        Label firsnameLabel = new Label(firstnameStr);
-        firstName.setPromptText(firstnameStr);
-        grid.add(firsnameLabel, 0, row);
-        grid.add(firstName, 1, row);
-
-        row++;
-        String lastnameStr = fields.get(Worker.DATABASE.LastName);
-        Label lastnameLabel = new Label(lastnameStr);
-        lastName.setPromptText(lastnameStr);
-        grid.add(lastnameLabel, 0, row);
-        grid.add(lastName, 1, row);
-
-        row++;
-        String phoneStr = fields.get(Worker.DATABASE.Phone);
-        Label phoneLabal = new Label(phoneStr);
-        phone.setPromptText(phoneStr);
-        grid.add(phoneLabal, 0, row);
-        grid.add(phone, 1, row);
-
-        row++;
-        String emailStr = fields.get(Worker.DATABASE.Email);
-        Label emailLabel = new Label(emailStr);
-        email.setPromptText(emailStr);
-        grid.add(emailLabel, 0, row);
-        grid.add(email, 1, row);
-
-
-        row++;
-        HBox buttonPane = new HBox();
-        buttonPane.setPadding(new Insets(22));
-        buttonPane.setSpacing(30);
-        buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button(Utilities.getStringLang("sub_btn"));
-        Button cancelButton = new Button(Utilities.getStringLang("cancel_btn"));
-
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-//                MainStageContainer.getInstance().close();
-//                MainStageContainer.setStage(new Stage(), "Here");
-//                MainStageContainer.getInstance().show();
-                myModel.stateChangeRequest("SearchWorkerCancelled", null);
-            }
-        });
-
-        searchButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                processSearch();
-
-            }
-        });
-        buttonPane.getChildren().addAll(searchButton, cancelButton);
-
-        grid.add(buttonPane, 0, row, 2, 1);
-
-
-        root.getChildren().add(grid);
-        getChildren().add(root);
-
     }
 
-    private Properties validateSearch(){
+    protected Properties validateSearch(){
         Properties search = new Properties();
         String firstNameStr = firstName.getText();
         String lastNameStr = lastName.getText();
@@ -167,15 +59,84 @@ public class SearchWorkerView extends View {
         return search;
     }
 
-    private void processSearch() {
-        Properties prop = validateSearch();
-        if(prop.size() > 0) {
-            myModel.stateChangeRequest("ProcessSearch", prop);
+    @Override
+    protected HashMap<Worker.DATABASE, String> getFields() {
+        return Worker.getFields();
+    }
+
+    @Override
+    protected ListView getSearchResult() {
+        ListView<WorkerTableModel> listView = new ListView<>();
+        listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        listView.setCellFactory(new Callback<ListView<WorkerTableModel>, ListCell<WorkerTableModel>>() {
+            @Override
+            public ListCell<WorkerTableModel> call(ListView<WorkerTableModel> param) {
+                return new WorkerListViewCell();
+            }
+        });
+        tableData = FXCollections.observableArrayList();
+        listView.prefHeightProperty().bind(Bindings.size(tableData).multiply(WorkerListViewCell.getCustomHeight()+ 10));
+        return listView;
+    }
+
+    @Override
+    protected void insertDataToTable(Enumeration entries) {
+
+        while (entries.hasMoreElements())
+        {
+            Worker nextBook = (Worker) entries.nextElement();
+            Vector<String> view = nextBook.getEntryListView();
+
+            // add this list entry to the list
+            WorkerTableModel nextRowData = new WorkerTableModel(view);
+            tableData.add(nextRowData);
+
         }
     }
 
     @Override
-    public void updateState(String key, Object value) {
-
+    protected int getMaxColumn() {
+        return MAX_COLUMN;
     }
+
+    @Override
+    protected GridPane createSearch() {
+        firstName = new JFXTextField();
+        lastName = new JFXTextField();
+        phone = new JFXTextField();
+        email = new JFXTextField();
+
+        GridPane grid = new GridPane();
+
+        int line = 0;
+        int row = line / MAX_COLUMN;
+        int col = line % MAX_COLUMN;
+        String firstNameStr = fields.get(Worker.DATABASE.FirstName);
+        setupField(firstName, firstNameStr);
+        grid.add(firstName, col, row,1,1);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String lastNameStr = fields.get(Worker.DATABASE.LastName);
+        setupField(lastName, lastNameStr);
+        grid.add(lastName, col, row,1,1);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String phoneStr = fields.get(Worker.DATABASE.Phone);
+        setupField(phone, phoneStr);
+        grid.add(phone, col, row);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String emailStr = fields.get(Worker.DATABASE.Email);
+        setupField(email, emailStr);
+        grid.add(email, col, row);
+
+        return grid;
+    }
+
 }

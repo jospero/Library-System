@@ -1,6 +1,5 @@
-package userinterface.book;
+package userinterface.worker;
 
-import Utilities.Utilities;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -8,18 +7,19 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import userinterface.book.BookTableModel;
 
 /**
  * Created by Sammytech on 4/6/17.
  */
-public class BookListViewCell extends ListCell<BookTableModel> {
+public class WorkerListViewCell extends ListCell<WorkerTableModel> {
 
     private ImageView bookView;
-    private Label titleLabel;
-    private Label authorLabel;
-    private Label yearOfPubLabel;
+    private Label nameLabel;
+//    private Label authorLabel;
+//    private Label yearOfPubLabel;
     private HBox layout;
-    private static double HEIGHT = 160;
+    private static double HEIGHT = 100;
     private static double VPAD = 30;
 
     private void configureBookView() {
@@ -33,26 +33,26 @@ public class BookListViewCell extends ListCell<BookTableModel> {
     private void addControlsToLayout() {
         layout.getChildren().add(bookView);
         VBox infoBox = new VBox();
-        infoBox.getChildren().add(titleLabel);
-        infoBox.getChildren().add(authorLabel);
-        infoBox.getChildren().add(yearOfPubLabel);
+        infoBox.getChildren().add(nameLabel);
+//        infoBox.getChildren().add(authorLabel);
+//        infoBox.getChildren().add(yearOfPubLabel);
         layout.getChildren().add(infoBox);
     }
 
     private void configureYearOfPub() {
-        yearOfPubLabel = new Label();
-        titleLabel.getStyleClass().add("year");
+//        yearOfPubLabel = new Label();
+//        titleLabel.getStyleClass().add("year");
     }
 
     private void configureAuthor() {
-        authorLabel = new Label();
-        titleLabel.getStyleClass().add("author");
+//        authorLabel = new Label();
+//        titleLabel.getStyleClass().add("author");
     }
 
     private void configureTitle() {
-        titleLabel = new Label();
-        titleLabel.setId("title");
-        titleLabel.getStyleClass().add("title");
+        nameLabel = new Label();
+        nameLabel.setId("title");
+        nameLabel.getStyleClass().add("title");
 
     }
 
@@ -67,7 +67,7 @@ public class BookListViewCell extends ListCell<BookTableModel> {
     }
 
     @Override
-    protected void updateItem(BookTableModel item, boolean empty) {
+    protected void updateItem(WorkerTableModel item, boolean empty) {
         super.updateItem(item, empty);
         if (empty) {
             clearContent();
@@ -78,7 +78,7 @@ public class BookListViewCell extends ListCell<BookTableModel> {
         }
     }
 
-    private void addContent(BookTableModel item) {
+    private void addContent(WorkerTableModel item) {
         setText(null);
         configureLayout();
         configureBookView();
@@ -89,9 +89,9 @@ public class BookListViewCell extends ListCell<BookTableModel> {
 
 //        System.out.println(item.getTitle());
 //        titleLabel.setText(Utilities.convertToTitleCase(item.getTitle()));
-        titleLabel.setText(item.getTitle().toUpperCase());
-        authorLabel.setText("By: " + item.getAuthors().toUpperCase());
-        yearOfPubLabel.setText(item.getYearOfPublication());
+        nameLabel.setText(item.getFirstName().toUpperCase() + " " + item.getLastName());
+//        authorLabel.setText("By: " + item.getAuthors().toUpperCase());
+//        yearOfPubLabel.setText(item.getYearOfPublication());
         setGraphic(layout);
     }
 

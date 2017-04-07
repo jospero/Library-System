@@ -4,7 +4,9 @@ import Utilities.Utilities;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -41,6 +43,7 @@ public class SearchBookView extends SearchView<Book.DATABASE> {
     private JFXTextField isbn;
     private ComboBox condition;
     private JFXTextField sugPrice;
+
     private static final int MAX_COLUMN = 2;
 
     public SearchBookView(IModel model) {
@@ -59,13 +62,6 @@ public class SearchBookView extends SearchView<Book.DATABASE> {
 
 
         GridPane grid = new GridPane();
-        grid.setHgap(30);
-        grid.setVgap(30);
-        ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(100/MAX_COLUMN);
-        for(int i = 0; i < MAX_COLUMN; i++){
-            grid.getColumnConstraints().add(col1);
-        }
 
         int line = 0;
         int row = line / MAX_COLUMN;
@@ -119,11 +115,7 @@ public class SearchBookView extends SearchView<Book.DATABASE> {
         return grid;
     }
 
-    private void setupField(JFXTextField node, String prompt){
-        node.setPadding(new Insets(30, 0, 30, 0));
-        node.setLabelFloat(true);
-        node.setPromptText(prompt);
-    }
+
 
 
 
@@ -189,20 +181,20 @@ public class SearchBookView extends SearchView<Book.DATABASE> {
     @Override
     protected ListView getSearchResult() {
         ListView<BookTableModel> listView = new ListView<>();
+        listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         listView.setCellFactory(new Callback<ListView<BookTableModel>, ListCell<BookTableModel>>() {
             @Override
             public ListCell<BookTableModel> call(ListView<BookTableModel> param) {
                 return new BookListViewCell();
             }
         });
+        tableData = FXCollections.observableArrayList();
+        listView.prefHeightProperty().bind(Bindings.size(tableData).multiply(BookListViewCell.getCustomHeight()+ 10));
         return listView;
     }
 
     @Override
-    protected void UpdateSearchResult(Object value) {
-        ObservableList<BookTableModel> tableData = FXCollections.observableArrayList();
-        Vector entryList = (Vector)value;
-        Enumeration entries = entryList.elements();
+    protected void insertDataToTable(Enumeration entries) {
 
         while (entries.hasMoreElements())
         {
@@ -212,10 +204,19 @@ public class SearchBookView extends SearchView<Book.DATABASE> {
             // add this list entry to the list
             BookTableModel nextRowData = new BookTableModel(view);
             tableData.add(nextRowData);
-
         }
-        searchResult.setItems(tableData);
-        searchResult.setVisible(true);
+
+
+    }
+
+//    @Override
+//    protected void viewItem(int selectedIndex) {
+//        myModel.stateChangeRequest("ViewBook", selectedIndex);
+//    }
+
+    @Override
+    protected int getMaxColumn() {
+        return MAX_COLUMN;
     }
 
 }

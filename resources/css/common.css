@@ -207,7 +207,7 @@
 }
 
 #searchBox{
-    -fx-padding: 30px;
+    -fx-padding: 0 0 30px 0;
 }
 #searchBox > *.content {
     -fx-background-color: transparent;
@@ -226,4 +226,66 @@
 {
     -fx-effect: none;
     -fx-focus-color: transparent;
+}
+
+.searchList {
+    -fx-padding: 0px ;
+    -fx-background-color: transparent ;
+}
+
+.searchList .list-cell {
+    -fx-padding: 5px ;
+    -fx-background-color: transparent;
+    -fx-background-insets: 5px ;
+}
+
+.searchList .list-cell > #outerBox{
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+}
+
+.searchList .list-cell:focused{
+    -fx-effect: none;
+}
+.searchList .list-view:focused{
+    -fx-effect: none;
+}
+
+/*.list-cell:filled:selected {*/
+    /*!* 4: (Styling when out of focus)*!*/
+    /*-fx-background-color: linear-gradient(#333 0%, #777 25%, #aaa 75%, #eee 100%);*/
+    /*-fx-text-fill: white;*/
+/*}*/
+
+/*.list-view:focused .list-cell:filled:selected {*/
+    /*!* 3: (This is more specific and therefore overrides the above)*!*/
+    /*-fx-background-color: linear-gradient(#300 0%, #700 25%, #a00 75%, #e00 100%);*/
+/*}*/
+
+.searchList .list-cell:empty {
+    -fx-padding: 0 ;
+    -fx-background-color: transparent ;
+    -fx-background-insets: 0 ;
+}
+
+
+.searchList  .title{
+
+    -fx-font-family: "Arial Black";
+    -fx-font-size: 20px;
+    -fx-font-weight: bolder;
+    -fx-padding: 10px 0px 15px 0px;
+}
+
+.searchList  .author{
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-padding: 5px 0px 5px 0px;
+}
+
+.searchList  .year{
+
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-padding: 3px 0px 3px 0px;
 }
