@@ -4,6 +4,7 @@ import impresario.IModel;
 import userinterface.book.AddBookView;
 import userinterface.book.BookCollectionView;
 import userinterface.book.ModifyBookView;
+import userinterface.book.CheckOutBookView;
 import userinterface.book.SearchBookView;
 import userinterface.studentborrower.AddStudentBorrowerView;
 import userinterface.studentborrower.ModifyStudentBorrowerView;
@@ -27,6 +28,8 @@ public class ViewFactory {
 				return new AddBookView(model);
 			} else if(viewName.equals("ModifyBookView")) {
 				return new ModifyBookView(model);
+			} else if(viewName.equals("CheckOutBookView")) {
+				return new CheckOutBookView(model);
 			} else if(viewName.equals("ModifyWorkerView")) {
 				return new ModifyWorkerView(model);
 			}  else if(viewName.equals("ModifyStudentBorrowerView")) {

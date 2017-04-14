@@ -1,6 +1,5 @@
 package model;
 
-import Utilities.Utilities;
 import exception.InvalidPrimaryKeyException;
 import impresario.IView;
 
@@ -112,6 +111,9 @@ public class Book extends EntityBase implements IView {
         } else if(key.equals("ProcessModifyBook")){
 			processModifyBook((Properties) value);
 		}
+		else if(key.equals("ProcessCheckOutBook")){
+			processCheckOutBook((Properties) value);
+		}
 	    myRegistry.updateSubscribers(key, this);
 	}
 	
@@ -122,6 +124,7 @@ public class Book extends EntityBase implements IView {
 		dependencies.setProperty("ModifyBookCancelled","ViewCancelled");
         dependencies.setProperty("ProcessNewBook","UpdateStatusMessage");
         dependencies.setProperty("ProcessModifyBook","UpdateStatusMessage");
+		dependencies.setProperty("ProcessCheckOutBook","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}
 
@@ -189,6 +192,20 @@ public class Book extends EntityBase implements IView {
 
 	}
 
+	private void CheckOutBook(){
+		try {
+			successFlag = true;
+			Properties whereClause = new Properties();
+			whereClause.setProperty(DATABASE.Barcode.name(),
+					persistentState.getProperty(DATABASE.Barcode.name()));
+			updatePersistentState(mySchema, persistentState, whereClause);
+			updateStatusMessage = "Book data for Barcode : " + persistentState.getProperty(DATABASE.Barcode.name()) + " updated successfully in database!";
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	/**
 	 * This method is needed solely to enable the Account information to be displayable in a table
 	 *
@@ -223,6 +240,11 @@ public class Book extends EntityBase implements IView {
 	public void processModifyBook(Properties props){
 		processNewBookHelper(props);
 		modifyBook();
+	}
+
+	public void processCheckOutBook(Properties props){
+		processNewBookHelper(props);
+		CheckOutBook();
 	}
 
     private void processNewBookHelper(Properties props){

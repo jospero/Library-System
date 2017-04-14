@@ -12,7 +12,6 @@ import userinterface.ViewFactory;
 import userinterface.WindowPosition;
 
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -48,6 +47,7 @@ public class Main implements IView, IModel {
         dependencies = new Properties();
         dependencies.setProperty("Add", "ChangeView");
         dependencies.setProperty("Modify", "ChangeView");
+        dependencies.setProperty("CheckOut", "ChangeView");
         dependencies.setProperty("Delete", "ChangeView");
         dependencies.setProperty("Welcome", "ChangeView");
         dependencies.setProperty("ViewCancelled", "ChangeView");
@@ -101,8 +101,11 @@ public class Main implements IView, IModel {
                 currentView = ViewFactory.createView(viewName, model);
                 myViews.put(viewName, currentView);
             }
-        } else if (key.equals("Modify") || key.equals("Delete")) {
+        } else if (key.equals("Modify") || key.equals("Delete") || key.equals("CheckOut")) {
             SearchFor search;
+            if (key.equals("CheckOut")) {
+                search = SearchFor.CheckOut;
+            }
             if(key.equals("Modify"))
                 search = SearchFor.MODIFY;
             else
