@@ -2,6 +2,7 @@
   <library name="mysql-connector-java-5.1.7-bin">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/mysql-connector-java-5.1.7-bin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jfoenix.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

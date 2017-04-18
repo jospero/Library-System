@@ -53,6 +53,7 @@ public class Main implements IView, IModel {
         dependencies.setProperty("ViewCancelled", "ChangeView");
         dependencies.setProperty("SubViewChange", "ChangeView");
         dependencies.setProperty("ParentView", "ChangeView");
+        dependencies.setProperty("checkIn", "changeView");
         myRegistry.setDependencies(dependencies);
     }
     @Override
@@ -135,8 +136,18 @@ public class Main implements IView, IModel {
             currentView = (View) value;
         } else if(key.equals("ParentView")){
             currentView = myViews.get(value);
+        }else if(key.equals("checkIn")){
+            EntityBase Model = new Book(new Properties());
+            String viewName = "AddBookView";
+            if(myViews.get(viewName) == null) {
+                myViews.clear();
+                Model.subscribe("SubViewChange", this);
+                Model.subscribe("ParentView", this);
+                Model.subscribe("ViewCancelled", this);
+                currentView = ViewFactory.createView(viewName, Model);
+                myViews.put(viewName, currentView);
+            }
         }
-
         myRegistry.updateSubscribers(key, this);
 
     }
