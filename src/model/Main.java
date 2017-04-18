@@ -140,14 +140,16 @@ public class Main implements IView, IModel {
         } else if(key.equals("ParentView")){
             currentView = myViews.get(value);
         }else if(key.equals("checkIn")){
-            EntityBase Model = new Book(new Properties());
-            String viewName = "AddBookView";
-            if(myViews.get(viewName) == null) {
+            EntityBase model = null;
+            String viewName = "";
+            if(value.equals("Book")){
+                model = new Book(new Properties());
+                viewName = "CheckInBook";
+            }
+            if(model != null && myViews.get(viewName) == null){
                 myViews.clear();
-                Model.subscribe("SubViewChange", this);
-                Model.subscribe("ParentView", this);
-                Model.subscribe("ViewCancelled", this);
-                currentView = ViewFactory.createView(viewName, Model);
+                model.subscribe("ViewCancelled", this);
+                currentView = ViewFactory.createView(viewName, model);
                 myViews.put(viewName, currentView);
             }
         }

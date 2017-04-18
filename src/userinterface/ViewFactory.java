@@ -52,6 +52,8 @@ public class ViewFactory {
 				return new WorkerCollectionView(model);
 			} else if(viewName.equals("StudentBorrowerCollectionView")) {
 				return new StudentBorrowerCollectionView(model);
+			}else if(viewName.equals("CheckInBook")){
+				return new CheckInBookView(model);
 			}
 
 			return null;
