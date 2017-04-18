@@ -9,7 +9,6 @@ import userinterface.View;
 import userinterface.ViewFactory;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -101,6 +100,12 @@ public class SearchBook implements IView, IModel {
                 Book book = ((Vector<Book>)bookCollection.getState("Books")).get(selectedBook);
                 book.subscribe("ViewBookCancelled", this);
                 nextView.add(ViewFactory.createView("ModifyBookView", book));
+            }
+            if(searchFor == SearchFor.CheckOut) {
+                selectedBook = (int) value;
+                Book book = ((Vector<Book>)bookCollection.getState("Books")).get(selectedBook);
+                book.subscribe("ViewBookCancelled", this);
+                nextView.add(ViewFactory.createView("CheckOutBookView", book));
             }
         } else if(key.equals("ViewBookCancelled")){
             Book book = ((Vector<Book>)bookCollection.getState("Books")).get(selectedBook);
