@@ -101,7 +101,7 @@ public class Main implements IView, IModel {
                 currentView = ViewFactory.createView(viewName, model);
                 myViews.put(viewName, currentView);
             }
-        } else if (key.equals("Modify") || key.equals("Delete") || key.equals("CheckOut")) {
+        } else if (key.equals("Modify") || key.equals("Delete")) {
             SearchFor search;
             if (key.equals("CheckOut")) {
                 search = SearchFor.CheckOut;
@@ -138,6 +138,10 @@ public class Main implements IView, IModel {
             currentView = (View) value;
         } else if(key.equals("ParentView")){
             currentView = myViews.get(value);
+        } else if (key.equals("CheckOut")) {
+            myViews.clear();
+            currentView = ViewFactory.createView("CheckOutBookView", myWorkerHolder);
+            myViews.put("CheckOutBookView", currentView);
         }
 
         myRegistry.updateSubscribers(key, this);
