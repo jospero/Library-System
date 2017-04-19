@@ -141,7 +141,9 @@ public class Main implements IView, IModel {
             currentView = myViews.get(value);
         } else if (key.equals("CheckOut")) {
             myViews.clear();
-            currentView = ViewFactory.createView("CheckOutBookView", myWorkerHolder);
+            Book book = new Book(new Properties());
+            book.subscribe("ViewCancelled", this);
+            currentView = ViewFactory.createView("CheckOutBookView", book);
             myViews.put("CheckOutBookView", currentView);
         }else if(key.equals("CheckIn")) {
 //            myViews.clear();
