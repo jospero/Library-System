@@ -5,7 +5,6 @@ import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -123,6 +122,7 @@ logoutButton.setPrefHeight(40);
         checkOutBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
+                myModel.stateChangeRequest("CheckOut", "Book");
                 System.out.println("Check out Book Pressed");
             }
         });
@@ -132,6 +132,7 @@ logoutButton.setPrefHeight(40);
         checkInBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
+                myModel.stateChangeRequest("CheckIn", "Book");
                 System.out.println("Check In Book Pressed");
             }
         });

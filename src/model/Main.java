@@ -12,7 +12,6 @@ import userinterface.ViewFactory;
 import userinterface.WindowPosition;
 
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -48,11 +47,13 @@ public class Main implements IView, IModel {
         dependencies = new Properties();
         dependencies.setProperty("Add", "ChangeView");
         dependencies.setProperty("Modify", "ChangeView");
+        dependencies.setProperty("CheckOut", "ChangeView");
         dependencies.setProperty("Delete", "ChangeView");
         dependencies.setProperty("Welcome", "ChangeView");
         dependencies.setProperty("ViewCancelled", "ChangeView");
         dependencies.setProperty("SubViewChange", "ChangeView");
         dependencies.setProperty("ParentView", "ChangeView");
+        dependencies.setProperty("CheckIn", "ChangeView");
         myRegistry.setDependencies(dependencies);
     }
     @Override
@@ -103,6 +104,9 @@ public class Main implements IView, IModel {
             }
         } else if (key.equals("Modify") || key.equals("Delete")) {
             SearchFor search;
+            if (key.equals("CheckOut")) {
+                search = SearchFor.CheckOut;
+            }
             if(key.equals("Modify"))
                 search = SearchFor.MODIFY;
             else
@@ -135,8 +139,21 @@ public class Main implements IView, IModel {
             currentView = (View) value;
         } else if(key.equals("ParentView")){
             currentView = myViews.get(value);
-        }
+        } else if (key.equals("CheckOut")) {
+            myViews.clear();
+            Rental rental = new Rental(myWorkerHolder);
+            rental.subscribe("ViewCancelled", this);
+            currentView = ViewFactory.createView("CheckOutBookView", rental);
+            myViews.put("CheckOutBookView", currentView);
+        }else if(key.equals("CheckIn")) {
 
+            myViews.clear();
+            Rental rental = new Rental(myWorkerHolder);
+            rental.subscribe("ViewCancelled", this);
+            currentView = ViewFactory.createView("CheckInBookView", rental);
+            myViews.put("CheckInBookView", currentView);
+
+       }
         myRegistry.updateSubscribers(key, this);
 
     }

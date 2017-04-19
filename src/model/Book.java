@@ -1,6 +1,5 @@
 package model;
 
-import Utilities.Utilities;
 import exception.InvalidPrimaryKeyException;
 import impresario.IView;
 
@@ -27,6 +26,11 @@ public class Book extends EntityBase implements IView {
 		super(myTableName);
 
 		setDependencies();
+		retreive(Barcode);
+
+	}
+
+	public void retreive(String Barcode) throws InvalidPrimaryKeyException{
 		String query = "SELECT * FROM " + myTableName + " WHERE (Barcode = " + Barcode + ")";
 
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
@@ -40,7 +44,7 @@ public class Book extends EntityBase implements IView {
 			if (size != 1)
 			{
 				throw new InvalidPrimaryKeyException("Multiple books matching id : "
-					+ Barcode + " found.");
+						+ Barcode + " found.");
 			}
 			else
 			{
@@ -56,7 +60,7 @@ public class Book extends EntityBase implements IView {
 		{
 //		    bookErrorMessage="No book matching id : " + Barcode + " found.";
 			throw new InvalidPrimaryKeyException("No book matching id : "
-				+ Barcode + " found.");
+					+ Barcode + " found.");
 		}
 	}
 
@@ -108,9 +112,40 @@ public class Book extends EntityBase implements IView {
         } else if(key.equals("ProcessModifyBook")){
 			processModifyBook((Properties) value);
 		}
+		else if(key.equals("ProcessCheckOutBook")){
+			processCheckOutBook((Properties) value);
+		}
+		else if(key.equals("ProcessCheckInBook")){
+			processCheckInBook((Properties) value);
+		}
 	    myRegistry.updateSubscribers(key, this);
 	}
-	
+
+
+	private void processCheckInBook(Properties value) {
+		processNewBookHelper(value);
+		CheckInBook(value);
+	}
+
+	private void CheckInBook(Properties value) {
+
+//			THIS IS FOR CHECKOUT BIATCHES
+
+
+			String query = "INSERT ";
+//		try {
+			successFlag = true;
+			Properties whereClause = new Properties();
+			whereClause.setProperty(DATABASE.Barcode.name(),
+					persistentState.getProperty(DATABASE.Barcode.name()));
+
+
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+
+	}
+
 	private void setDependencies()
 	{
 		dependencies = new Properties();
@@ -118,6 +153,7 @@ public class Book extends EntityBase implements IView {
 		dependencies.setProperty("ModifyBookCancelled","ViewCancelled");
         dependencies.setProperty("ProcessNewBook","UpdateStatusMessage");
         dependencies.setProperty("ProcessModifyBook","UpdateStatusMessage");
+		dependencies.setProperty("ProcessCheckOutBook","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}
 
@@ -185,6 +221,20 @@ public class Book extends EntityBase implements IView {
 
 	}
 
+	private void CheckOutBook(){
+		try {
+			successFlag = true;
+			Properties whereClause = new Properties();
+			whereClause.setProperty(DATABASE.Barcode.name(),
+					persistentState.getProperty(DATABASE.Barcode.name()));
+			updatePersistentState(mySchema, persistentState, whereClause);
+			updateStatusMessage = "Book data for Barcode : " + persistentState.getProperty(DATABASE.Barcode.name()) + " updated successfully in database!";
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	/**
 	 * This method is needed solely to enable the Account information to be displayable in a table
 	 *
@@ -219,6 +269,11 @@ public class Book extends EntityBase implements IView {
 	public void processModifyBook(Properties props){
 		processNewBookHelper(props);
 		modifyBook();
+	}
+
+	public void processCheckOutBook(Properties props){
+		processNewBookHelper(props);
+		CheckOutBook();
 	}
 
     private void processNewBookHelper(Properties props){
