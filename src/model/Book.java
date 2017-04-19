@@ -5,10 +5,7 @@ import exception.InvalidPrimaryKeyException;
 import impresario.IView;
 
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 import static Utilities.Utilities.getStringLang;
 
@@ -19,7 +16,6 @@ public class Book extends EntityBase implements IView {
 	}
 
 	private static final String myTableName = "Book";
-
 	protected Properties dependencies;
 
 	// GUI Components
@@ -267,4 +263,6 @@ public class Book extends EntityBase implements IView {
 	public void updateState(String key, Object value) {
 		stateChangeRequest(key, value);
 	}
+
+
 }

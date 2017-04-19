@@ -14,8 +14,7 @@ import userinterface.InformationView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 import static model.Worker.getFields;
 
@@ -25,7 +24,7 @@ import static model.Worker.getFields;
 public abstract class WorkerInformationView extends InformationView<Worker.DATABASE> {
 
 //    boolean enableFields;
-
+    private static final  DateTimeFormatter dbformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public WorkerInformationView(IModel model, boolean enableFields, String classname) {
         super(model, enableFields, classname);
     }
@@ -48,14 +47,15 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                 field.label.setText(str);
                 if(fEnum == Worker.DATABASE.Credentials){
                     field.field = getCredentialsNode();
-                    if(worker.get(row) != null && !worker.get(row).isEmpty())
-                        ((ComboBox)field.field).setValue(worker.get(row));
+                    if(worker.get(row) != null && !worker.get(row).isEmpty()) {
+                        ((JFXComboBox<Credentials>) field.field).getSelectionModel().select(Credentials.getConditionIndex(worker.get(row)));
+                    }
                 }
                 else if(fEnum == Worker.DATABASE.DateOfHire || fEnum == Worker.DATABASE.DateOfLatestCredentialStatus) {
                     LocalDate localDate;
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.getStringNorm("dateFormat"));
 
-                    DateTimeFormatter dbformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
                     if(worker.get(row) != null && !worker.get(row).isEmpty()){
                         localDate = LocalDate.parse(worker.get(row), dbformatter);
                     } else {
@@ -152,12 +152,17 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                 else {
                     fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
                     if(!errorFound){
+                        if(fieldsEnum == Worker.DATABASE.DateOfLatestCredentialStatus || fieldsEnum == Worker.DATABASE.DateOfHire){
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.getStringNorm("dateFormat"));
+                            str = LocalDate.parse(str, formatter).format(dbformatter);
+                        }
                         worker.setProperty(fieldsEnum.name(), str);
                     }
                 }
             } else if( fieldsList.get(fieldsEnum).field instanceof ComboBox) {
                 if(!errorFound) {
-                    String str = ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
+                    Credentials cond = (Credentials) ((JFXComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem();
+                    String str = Utilities.getStringInEng(cond.key);
                     worker.setProperty(fieldsEnum.name(), str);
                 }
             } else{
@@ -172,8 +177,12 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
     }
 
     private JFXComboBox getCredentialsNode(){
-        JFXComboBox comboBox = new JFXComboBox();
-        comboBox.getItems().addAll(Utilities.getStringLang("credsord"),Utilities.getStringLang("credsadmin"));
+        JFXComboBox<Credentials> comboBox = new JFXComboBox<>();
+        Map<String, String> cond = Credentials.getConditions();
+        for(Map.Entry<String, String> entry: cond.entrySet()){
+            Credentials temp = new Credentials(Utilities.getStringLang(entry.getValue()), entry.getValue());
+            comboBox.getItems().add(temp);
+        }
         comboBox.getSelectionModel().select(0);
         return comboBox;
     }
@@ -184,5 +193,36 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
 //        comboBox.getSelectionModel().select(0);
 //        return comboBox;
 //    }
+
+    private static class Credentials{
+        private static final Map<String, String> credList;
+        static {
+            Map<String, String> map = new LinkedHashMap<>();
+            map.put("ordinary","credsord");
+            map.put("administrator","credsadmin");
+            credList = Collections.unmodifiableMap(map);
+        }
+        String value;
+        String key;
+
+        public Credentials(String value, String key) {
+            this.value = value;
+            this.key = key;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        public static Map<String, String> getConditions(){
+            return credList;
+        }
+        public static int getConditionIndex(String condition){
+
+            return new ArrayList<String>(credList.keySet()).indexOf(condition.toLowerCase());
+        }
+
+    }
 
 }

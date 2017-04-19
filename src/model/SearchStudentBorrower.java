@@ -40,7 +40,7 @@ public class SearchStudentBorrower implements IView, IModel {
     {
         dependencies = new Properties();
         dependencies.setProperty("ProcessSearch", "UpdateSearch");
-        dependencies.setProperty("ViewStudentBorrowerCancelled", "ParentView");
+        dependencies.setProperty("DetailViewCancelled", "ParentView");
         dependencies.setProperty("SearchCancelled", "ViewCancelled");
         dependencies.setProperty("View", "SubViewChange");
         myRegistry.setDependencies(dependencies);
@@ -90,13 +90,13 @@ public class SearchStudentBorrower implements IView, IModel {
                 selectedStudentBorrower = (int) value;
                 StudentBorrower studentBorrower = ((Vector<StudentBorrower>)studentBorrowerCollection.
                         getState("StudentBorrowers")).get(selectedStudentBorrower);
-                studentBorrower.subscribe("ViewStudentBorrowerCancelled", this);
+                studentBorrower.subscribe("DetailViewCancelled", this);
                 nextView.add(ViewFactory.createView("ModifyStudentBorrowerView", studentBorrower));
             }
-        } else if(key.equals("ViewStudentBorrowerCancelled")){
+        } else if(key.equals("DetailViewCancelled")){
             StudentBorrower studentBorrower = ((Vector<StudentBorrower>)studentBorrowerCollection.
                     getState("StudentBorrowers")).get(selectedStudentBorrower);
-            studentBorrower.unSubscribe("ViewStudentBorrowerCancelled", this);
+            studentBorrower.unSubscribe("DetailViewCancelled", this);
             if(value != null && (boolean)value){
                 myRegistry.updateSubscribers("UpdateSearch", this);
             }

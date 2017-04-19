@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
 public class Utilities
 {
 
-	private static String language ="";
-	private static String country ="";
+	private static String language;
+	private static String country;
 
 
 	private static Locale currentLocale;
@@ -351,22 +351,37 @@ public class Utilities
 		if (props == null) {
 			props = new PropertyFile("langConfig.ini");
 		}
-		language = props.getProperty("lang");
-		country = props.getProperty("country");
-		currentLocale = new Locale(language, country);
+		if(language == null)
+			language = props.getProperty("lang");
+		if(country == null)
+			country = props.getProperty("country");
+		if(currentLocale == null)
+			currentLocale = new Locale(language, country);
+
+		return getStringNorm(key, currentLocale);
+	}
+
+	public static String getStringInEng(String key) {
+		Locale locale = new Locale("en", "US");
+		return convertToTitleCase(getStringNorm(key, locale)).trim();
+	}
+
+	public static String getStringNorm(String key, Locale locale) {
 		String result;
 		try {
-			if(messages == null) {
-				messages = ResourceBundle.getBundle("MessagesBundle", currentLocale, new UTF8Control());
+			if(messages == null || !messages.getLocale().equals(locale)) {
+				messages = ResourceBundle.getBundle("MessagesBundle", locale,
+						new UTF8Control());
 			}
 			result = messages.getString(key);
 		} catch (MissingResourceException ex){
 			result = "Shit aint right";
 		}
+//		if(!currentLocale.equals(locale)){
+//			messages = ResourceBundle.getBundle("MessagesBundle", currentLocale, new UTF8Control());
+//		}
 		return result;
 	}
-
-
 
 
 	public static boolean validateEmail(String email){

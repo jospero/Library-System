@@ -50,7 +50,7 @@ public class ModifyBookView extends BookInformationView {
         cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                myModel.stateChangeRequest("ViewBookCancelled", null);
+                myModel.stateChangeRequest("DetailViewCancelled", null);
             }
         });
         return buttonBox;
@@ -77,7 +77,7 @@ public class ModifyBookView extends BookInformationView {
 
         Optional<ButtonType> result = alert.showAndWait();
        if (result.get() == noButton) {
-            myModel.stateChangeRequest("ViewBookCancelled", null);
+            myModel.stateChangeRequest("DetailViewCancelled", null);
         }
     }
 

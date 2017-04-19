@@ -4,24 +4,18 @@ import Utilities.Utilities;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.validation.DoubleValidator;
-import com.jfoenix.validation.NumberValidator;
-import com.jfoenix.validation.RequiredFieldValidator;
 import impresario.IModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.GridPane;
 import model.Book;
 import userinterface.InformationView;
+import validation.DoubleValidator;
+import validation.NumberValidator;
+import validation.RequiredFieldValidator;
 
-import java.time.Year;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 import static model.Book.getFields;
 
@@ -54,8 +48,9 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                 field.label.setText(str);
                 if(fEnum == Book.DATABASE.Condition){
                     field.field = getConditionNode();
-                    if(book.get(row) != null && !book.get(row).isEmpty())
-                        ((ComboBox)field.field).setValue(book.get(row));
+                    if(book.get(row) != null && !book.get(row).isEmpty()) {
+                        ((JFXComboBox<Condition>) field.field).getSelectionModel().select(Condition.getConditionIndex(book.get(row)));
+                    }
                 } else if(fEnum == Book.DATABASE.Notes) {
                     JFXTextArea ta = new JFXTextArea();
                     field.field = ta;
@@ -63,7 +58,6 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                     JFXTextField fTF = new JFXTextField();
                     RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator();
                     fTF.getValidators().add(requiredFieldValidator);
-//                    requiredFieldValidator.setErrorStyleClass("field-error");
                     if(fEnum == Book.DATABASE.Barcode || fEnum == Book.DATABASE.ISBN || fEnum == Book.DATABASE.YearOfPublication){
                         NumberValidator numberValidator = new NumberValidator();
                         fTF.getValidators().add(numberValidator);
@@ -113,76 +107,86 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         return bookInfo;
     }
 
-    final public Properties validateBook(){
-        Properties book = new Properties();
-        boolean errorFound = false;
-        System.out.println("Checking");
-        for(Book.DATABASE fieldsEnum: fieldsList.keySet()){
-             if(fieldsList.get(fieldsEnum).field instanceof JFXTextField || fieldsList.get(fieldsEnum).field instanceof JFXTextArea) {
-                 String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
-                 if (str.isEmpty() && fieldsEnum != Book.DATABASE.Notes) {
-
-                     if (!errorFound) {
-                         errorFound = true;
-                         book = new Properties();
-                     }
-                 } else if (fieldsEnum == Book.DATABASE.Barcode || fieldsEnum == Book.DATABASE.YearOfPublication ||
-                         fieldsEnum == Book.DATABASE.ISBN) {
-
-
-                     if (str.matches("[0-9]+")) {
-                         if (!errorFound) {
-                             book.setProperty(fieldsEnum.name(), str);
-                         }
-                     } else {
-                         if (!errorFound) {
-                             errorFound = true;
-                             book = new Properties();
-                         }
-                     }
-                 } else if (fieldsEnum == Book.DATABASE.SuggestedPrice){
-                     try {
-                         double i = Double.parseDouble(str);
-                         if (!errorFound) {
-                             book.setProperty(fieldsEnum.name(), str);
-                         }
-                     } catch (NumberFormatException ex) {
-                         if (!errorFound) {
-                             errorFound = true;
-                             book = new Properties();
-                         }
-                     }
-                }
-                 else {
-                     fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
-                     if(!errorFound){
-                        book.setProperty(fieldsEnum.name(), str);
-                    }
-                 }
-             } else {
-                 if(!errorFound) {
-//                    int index =  ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedIndex();
-                     String str = ((JFXComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
-//                    String str =
-                     book.setProperty(fieldsEnum.name(), str);
-                 }
-             }
+    public static boolean validate(JFXTextField... textFields){
+        boolean valid = true;
+        for(JFXTextField jtf : textFields){
+            valid = valid && jtf.validate();
         }
-        System.out.println(book.toString());
-        return book;
+        return valid;
     }
 
+    final public Properties validateBook(){
+        boolean valid = true;
+        Properties book = new Properties();
+        for(Book.DATABASE fieldsEnum: fieldsList.keySet()){
+            if(fieldsList.get(fieldsEnum).field instanceof JFXTextField){
+                System.out.println(fieldsEnum.name());
+                valid = ((JFXTextField) fieldsList.get(fieldsEnum).field).validate() && valid;
+                String str = ((JFXTextField) fieldsList.get(fieldsEnum).field).getText();
+                book.setProperty(fieldsEnum.name(), str);
+            } else if(fieldsList.get(fieldsEnum).field instanceof JFXComboBox){
+                Condition cond = (Condition) ((JFXComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem();
+                String str = Utilities.getStringInEng(cond.key);
+                book.setProperty(fieldsEnum.name(), str);
+            } else{
+                String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
+                book.setProperty(fieldsEnum.name(), str);
+            }
+        }
+        if(!valid){
+            book.clear();
+        }
+        System.out.println(book);
+        return book;
+    }
 
     private String Databasify(String field){
         return field.replaceAll("[^a-zA-Z0-9]", "");
     }
 
-    private JFXComboBox getConditionNode(){
-        JFXComboBox comboBox = new JFXComboBox();
-        comboBox.getItems().addAll(Utilities.getStringLang("condgood"), Utilities.getStringLang("conddmg"));
+    private JFXComboBox<Condition> getConditionNode(){
+        JFXComboBox<Condition> comboBox = new JFXComboBox<>();
+        Map<String, String> cond = Condition.getConditions();
+        for(Map.Entry<String, String> entry: cond.entrySet()){
+            Condition temp = new Condition(Utilities.getStringLang(entry.getValue()), entry.getValue());
+            comboBox.getItems().add(temp);
+        }
         comboBox.getSelectionModel().select(0);
         return comboBox;
     }
+
+    private static class Condition{
+        private static final Map<String, String> conditionList;
+        static {
+            Map<String, String> map = new LinkedHashMap<>();
+            map.put("good","condgood");
+            map.put("damaged","conddmg");
+            conditionList = Collections.unmodifiableMap(map);
+        }
+
+        String value;
+        String key;
+
+        public Condition(String value, String key) {
+            this.value = value;
+            this.key = key;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        public static Map<String, String> getConditions(){
+            return conditionList;
+        }
+        public static int getConditionIndex(String condition){
+
+            return new ArrayList<String>(conditionList.keySet()).indexOf(condition.toLowerCase());
+        }
+
+    }
+
 
 //    abstract void clearFields();
 

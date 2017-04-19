@@ -49,7 +49,7 @@ public class ModifyWorkerView extends WorkerInformationView {
         cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                myModel.stateChangeRequest("ViewWorkerCancelled", null);
+                myModel.stateChangeRequest("DetailViewCancelled", null);
             }
         });
         return buttonBox;
@@ -76,9 +76,7 @@ public class ModifyWorkerView extends WorkerInformationView {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == noButton) {
-            myModel.stateChangeRequest("ViewWorkerCancelled", null);
-        } else if (result.get() == yesButton) {
-            myModel.stateChangeRequest("ShowParent", null);
+            myModel.stateChangeRequest("DetailViewCancelled", null);
         }
     }
 

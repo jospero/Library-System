@@ -40,7 +40,7 @@ public class SearchWorker implements IView, IModel {
     {
         dependencies = new Properties();
         dependencies.setProperty("ProcessSearch", "UpdateSearch");
-        dependencies.setProperty("ViewWorkerCancelled", "ParentView");
+        dependencies.setProperty("DetailViewCancelled", "ParentView");
         dependencies.setProperty("SearchCancelled", "ViewCancelled");
         dependencies.setProperty("View", "SubViewChange");
         myRegistry.setDependencies(dependencies);
@@ -90,12 +90,12 @@ public class SearchWorker implements IView, IModel {
             if(searchFor == SearchFor.MODIFY){
                 selectedWorker = (int) value;
                 Worker worker = ((Vector<Worker>)workerCollection.getState("Workers")).get(selectedWorker);
-                worker.subscribe("ViewWorkerCancelled", this);
+                worker.subscribe("DetailViewCancelled", this);
                 nextView.add(ViewFactory.createView("ModifyWorkerView", worker));
             }
-        } else if(key.equals("ViewWorkerCancelled")){
+        } else if(key.equals("DetailViewCancelled")){
             Worker worker = ((Vector<Worker>)workerCollection.getState("Workers")).get(selectedWorker);
-            worker.unSubscribe("ViewWorkerCancelled", this);
+            worker.unSubscribe("DetailViewCancelled", this);
             if(value != null && (boolean)value){
                 myRegistry.updateSubscribers("UpdateSearch", this);
             }

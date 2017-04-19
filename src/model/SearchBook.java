@@ -41,7 +41,7 @@ public class SearchBook implements IView, IModel {
     {
         dependencies = new Properties();
         dependencies.setProperty("ProcessSearch", "UpdateSearch");
-        dependencies.setProperty("ViewBookCancelled", "ParentView");
+        dependencies.setProperty("DetailViewCancelled", "ParentView");
         dependencies.setProperty("SearchCancelled", "ViewCancelled");
         dependencies.setProperty("View", "SubViewChange");
         myRegistry.setDependencies(dependencies);
@@ -99,12 +99,12 @@ public class SearchBook implements IView, IModel {
             if(searchFor == SearchFor.MODIFY){
                 selectedBook = (int) value;
                 Book book = ((Vector<Book>)bookCollection.getState("Books")).get(selectedBook);
-                book.subscribe("ViewBookCancelled", this);
+                book.subscribe("DetailViewCancelled", this);
                 nextView.add(ViewFactory.createView("ModifyBookView", book));
             }
-        } else if(key.equals("ViewBookCancelled")){
+        } else if(key.equals("DetailViewCancelled")){
             Book book = ((Vector<Book>)bookCollection.getState("Books")).get(selectedBook);
-            book.unSubscribe("ViewBookCancelled", this);
+            book.unSubscribe("DetailViewCancelled", this);
             if(value != null && (boolean)value){
                 myRegistry.updateSubscribers("UpdateSearch", this);
             }

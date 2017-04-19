@@ -48,7 +48,7 @@ public class ModifyStudentBorrowerView extends StudentBorrowerInformationView {
         cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                myModel.stateChangeRequest("ViewStudentBorrowerCancelled", null);
+                myModel.stateChangeRequest("DetailViewCancelled", null);
             }
         });
 
@@ -74,7 +74,7 @@ public class ModifyStudentBorrowerView extends StudentBorrowerInformationView {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == noButton) {
-            myModel.stateChangeRequest("ViewStudentBorrowerCancelled", null);
+            myModel.stateChangeRequest("DetailViewCancelled", null);
         } else if(result.get() == yesButton){
             myModel.stateChangeRequest("ResultViewCancelled", null);
         }
