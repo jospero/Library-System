@@ -30,6 +30,11 @@ public class Book extends EntityBase implements IView {
 		super(myTableName);
 
 		setDependencies();
+		retreive(Barcode);
+
+	}
+
+	public void retreive(String Barcode) throws InvalidPrimaryKeyException{
 		String query = "SELECT * FROM " + myTableName + " WHERE (Barcode = " + Barcode + ")";
 
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
@@ -43,7 +48,7 @@ public class Book extends EntityBase implements IView {
 			if (size != 1)
 			{
 				throw new InvalidPrimaryKeyException("Multiple books matching id : "
-					+ Barcode + " found.");
+						+ Barcode + " found.");
 			}
 			else
 			{
@@ -59,7 +64,7 @@ public class Book extends EntityBase implements IView {
 		{
 //		    bookErrorMessage="No book matching id : " + Barcode + " found.";
 			throw new InvalidPrimaryKeyException("No book matching id : "
-				+ Barcode + " found.");
+					+ Barcode + " found.");
 		}
 	}
 
@@ -114,9 +119,37 @@ public class Book extends EntityBase implements IView {
 		else if(key.equals("ProcessCheckOutBook")){
 			processCheckOutBook((Properties) value);
 		}
+		else if(key.equals("ProcessCheckInBook")){
+			processCheckInBook((Properties) value);
+		}
 	    myRegistry.updateSubscribers(key, this);
 	}
-	
+
+
+	private void processCheckInBook(Properties value) {
+		processNewBookHelper(value);
+		CheckInBook(value);
+	}
+
+	private void CheckInBook(Properties value) {
+
+//			THIS IS FOR CHECKOUT BIATCHES
+
+
+			String query = "INSERT ";
+//		try {
+			successFlag = true;
+			Properties whereClause = new Properties();
+			whereClause.setProperty(DATABASE.Barcode.name(),
+					persistentState.getProperty(DATABASE.Barcode.name()));
+
+
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+
+	}
+
 	private void setDependencies()
 	{
 		dependencies = new Properties();

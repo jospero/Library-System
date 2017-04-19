@@ -132,7 +132,7 @@ logoutButton.setPrefHeight(40);
         checkInBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                myModel.stateChangeRequest("checkIn", "Book");
+                myModel.stateChangeRequest("CheckIn", "Book");
                 System.out.println("Check In Book Pressed");
             }
         });

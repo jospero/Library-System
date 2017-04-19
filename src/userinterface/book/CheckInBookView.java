@@ -1,6 +1,9 @@
-package userinterface;
+package userinterface.book;
 
 import Utilities.Utilities;
+
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -13,8 +16,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import model.Book;
+import userinterface.TitleView;
 
+import java.io.File;
 import java.util.Optional;
+import userinterface.View;
 import java.util.Properties;
 
 /**
@@ -22,26 +30,35 @@ import java.util.Properties;
  */
 public class CheckInBookView extends View {
 
+    private JFXTextField barcode;
     public CheckInBookView(IModel model) {
         super(model, "CheckInBookView");
-        VBox root = new VBox();
+        File file = new File("resources/css/common.css");
+        this.getStylesheets().add(file.toURI().toString());
+        VBox box = new VBox();
+        box.setSpacing(40);
 
-        GridPane grid = new GridPane();
-        grid.setHgap(30);
-        grid.setVgap(30);
-
-        HBox buttonBox = getButtonBox();
-        buttonBox.setPadding(new Insets(30, 0,30, 0));
-        buttonBox.setAlignment(Pos.CENTER);
-        buttonBox.setSpacing(20);
-
-        root.getChildren().addAll(grid, buttonBox);
-        getChildren().add(root);
+        box.setAlignment(Pos.CENTER);
+        barcode = new JFXTextField();
+        Label label = new Label(Utilities.getStringLang("barcode"));
+        label.setFont(Font.font(40));
+        label.setId("CheckIn");
+//        file = new File("resources/images/SUNY_Brockport_Logo.png");
+//        final ImageView imv = new ImageView();
+//        imv.setPreserveRatio(true);
+//        imv.setFitHeight(300);
+//        final Image image2 = new Image(file.toURI().toString());
+//        imv.setImage(image2);
+        HBox res = getButtonBox();
+        HBox title = getHeading();
+        box.getChildren().addAll(title,label, barcode, res);
+        getChildren().add(box);
+        //     getButtonBox();
     }
 
 
     protected HBox getHeading() {
-        return TitleView.createTitle(Utilities.getStringLang("mod_book"));
+        return TitleView.createTitle(Utilities.getStringLang("check_in_book"));
     }
 
 
@@ -49,7 +66,7 @@ public class CheckInBookView extends View {
         HBox buttonBox = new HBox();
 
         Button submit = new Button(Utilities.getStringLang("sub_btn"));
-        Button cancel = new Button(Utilities.getStringLang("back_search_result"));
+        Button cancel = new Button(Utilities.getStringLang("cancel_btn"));
 //      Button cancel = new Button("Back to Search");
 
         buttonBox.getChildren().add(submit);
@@ -64,14 +81,16 @@ public class CheckInBookView extends View {
         cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                myModel.stateChangeRequest("ViewBookCancelled", null);
+                myModel.stateChangeRequest("ViewCancelled", null);
             }
         });
         return buttonBox;
     }
 
     private void CheckInBook() {
-
+        Properties props = new Properties();
+        props.setProperty(Book.DATABASE.Barcode.name(), barcode.getText().trim());
+        myModel.stateChangeRequest("ProcessCheckIn", props);
     }
 
 

@@ -14,7 +14,7 @@ import userinterface.worker.AddWorkerView;
 import userinterface.worker.ModifyWorkerView;
 import userinterface.worker.SearchWorkerView;
 import userinterface.worker.WorkerCollectionView;
-
+import userinterface.book.CheckInBookView;
 //==============================================================================
 public class ViewFactory {
 
@@ -52,7 +52,7 @@ public class ViewFactory {
 				return new WorkerCollectionView(model);
 			} else if(viewName.equals("StudentBorrowerCollectionView")) {
 				return new StudentBorrowerCollectionView(model);
-			}else if(viewName.equals("CheckInBook")){
+			}else if(viewName.equals("CheckInBookView")){
 				return new CheckInBookView(model);
 			}
 
