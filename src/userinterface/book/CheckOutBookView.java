@@ -7,12 +7,14 @@ import impresario.IModel;
 import impresario.ModelRegistry;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import model.Rental;
 import model.StudentBorrower;
 import userinterface.View;
@@ -37,12 +39,13 @@ public class CheckOutBookView extends View {
         this.getStylesheets().add(file.toURI().toString());
         VBox box = new VBox();
         box.setSpacing(40);
+        box.setPadding(new Insets(10,40,10,40));
 //        box.setStyle("-fx-background-color: #00533e");
 
         box.setAlignment(Pos.CENTER);
-        String labelString = Utilities.getStringLang("search");
+        String labelString = Utilities.getStringLang("check_out_book");
         Label label = new Label(labelString.toUpperCase());
-        label.setFont(Font.font(40));
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         label.setId("CheckOut");
 
         VBox fieldBox = new VBox();
@@ -67,6 +70,8 @@ public class CheckOutBookView extends View {
     protected HBox getButtonBox() {
 
         HBox buttonBox = new HBox();
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setSpacing(20);
         JFXButton submit = new JFXButton(Utilities.getStringLang("sub_btn"));
         JFXButton cancel = new JFXButton(Utilities.getStringLang("cancel_btn"));
         submit.getStyleClass().add("button-raised");

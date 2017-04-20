@@ -56,9 +56,9 @@ public class ModifyWorkerView extends WorkerInformationView {
     }
 
     private void modifyWorker() {
-        Properties book = validateWorker();
-        if(book.size() > 0 ){
-            myModel.stateChangeRequest("ProcessModifyWorker", book);
+        Properties worker = validateWorker();
+        if(worker.size() > 0 ){
+            myModel.stateChangeRequest("ProcessModifyWorker", worker);
         }
     }
 

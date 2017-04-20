@@ -41,11 +41,25 @@
     -fx-background-color: #2E7D32;
 }
 
-.title,.text-field, .label, .combo-box .cell, .text-area {
+.title,.text-field, .label,  .text-area {
+    -fx-fill: white;
+    -fx-text-fill: white;
+}
+/*.combo-box .cell,*/
+
+#comb .label{
     -fx-fill: white;
     -fx-text-fill: white;
 }
 
+/*#comb .list-view{*/
+    /*-fx-background-color: green;*/
+/*}*/
+
+.combo-box .cell{
+    -fx-fill: white;
+    -fx-text-fill: white;
+}
 
 .error .label{
    -fx-text-fill: red;
