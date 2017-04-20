@@ -28,7 +28,7 @@ public class Main implements IView, IModel {
 
     private View currentView;
     private WorkerHolder myWorkerHolder;
-
+    private String message;
     public Main(WorkerHolder workerHolder){
         myStage = MainStageContainer.getInstance();
         myViews = new Hashtable<String, View>();
@@ -54,6 +54,7 @@ public class Main implements IView, IModel {
         dependencies.setProperty("SubViewChange", "ChangeView");
         dependencies.setProperty("ParentView", "ChangeView");
         dependencies.setProperty("CheckIn", "ChangeView");
+        dependencies.setProperty("Error", "DisplayError");
         myRegistry.setDependencies(dependencies);
     }
     @Override
@@ -67,6 +68,8 @@ public class Main implements IView, IModel {
             return currentView;
         } else if(key.equals("WorkerHolder")){
             return myWorkerHolder;
+        } else if(key.equals("DisplayError")){
+            return message;
         }
         return null;
     }
@@ -99,6 +102,7 @@ public class Main implements IView, IModel {
             if(model != null && myViews.get(viewName) == null){
                 myViews.clear();
                 model.subscribe("ViewCancelled", this);
+                model.subscribe("Error", this);
                 currentView = ViewFactory.createView(viewName, model);
                 myViews.put(viewName, currentView);
             }
@@ -128,6 +132,7 @@ public class Main implements IView, IModel {
                 searchModel.subscribe("SubViewChange", this);
                 searchModel.subscribe("ParentView", this);
                 searchModel.subscribe("ViewCancelled", this);
+                searchModel.subscribe("Error", this);
                 currentView = ViewFactory.createView(viewName, searchModel);
                 myViews.put(viewName, currentView);
             }
@@ -150,10 +155,13 @@ public class Main implements IView, IModel {
             myViews.clear();
             Rental rental = new Rental(myWorkerHolder);
             rental.subscribe("ViewCancelled", this);
+
             currentView = ViewFactory.createView("CheckInBookView", rental);
             myViews.put("CheckInBookView", currentView);
 
-       }
+       } else if (key.equals("Error")){
+            message = (String) value;
+        }
         myRegistry.updateSubscribers(key, this);
 
     }

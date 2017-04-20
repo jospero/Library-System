@@ -1,17 +1,17 @@
 package userinterface;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXSnackbar;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import model.WorkerHolder;
 
 import java.io.File;
@@ -22,13 +22,12 @@ import java.io.File;
 public class MainView extends View {
     private Group mainView;
     private VBox container;
-    ScrollPane sp;
+    private ScrollPane sp;
+    private JFXSnackbar bar;
     public MainView(IModel model) {
         super(model, "MainView");
-        File file = new File("resources/css/common.css");
-        this.getStylesheets().add(file.toURI().toString());
-        file = new File("resources/css/main.css");
-        this.getStylesheets().add(file.toURI().toString());
+        String css = this.getClass().getResource("/resources/css/main.css").toExternalForm();
+        this.getStylesheets().add(css);
         container = new VBox();
 //        container.setPrefWidth(WIDTH);
 
@@ -37,7 +36,7 @@ public class MainView extends View {
         menu.setMaxWidth(Double.MAX_VALUE);
         menu.setPrefHeight(40);
         final ImageView imageView = new ImageView(
-                new Image(new File("resources/images/logout.png").toURI().toString())
+                new Image(this.getClass().getClassLoader().getResourceAsStream("resources/images/logout.png"))
         );
         imageView.setPreserveRatio(true);
         imageView.setFitWidth(20);
@@ -68,10 +67,28 @@ logoutButton.setPrefHeight(40);
 
 
 //        sp.getStyleClass().add("page-scroll");
-        container.getChildren().add(sp);
+
+
+
+
+//        container.getChildren().add(sp);
+
+        // MessageView
+        AnchorPane pane = new AnchorPane();
+        pane.setPrefHeight(60);
+        pane.setPrefWidth(container.getPrefWidth());
+        bar = new JFXSnackbar(pane);
+        pane.setId("message");
+        pane.setPickOnBounds(false);
+//        container.getChildren().add(pane);
+//        container.setStyle("-fx-background-color: #2aff52");
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(sp,  pane);
+        container.getChildren().add(stackPane);
         getChildren().add(container);
 
         myModel.subscribe("ChangeView", this);
+        myModel.subscribe("DisplayError",this);
     }
 
     private MenuBar createMenu(){
@@ -215,14 +232,14 @@ logoutButton.setPrefHeight(40);
         return menuBar;
     }
 
-    private void addBook() {
-
-    }
 
     @Override
     public void updateState(String key, Object value) {
         if(key.equals("ChangeView")){
             swapContentView((View) value);
+        } else if(key.equals("DisplayError")){
+            System.out.println(value);
+            displayErrorMessage((String) value);
         }
     }
 
@@ -239,5 +256,14 @@ logoutButton.setPrefHeight(40);
         sp.setFitToWidth(true);
         sp.setFitToHeight(true);
 
+    }
+
+    /**
+     * Display error message
+     */
+    //----------------------------------------------------------
+    public void displayErrorMessage(String message)
+    {
+        bar.show(message, 2500);
     }
 }

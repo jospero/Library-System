@@ -24,7 +24,7 @@ public class StudentBorrowerListViewCell extends ListCell<StudentBorrowerTableMo
 
     private void configureBookView() {
         bookView = new ImageView();
-        Image img = new Image(getClass().getClassLoader().getResourceAsStream("resources/images/nocover.jpg"));
+        Image img = new Image(getClass().getClassLoader().getResourceAsStream("resources/images/profile.png"));
         bookView.setImage(img);
         bookView.setFitHeight(HEIGHT-VPAD);
         bookView.setFitWidth(70);

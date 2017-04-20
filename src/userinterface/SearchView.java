@@ -35,6 +35,7 @@ abstract public class SearchView<T> extends View {
     protected JFXButton cancelButton;
     protected ListView searchResult;
     protected HBox notFoundBox;
+    protected TitledPane gridTitlePane;
     public SearchView(IModel model, String classname) {
 
         super(model, classname);
@@ -45,7 +46,7 @@ abstract public class SearchView<T> extends View {
         root.setPadding(new Insets(20,30,30,30));
         root.setAlignment(Pos.TOP_CENTER);
 
-        TitledPane gridTitlePane = new TitledPane();
+        gridTitlePane = new TitledPane();
         gridTitlePane.setFocusTraversable(false);
         gridTitlePane.setId("searchBox");
 
@@ -61,7 +62,7 @@ abstract public class SearchView<T> extends View {
         grid.setPadding(new Insets(30,30,0,30));
         buttonPane.setPadding(new Insets(30,30,0,30));
 //        grid.add(buttonPane, 0, row, 2, 1);
-        gridTitlePane.setText("Advanced Search");
+        gridTitlePane.setText(Utilities.getStringLang("advanced_search"));
         VBox searchBox = new VBox();
         searchBox.getChildren().addAll(grid, buttonPane);
         gridTitlePane.setContent(searchBox);
@@ -79,7 +80,6 @@ abstract public class SearchView<T> extends View {
                 if(searchResult.getSelectionModel().getSelectedItem() != null){
                     int index = searchResult.getSelectionModel().getSelectedIndex();
 //                    searchResult.getSelectionModel().clearSelection();
-                    System.out.println("What");
                     viewItem(index);
 
                 }
@@ -174,7 +174,6 @@ abstract public class SearchView<T> extends View {
     @Override
     public void updateState(String key, Object value) {
         if(key.equals("UpdateSearch")){
-
             tableData.clear();
             Vector entryList = (Vector)value;
             if(entryList.size() > 0) {
@@ -184,7 +183,6 @@ abstract public class SearchView<T> extends View {
                 notFoundBox.setVisible(false);
                 searchResult.setVisible(true);
             } else{
-                System.out.println("mama I made it");
                 searchResult.setVisible(false);
                 notFoundBox.setVisible(true);
             }

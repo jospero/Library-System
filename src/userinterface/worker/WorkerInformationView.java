@@ -4,13 +4,20 @@ import Utilities.Utilities;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.util.Callback;
 import model.Book;
 import model.Worker;
 import userinterface.InformationView;
+import validation.EmailValidator;
+import validation.NumberValidator;
+import validation.RequiredFieldValidator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -45,6 +52,8 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
+                RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator();
+                requiredFieldValidator.setMessage(fieldsStr.get(fEnum)+" must not be empty");
                 if(fEnum == Worker.DATABASE.Credentials){
                     field.field = getCredentialsNode();
                     if(worker.get(row) != null && !worker.get(row).isEmpty()) {
@@ -52,18 +61,56 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                     }
                 }
                 else if(fEnum == Worker.DATABASE.DateOfHire || fEnum == Worker.DATABASE.DateOfLatestCredentialStatus) {
-                    LocalDate localDate;
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.getStringNorm("dateFormat"));
+                    if(modify) {
+                        LocalDate localDate;
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.getStringNorm("dateFormat"));
 
-
-                    if(worker.get(row) != null && !worker.get(row).isEmpty()){
-                        localDate = LocalDate.parse(worker.get(row), dbformatter);
-                    } else {
-                        localDate = LocalDate.now();
+                        if (worker.get(row) != null && !worker.get(row).isEmpty()) {
+                            localDate = LocalDate.parse(worker.get(row), dbformatter);
+                        } else {
+                            localDate = LocalDate.now();
+                        }
+                        JFXTextField fTF = new JFXTextField(localDate.format(formatter));
+                        fTF.setEditable(false);
+                        field.field = fTF;
                     }
-                    JFXTextField fTF = new JFXTextField(localDate.format(formatter));
-                    fTF.setEditable(false);
-                    field.field = fTF;
+                } else if(fEnum == Worker.DATABASE.Phone ){
+
+                    HBox box = new HBox();
+                    box.setSpacing(10);
+                    JFXTextField area = new JFXTextField();
+                    area.setPromptText("Area");
+                    Utilities.addTextLimiter(area, 3);
+                    JFXTextField phone = new JFXTextField();
+                    phone.setPromptText("Phone Number");
+                    phone.getValidators().add(requiredFieldValidator);
+                    Utilities.addTextLimiter(phone, 10);
+                    area.setPrefWidth(40);
+                    box.getChildren().addAll(area, phone);
+                    field.field = box;
+                    NumberValidator numberValidator = new NumberValidator();
+                    phone.getValidators().add(numberValidator);
+                    phone.setMaxWidth(Double.MAX_VALUE);
+                    HBox.setHgrow(phone, Priority.ALWAYS);
+                    area.focusedProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            if(!newValue)
+                                area.validate();
+                        }
+                    });
+                    phone.focusedProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            if(!newValue)
+                                phone.validate();
+                        }
+                    });
+                    if (worker.get(row) != null && !worker.get(row).isEmpty()) {
+                        String[] splitPhone = worker.get(row).split("-");
+                        area.setText(splitPhone[0]);
+                        phone.setText(splitPhone[1]);
+                    }
                 }
                 else {
                     JFXTextField fTF = new JFXTextField();
@@ -72,15 +119,34 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                         fTF.setText(worker.get(row));
                     if(fEnum == Worker.DATABASE.BannerId){
                         fTF.setEditable(!modify);
+                        NumberValidator numberValidator = new NumberValidator();
+                        fTF.getValidators().add(numberValidator);
+                        numberValidator.setMessage(fieldsStr.get(fEnum)+" must be a number");
+                    } else if (fEnum == Worker.DATABASE.Email){
+                        EmailValidator emailValidator = new EmailValidator();
+                        emailValidator.setMessage(fieldsStr.get(fEnum)+" must be in an email format");
+                        fTF.getValidators().add(emailValidator);
                     }
+
                     field.field = fTF;
                     fTF.setEditable(enableFields);
+                    fTF.getValidators().add(requiredFieldValidator);
+                    fTF.focusedProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            if(!newValue)
+                                fTF.validate();
+                        }
+                    });
                 }
+
                 fieldsList.put(fEnum, field);
 //                field.label.setPrefHeight(400);
                 field.label.setWrapText(true);
-                workerInfo.add(field.label, 0, row);
-                workerInfo.add(field.field, 1, row);
+                if(field.label != null && field.field != null) {
+                    workerInfo.add(field.label, 0, row);
+                    workerInfo.add(field.field, 1, row);
+                }
 //                workerInfo.add(field.label, 0, row);
                 row++;
             }
@@ -99,82 +165,46 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
 //    }
 
     final public Properties validateWorker(){
-        Properties worker = new Properties();
-        boolean errorFound = false;
+        boolean valid = true;
+        Properties book = new Properties();
         for(Worker.DATABASE fieldsEnum: fieldsList.keySet()){
-            if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
-                String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
-                if (str.isEmpty()) {
-                    if (!errorFound) {
-                        errorFound = true;
-                        worker = new Properties();
-                    }
-                } else if (fieldsEnum == Worker.DATABASE.BannerId) {
-                    if (str.matches("[0-9]+")) {
-                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
-                        if (!errorFound) {
-                            worker.setProperty(fieldsEnum.name(), str);
-                        }
-                    } else {
-                        if (!errorFound) {
-                            errorFound = true;
-                            worker = new Properties();
-                        }
-                    }
-
-                } else if (fieldsEnum == Worker.DATABASE.Phone) {
-                    if (Utilities.validatePhoneNumber(str)) {
-                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
-                        if (!errorFound) {
-                            worker.setProperty(fieldsEnum.name(), str);
-                        }
-                    } else {
-                        if (!errorFound) {
-                            errorFound = true;
-                            worker = new Properties();
-                        }
-                    }
-                }
-                else if (fieldsEnum == Worker.DATABASE.Email){
-                    if(Utilities.validateEmail(str)){
-                        fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
-                        if (!errorFound) {
-                            worker.setProperty(fieldsEnum.name(), str);
-                        }
-                    } else {
-                        if (!errorFound) {
-                            errorFound = true;
-                            worker = new Properties();
-                        }
-                    }
-
-                }
-                else {
-                    fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
-                    if(!errorFound){
-                        if(fieldsEnum == Worker.DATABASE.DateOfLatestCredentialStatus || fieldsEnum == Worker.DATABASE.DateOfHire){
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.getStringNorm("dateFormat"));
-                            str = LocalDate.parse(str, formatter).format(dbformatter);
-                        }
-                        worker.setProperty(fieldsEnum.name(), str);
-                    }
-                }
-            } else if( fieldsList.get(fieldsEnum).field instanceof ComboBox) {
-                if(!errorFound) {
-                    Credentials cond = (Credentials) ((JFXComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem();
-                    String str = Utilities.getStringInEng(cond.key);
-                    worker.setProperty(fieldsEnum.name(), str);
-                }
+            if(fieldsList.get(fieldsEnum).field instanceof JFXTextField){
+                String str = ((JFXTextField) fieldsList.get(fieldsEnum).field).getText();
+                valid = ((JFXTextField) fieldsList.get(fieldsEnum).field).validate() && valid;
+                book.setProperty(fieldsEnum.name(), str);
+            } else if(fieldsList.get(fieldsEnum).field instanceof JFXComboBox){
+                Credentials cond = (Credentials) ((JFXComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem();
+                String str = Utilities.getStringInEng(cond.key);
+                book.setProperty(fieldsEnum.name(), str);
             } else{
-                if(!errorFound) {
-                    LocalDate date = ((DatePicker) fieldsList.get(fieldsEnum).field).getValue();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    worker.setProperty(fieldsEnum.name(), date.format(formatter));
+                if(fieldsEnum != Worker.DATABASE.DateOfHire && fieldsEnum != Worker.DATABASE.DateOfLatestCredentialStatus) {
+                    String str = "";
+                    if(fieldsEnum != Worker.DATABASE.Phone){
+                        str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
+                    } else{
+                        JFXTextField node1 = (JFXTextField) ((HBox) fieldsList.get(fieldsEnum).field).getChildren().get(0);
+                        JFXTextField node2 = (JFXTextField) ((HBox) fieldsList.get(fieldsEnum).field).getChildren().get(1);
+                        valid = node1.validate() && node2.validate() && valid;
+
+                        str = node1.getText().trim() + "-" + node2.getText();
+                    }
+                    book.setProperty(fieldsEnum.name(), str);
                 }
             }
         }
-        return worker;
+        if(!valid){
+            book.clear();
+        } else{
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            book.setProperty(Worker.DATABASE.DateOfLatestCredentialStatus.name(), LocalDate.now().format(formatter));
+            if(!modify){
+                book.setProperty(Worker.DATABASE.DateOfHire.name(), LocalDate.now().format(formatter));
+            }
+        }
+        System.out.println(book);
+        return book;
     }
+
 
     private JFXComboBox getCredentialsNode(){
         JFXComboBox<Credentials> comboBox = new JFXComboBox<>();
@@ -202,6 +232,7 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
             map.put("administrator","credsadmin");
             credList = Collections.unmodifiableMap(map);
         }
+
         String value;
         String key;
 

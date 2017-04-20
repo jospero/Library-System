@@ -68,6 +68,7 @@ public class AddBookView extends BookInformationView {
         cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+//                myModel.stateChangeRequest("Error", "Everything is wrong");
                 myModel.stateChangeRequest("AddBookCancelled", null);
             }
         });

@@ -24,7 +24,7 @@ public class WorkerListViewCell extends ListCell<WorkerTableModel> {
 
     private void configureBookView() {
         bookView = new ImageView();
-        Image img = new Image(getClass().getClassLoader().getResourceAsStream("resources/images/nocover.jpg"));
+        Image img = new Image(getClass().getClassLoader().getResourceAsStream("resources/images/profile.png"));
         bookView.setImage(img);
         bookView.setFitHeight(HEIGHT-VPAD);
         bookView.setFitWidth(70);
@@ -89,7 +89,7 @@ public class WorkerListViewCell extends ListCell<WorkerTableModel> {
 
 //        System.out.println(item.getTitle());
 //        titleLabel.setText(Utilities.convertToTitleCase(item.getTitle()));
-        nameLabel.setText(item.getFirstName().toUpperCase() + " " + item.getLastName());
+        nameLabel.setText(item.getFirstName().toUpperCase() + " " + item.getLastName().toUpperCase());
 //        authorLabel.setText("By: " + item.getAuthors().toUpperCase());
 //        yearOfPubLabel.setText(item.getYearOfPublication());
         setGraphic(layout);

@@ -1,6 +1,7 @@
 package userinterface.book;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXButton;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -34,9 +35,12 @@ public class ModifyBookView extends BookInformationView {
     protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
-        Button submit = new Button(Utilities.getStringLang("sub_btn"));
-        Button cancel = new Button(Utilities.getStringLang("back_search_result"));
-//      Button cancel = new Button("Back to Search");
+        JFXButton submit = new JFXButton(Utilities.getStringLang("sub_btn"));
+        JFXButton cancel = new JFXButton(Utilities.getStringLang("back_search_result"));
+        submit.getStyleClass().add("button-raised");
+        cancel.getStyleClass().add("button-raised");
+        submit.setId("accept");
+        cancel.setId("cancel");
 
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);

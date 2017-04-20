@@ -18,8 +18,8 @@ public class WelcomeView extends View {
 
     public WelcomeView(IModel model) {
         super(model, "WelcomeView");
-        File file = new File("resources/css/welcome.css");
-        this.getStylesheets().add(file.toURI().toString());
+        String css = this.getClass().getResource("/resources/css/welcome.css").toExternalForm();
+        this.getStylesheets().add(css);
         VBox box = new VBox();
         box.setSpacing(40);
         box.setStyle("-fx-background-color: #00533e");
@@ -29,11 +29,10 @@ public class WelcomeView extends View {
         Label label = new Label(labelString.toUpperCase());
         label.setFont(Font.font(40));
         label.setId("welcome");
-        file = new File("resources/images/SUNY_Brockport_Logo.png");
         final ImageView imv = new ImageView();
         imv.setPreserveRatio(true);
         imv.setFitHeight(300);
-        final Image image2 = new Image(file.toURI().toString());
+        final Image image2 = new Image(this.getClass().getClassLoader().getResourceAsStream("resources/images/SUNY_Brockport_Logo.png"));
         imv.setImage(image2);
         box.getChildren().addAll(imv, label);
         getChildren().add(box);

@@ -24,7 +24,7 @@ public class BookListViewCell extends ListCell<BookTableModel> {
 
     private void configureBookView() {
         bookView = new ImageView();
-        Image img = new Image(getClass().getClassLoader().getResourceAsStream("resources/images/nocover.jpg"));
+        Image img = new Image(getClass().getClassLoader().getResourceAsStream("resources/images/nocover2.gif"));
         bookView.setImage(img);
         bookView.setFitHeight(HEIGHT-VPAD);
         bookView.setFitWidth(70);

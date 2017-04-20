@@ -18,3 +18,18 @@
 .main_menus{
     -fx-pref-height: 40;
 }
+
+#message .label{
+    -fx-text-fill: white;
+    -fx-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bolder;
+
+}
+
+#message .jfx-snackbar-content{
+    -fx-background-color: red;
+    -fx-alignment: center;
+    -fx-pref-width: 800;
+    -fx-min-width: 800;
+}

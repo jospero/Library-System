@@ -96,7 +96,7 @@ public class Book extends EntityBase implements IView {
 	//----------------------------------------------------------
 	public Object getState(String key)
 	{
-		if (key.equals("UpdateStatusMessage"))
+		if (key.equals("UpdateStatusMessage") || key.equals("Error"))
 			return updateStatusMessage;
 		else if(key.equals("SuccessFlag")){
 		    return successFlag;
@@ -112,39 +112,12 @@ public class Book extends EntityBase implements IView {
         } else if(key.equals("ProcessModifyBook")){
 			processModifyBook((Properties) value);
 		}
-		else if(key.equals("ProcessCheckOutBook")){
-			processCheckOutBook((Properties) value);
-		}
-		else if(key.equals("ProcessCheckInBook")){
-			processCheckInBook((Properties) value);
+		else if(key.equals("Error")){
+			updateStatusMessage = (String) value;
 		}
 	    myRegistry.updateSubscribers(key, this);
 	}
 
-
-	private void processCheckInBook(Properties value) {
-		processNewBookHelper(value);
-		CheckInBook(value);
-	}
-
-	private void CheckInBook(Properties value) {
-
-//			THIS IS FOR CHECKOUT BIATCHES
-
-
-			String query = "INSERT ";
-//		try {
-			successFlag = true;
-			Properties whereClause = new Properties();
-			whereClause.setProperty(DATABASE.Barcode.name(),
-					persistentState.getProperty(DATABASE.Barcode.name()));
-
-
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-
-	}
 
 	private void setDependencies()
 	{
@@ -203,25 +176,12 @@ public class Book extends EntityBase implements IView {
 		} catch (SQLException e) {
 			successFlag = false;
 			updateStatusMessage = e.getMessage();
+//			myRegistry.updateSubscribers("Error", this);
 		}
 
 	}
 
 	private void modifyBook(){
-		try {
-			successFlag = true;
-			Properties whereClause = new Properties();
-			whereClause.setProperty(DATABASE.Barcode.name(),
-					persistentState.getProperty(DATABASE.Barcode.name()));
-			updatePersistentState(mySchema, persistentState, whereClause);
-			updateStatusMessage = "Book data for Barcode : " + persistentState.getProperty(DATABASE.Barcode.name()) + " updated successfully in database!";
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	private void CheckOutBook(){
 		try {
 			successFlag = true;
 			Properties whereClause = new Properties();
@@ -271,10 +231,6 @@ public class Book extends EntityBase implements IView {
 		modifyBook();
 	}
 
-	public void processCheckOutBook(Properties props){
-		processNewBookHelper(props);
-		CheckOutBook();
-	}
 
     private void processNewBookHelper(Properties props){
         persistentState = new Properties();

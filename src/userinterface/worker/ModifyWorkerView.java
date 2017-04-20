@@ -1,6 +1,7 @@
 package userinterface.worker;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXButton;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -33,8 +34,12 @@ public class ModifyWorkerView extends WorkerInformationView {
     protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
-        Button submit = new Button(Utilities.getStringLang("sub_btn"));
-        Button cancel = new Button(Utilities.getStringLang("back_search_result"));
+        JFXButton submit = new JFXButton(Utilities.getStringLang("sub_btn"));
+        JFXButton cancel = new JFXButton(Utilities.getStringLang("back_search_result"));
+        submit.getStyleClass().add("button-raised");
+        cancel.getStyleClass().add("button-raised");
+        submit.setId("accept");
+        cancel.setId("cancel");
 //        Button cancel = new Button("Back to Search");
 
         buttonBox.getChildren().add(submit);

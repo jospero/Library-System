@@ -35,14 +35,15 @@ public class LoginView extends View{
     private JFXSnackbar bar;
     public LoginView(IModel model) {
         super(model, "LoginView");
-        File file = new File("resources/css/login.css");
-        this.getStylesheets().add(file.toURI().toString());
+        String css = this.getClass().getResource("/resources/css/login.css").toExternalForm();
+        this.getStylesheets().add(css);
         VBox container = new VBox();
         container.setPadding(new Insets(40,40,0,40));
         container.setSpacing(25);
         HBox title = TitleView.createTitle(Utilities.getStringLang("brockport_library"));
         title.setSpacing(30);
-        ImageView lock = new ImageView(new File("resources/images/lock-icon.png").toURI().toString());
+//        ImageView lock = new ImageView(new File("resources/images/lock-icon.png").toURI().toString());
+        ImageView lock = new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("resources/images/lock-icon.png")));
         lock.setFitWidth(80);
         lock.setPreserveRatio(true);
         title.getChildren().add(lock);
