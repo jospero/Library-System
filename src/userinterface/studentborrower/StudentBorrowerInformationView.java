@@ -1,17 +1,13 @@
 package userinterface.studentborrower;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.TextAlignment;
 import model.StudentBorrower;
-import model.Worker;
 import userinterface.InformationView;
 
 import java.time.LocalDate;
@@ -186,16 +182,10 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
     }
 
     private ComboBox getBorrowerStatusNode(){
-        ComboBox comboBox = new ComboBox();
+        JFXComboBox comboBox = new JFXComboBox();
+        comboBox.setId("comb");
         comboBox.getItems().addAll(Utilities.getStringLang("borrowstat"), Utilities.getStringLang("borrowstatdel"));
         comboBox.setValue(Utilities.getStringLang("borrowstat"));
-        return comboBox;
-    }
-
-    private ComboBox getStatusNode(){
-        ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll(Utilities.getStringLang("statusact"), Utilities.getStringLang("statusinact"));
-        comboBox.setValue(Utilities.getStringLang("statusact"));
         return comboBox;
     }
 

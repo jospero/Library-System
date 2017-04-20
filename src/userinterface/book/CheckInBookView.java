@@ -36,13 +36,13 @@ public class CheckInBookView extends View {
         File file = new File("resources/css/common.css");
         this.getStylesheets().add(file.toURI().toString());
         VBox box = new VBox();
+        box.setPadding(new Insets(10,40,10,40));
         box.setSpacing(40);
 
         box.setAlignment(Pos.CENTER);
         barcode = new JFXTextField();
-        Label label = new Label(Utilities.getStringLang("barcode"));
-        label.setFont(Font.font(40));
-        label.setId("CheckIn");
+        barcode.setPromptText(Utilities.getStringLang("barcode"));
+        barcode.setLabelFloat(true);
 //        file = new File("resources/images/SUNY_Brockport_Logo.png");
 //        final ImageView imv = new ImageView();
 //        imv.setPreserveRatio(true);
@@ -51,7 +51,7 @@ public class CheckInBookView extends View {
 //        imv.setImage(image2);
         HBox res = getButtonBox();
         HBox title = getHeading();
-        box.getChildren().addAll(title,label, barcode, res);
+        box.getChildren().addAll(title, barcode, res);
         getChildren().add(box);
         //     getButtonBox();
     }
@@ -65,8 +65,14 @@ public class CheckInBookView extends View {
     protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
 
-        Button submit = new Button(Utilities.getStringLang("sub_btn"));
-        Button cancel = new Button(Utilities.getStringLang("cancel_btn"));
+        buttonBox.setSpacing(20);
+        buttonBox.setAlignment(Pos.CENTER);
+        JFXButton submit = new JFXButton(Utilities.getStringLang("sub_btn"));
+        submit.getStyleClass().add("button-raised");
+        JFXButton cancel = new JFXButton(Utilities.getStringLang("cancel_btn"));
+        cancel.getStyleClass().add("button-raised");
+        cancel.setId("cancel");
+
 //      Button cancel = new Button("Back to Search");
 
         buttonBox.getChildren().add(submit);

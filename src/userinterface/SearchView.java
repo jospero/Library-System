@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
@@ -33,8 +34,11 @@ abstract public class SearchView<T> extends View {
     protected JFXButton searchButton;
     protected JFXButton cancelButton;
     protected ListView searchResult;
+    protected HBox notFoundBox;
     public SearchView(IModel model, String classname) {
+
         super(model, classname);
+
         model.subscribe("UpdateSearch", this);
         fields = getFields();
         VBox root = new VBox();
@@ -95,6 +99,12 @@ abstract public class SearchView<T> extends View {
 //            }
 //        });
         root.getChildren().add(searchResult);
+
+        notFoundBox = new HBox();
+        Label notFoundLabel = new Label("No Search Result Found");
+        notFoundBox.getChildren().add(notFoundLabel);
+        root.getChildren().add(notFoundBox);
+        notFoundBox.setVisible(false);
         getChildren().add(root);
 
     }
@@ -164,12 +174,20 @@ abstract public class SearchView<T> extends View {
     @Override
     public void updateState(String key, Object value) {
         if(key.equals("UpdateSearch")){
+
             tableData.clear();
             Vector entryList = (Vector)value;
-            Enumeration entries = entryList.elements();
-            insertDataToTable(entries);
-            searchResult.setItems(tableData);
-            searchResult.setVisible(true);
+            if(entryList.size() > 0) {
+                Enumeration entries = entryList.elements();
+                insertDataToTable(entries);
+                searchResult.setItems(tableData);
+                notFoundBox.setVisible(false);
+                searchResult.setVisible(true);
+            } else{
+                System.out.println("mama I made it");
+                searchResult.setVisible(false);
+                notFoundBox.setVisible(true);
+            }
         }
     }
 
