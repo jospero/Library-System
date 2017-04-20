@@ -61,11 +61,8 @@ public class Rental extends EntityBase implements IView {
     public void stateChangeRequest(String key, Object value) {
         if(key.equals("ProcessCheckIn")){
             String barcode = ((Properties) value).getProperty(DATABASE.Barcode.name());
-            try {
-                processCheckIn(barcode);
-            } catch (BookCheckInException e) {
-                e.printStackTrace();
-            }
+            processCheckIn(barcode);
+
         } else if(key.equals("ProcessCheckOut")){
             String barcode = ((Properties) value).getProperty(DATABASE.Barcode.name());
             String bannerId = ((Properties) value).getProperty(DATABASE.BorrowerId.name());
@@ -93,14 +90,15 @@ public class Rental extends EntityBase implements IView {
                 } catch (SQLException e) {
                     successFlag = false;
                     updateStatusMessage = e.getMessage();
-                    System.out.println("Fuck no");
                 }
 
             } else {
-                System.out.println("Fuck no");
+                successFlag = false;
+                updateStatusMessage = "Book have already been checked out";
             }
         } else {
-            System.out.println("Fuck no");
+            successFlag = false;
+            updateStatusMessage = "Invalid Book Barcode or Student Borrower Id";
         }
     }
 
@@ -144,7 +142,7 @@ public class Rental extends EntityBase implements IView {
         return false;
     }
 
-    private void processCheckIn(String barcode) throws BookCheckInException {
+    private void processCheckIn(String barcode){
         if(checkBarcode(barcode)) {
             String query = "SELECT * FROM " + myTableName + " WHERE (" + DATABASE.Barcode.name() + " = " + barcode + ")";
             Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
@@ -162,10 +160,12 @@ public class Rental extends EntityBase implements IView {
                 }
 
                 if (!exists) {
-                    throw new BookCheckInException("Book has not been checked out");
+                    successFlag = false;
+                    updateStatusMessage = "Book has not been checked out";
                 }
             } else {
-                throw new BookCheckInException("Book has not been checked out");
+                successFlag = false;
+                updateStatusMessage = "Invalid Barcode";
             }
         }
     }
@@ -176,11 +176,12 @@ public class Rental extends EntityBase implements IView {
         persistentState.setProperty(DATABASE.CheckInWorkerId.name(), (String) myWorkerHolder.getState(Worker.DATABASE.BannerId.name()));
 
         try {
-            successFlag = true;
+
             Properties whereClause = new Properties();
             whereClause.setProperty(DATABASE.Barcode.name(),
                     persistentState.getProperty(DATABASE.Barcode.name()));
             updatePersistentState(mySchema, persistentState, whereClause);
+            successFlag = true;
             updateStatusMessage = "Rental data for Barcode : " + persistentState.getProperty(DATABASE.Barcode.name()) + " updated successfully in database!";
 //            System.out.println("Fuck boi shit");
         } catch (SQLException e) {
