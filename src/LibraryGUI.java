@@ -39,7 +39,7 @@ public class LibraryGUI extends Application
         mainStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/resources/images/shield.png")));
         try {
             URL url = this.getClass().getResource("/resources/images/shield.png");
-            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon(url).getImage());
+//            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon(url).getImage());
         } catch (Exception e) {
             // Won't work on Windows or Linux.
         }

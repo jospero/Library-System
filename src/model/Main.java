@@ -54,7 +54,7 @@ public class Main implements IView, IModel {
         dependencies.setProperty("SubViewChange", "ChangeView");
         dependencies.setProperty("ParentView", "ChangeView");
         dependencies.setProperty("CheckIn", "ChangeView");
-        dependencies.setProperty("Error", "DisplayError");
+        dependencies.setProperty("SnackBarErrorMessage", "DisplayError");
         myRegistry.setDependencies(dependencies);
     }
     @Override
@@ -148,6 +148,7 @@ public class Main implements IView, IModel {
             myViews.clear();
             Rental rental = new Rental(myWorkerHolder);
             rental.subscribe("ViewCancelled", this);
+            rental.subscribe("SnackBarErrorMessage", this);
             currentView = ViewFactory.createView("CheckOutBookView", rental);
             myViews.put("CheckOutBookView", currentView);
         }else if(key.equals("CheckIn")) {
@@ -155,11 +156,11 @@ public class Main implements IView, IModel {
             myViews.clear();
             Rental rental = new Rental(myWorkerHolder);
             rental.subscribe("ViewCancelled", this);
-
+            rental.subscribe("SnackBarErrorMessage", this);
             currentView = ViewFactory.createView("CheckInBookView", rental);
             myViews.put("CheckInBookView", currentView);
 
-       } else if (key.equals("Error")){
+       } else if (key.equals("SnackBarErrorMessage")){
             message = (String) value;
         }
         myRegistry.updateSubscribers(key, this);

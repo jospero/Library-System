@@ -33,8 +33,7 @@ public class CheckInBookView extends View {
     private JFXTextField barcode;
     public CheckInBookView(IModel model) {
         super(model, "CheckInBookView");
-        File file = new File("resources/css/common.css");
-        this.getStylesheets().add(file.toURI().toString());
+
         VBox box = new VBox();
         box.setPadding(new Insets(10,40,10,40));
         box.setSpacing(40);
@@ -53,6 +52,7 @@ public class CheckInBookView extends View {
         HBox title = getHeading();
         box.getChildren().addAll(title, barcode, res);
         getChildren().add(box);
+        myModel.subscribe("UpdateStatusMessage", this);
         //     getButtonBox();
     }
 
@@ -100,11 +100,22 @@ public class CheckInBookView extends View {
     }
 
 
-    protected void confirmDialog() {
+    public void updateState(String key, Object value) {
+        if(key.equals("UpdateStatusMessage")){
+            boolean success = (boolean) myModel.getState("SuccessFlag");
+            if(success){
+                confirmDialog();
+            } else {
+                errorDialog((String) value);
+            }
+        }
+    }
+
+    protected void confirmDialog(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(Utilities.getStringLang("book_com"));
-        alert.setHeaderText(Utilities.getStringLang("book_added"));
-        alert.setContentText(Utilities.getStringLang("cont_mod_worker"));
+        alert.setTitle(Utilities.getStringLang("check_in_book"));
+        alert.setHeaderText(Utilities.getStringLang("check_in_book"));
+        alert.setContentText("Book Successfully checked in");
 
         ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
         ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));
@@ -112,25 +123,27 @@ public class CheckInBookView extends View {
         alert.getButtonTypes().setAll(yesButton, noButton);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == noButton) {
-            myModel.stateChangeRequest("ViewBookCancelled", null);
+        if (result.get() == yesButton){
+
+        } else if (result.get() == noButton) {
+            myModel.stateChangeRequest("ViewCancelled", null);
         }
     }
 
-
-    protected void errorDialog(String value) {
+    protected void errorDialog(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(Utilities.getStringLang("book_err"));
-        alert.setHeaderText(Utilities.getStringLang("book_mod_fail"));
-        alert.setContentText(Utilities.getStringLang("book_err_occ_mod") + " " + value );
+        alert.setTitle(Utilities.getStringLang("check_in_book"));
+        alert.setHeaderText("Error Occurred");
+        alert.setContentText("There was an error: " + msg );
 
         ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 
         alert.getButtonTypes().setAll(okButton);
-    }
 
-    @Override
-    public void updateState(String key, Object value) {
+        Optional<ButtonType> result = alert.showAndWait();
+//        if (result.get() == okButton){
+//            clearFields();
+//        }
     }
 
 }

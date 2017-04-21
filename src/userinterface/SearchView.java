@@ -176,6 +176,7 @@ abstract public class SearchView<T> extends View {
         if(key.equals("UpdateSearch")){
             tableData.clear();
             Vector entryList = (Vector)value;
+            System.out.println(value);
             if(entryList.size() > 0) {
                 Enumeration entries = entryList.elements();
                 insertDataToTable(entries);
