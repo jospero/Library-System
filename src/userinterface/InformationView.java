@@ -1,5 +1,6 @@
 package userinterface;
 
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -80,6 +81,11 @@ public abstract class InformationView<T> extends View {
             ((TextInputControl) n).setText("");
         } else if (n instanceof ComboBox){
             ((ComboBox) n).getSelectionModel().select(0);
+        } else if (n instanceof  HBox){
+            JFXTextField node1 = (JFXTextField) ((HBox) n).getChildren().get(0);
+            JFXTextField node2 = (JFXTextField) ((HBox) n).getChildren().get(1);
+            node1.setText("");
+            node2.setText("");
         } else {
             ((DatePicker) n).setValue(LocalDate.now());
         }

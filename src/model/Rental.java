@@ -27,7 +27,7 @@ public class Rental extends EntityBase implements IView {
     private WorkerHolder myWorkerHolder;
     private String updateStatusMessage = "";
     private boolean successFlag = true;
-
+    private String snackBarError = "";
     protected Rental(WorkerHolder workerHolder){
         super(myTableName);
         myWorkerHolder = workerHolder;
@@ -43,7 +43,9 @@ public class Rental extends EntityBase implements IView {
     private void setDependencies() {
         dependencies = new Properties();
         dependencies.setProperty("ProcessCheckIn", "UpdateStatusMessage");
-
+        dependencies.setProperty("ProcessCheckOut", "UpdateStatusMessage");
+        dependencies.setProperty("CheckBarcode", "BarcodeSuccessFlag");
+        myRegistry.setDependencies(dependencies);
     }
 
 
@@ -54,7 +56,15 @@ public class Rental extends EntityBase implements IView {
 
     @Override
     public Object getState(String key) {
-        return null;
+        System.out.println(key);
+        if (key.equals("UpdateStatusMessage") || key.equals("Error"))
+            return updateStatusMessage;
+        else if(key.equals("SuccessFlag") || key.equals("BarcodeSuccessFlag")){
+            return successFlag;
+        } else if(key.equals("SnackBarErrorMessage")){
+            return snackBarError;
+        }
+        return persistentState.getProperty(key);
     }
 
     @Override
@@ -62,12 +72,17 @@ public class Rental extends EntityBase implements IView {
         if(key.equals("ProcessCheckIn")){
             String barcode = ((Properties) value).getProperty(DATABASE.Barcode.name());
             processCheckIn(barcode);
-
         } else if(key.equals("ProcessCheckOut")){
             String barcode = ((Properties) value).getProperty(DATABASE.Barcode.name());
             String bannerId = ((Properties) value).getProperty(DATABASE.BorrowerId.name());
             processCheckOut(barcode, bannerId);
+        } else if (key.equals("CheckBarcode")){
+            String barcode = ((Properties) value).getProperty(DATABASE.Barcode.name());
+            successFlag = checkBarcode(barcode);
+        } else if(key.equals("SnackBarErrorMessage")){
+            snackBarError = (String) value;
         }
+        System.out.println(key);
         myRegistry.updateSubscribers(key, this);
     }
 
@@ -120,10 +135,11 @@ public class Rental extends EntityBase implements IView {
     private boolean checkBarcode(String barcode){
         String query = "SELECT * FROM Book WHERE (" + Book.DATABASE.Barcode.name() +" = " + barcode + ")";
         Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
+
         if (allDataRetrieved != null && allDataRetrieved.size() == 1){
 
             Properties prop = allDataRetrieved.get(0);
-
+            System.out.println(allDataRetrieved.get(0));
             return true;
         }
         return false;

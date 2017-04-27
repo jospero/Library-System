@@ -80,13 +80,13 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                     box.setSpacing(10);
 
                     JFXTextField area = new JFXTextField();
-                    area.setPromptText("Area");
+                    area.setPromptText(Utilities.getStringLang("cCode"));
                     Utilities.addTextLimiter(area, 3);
                     JFXTextField phone = new JFXTextField();
-                    phone.setPromptText("Phone Number");
+                    phone.setPromptText(str);
                     phone.getValidators().add(requiredFieldValidator);
                     Utilities.addTextLimiter(phone, 10);
-                    area.setPrefWidth(40);
+                    area.setPrefWidth(60);
                     box.getChildren().addAll(area, phone);
                     field.field = box;
                     NumberValidator numberValidator = new NumberValidator();

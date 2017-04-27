@@ -75,7 +75,7 @@ public class Login implements IView, IModel {
         Scene currentScene = myViews.get("LoginView");
         myStage.getIcons().add(new Image("resources/images/shield.png"));
 //        try {
-            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
+//            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
 //        } catch (Exception e) {
 //            // Won't work on Windows or Linux.
 //        }

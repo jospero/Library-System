@@ -41,6 +41,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         GridPane bookInfo =  super.getInformation();
         int row = 0;
         Vector<String> book = ((Book) myModel).getEntryListView();
+        System.out.println(book);
         for(Book.DATABASE fEnum : Book.DATABASE.values()){
             if(fEnum != Book.DATABASE.Status && fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
