@@ -1,28 +1,22 @@
 package userinterface.book;
 
 import Utilities.Utilities;
-
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import model.Book;
 import userinterface.TitleView;
-
-import java.io.File;
-import java.util.Optional;
 import userinterface.View;
+
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -115,7 +109,7 @@ public class CheckInBookView extends View {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(Utilities.getStringLang("check_in_book"));
         alert.setHeaderText(Utilities.getStringLang("check_in_book"));
-        alert.setContentText("Book Successfully checked in");
+        alert.setContentText(Utilities.getStringLang("checkin_confirm"));
 
         ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
         ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));

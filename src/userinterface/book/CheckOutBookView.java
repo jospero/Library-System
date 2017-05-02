@@ -3,7 +3,6 @@ package userinterface.book;
 import Utilities.Utilities;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.validation.base.ValidatorBase;
 import impresario.IModel;
 import impresario.ModelRegistry;
 import javafx.animation.KeyFrame;
@@ -16,21 +15,16 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 import model.Rental;
-import model.StudentBorrower;
 import userinterface.View;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Properties;
@@ -234,7 +228,7 @@ private StackPane fieldBox;
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(Utilities.getStringLang("check_out_book"));
         alert.setHeaderText(Utilities.getStringLang("check_out_book"));
-        alert.setContentText("Book Successfully checked out");
+        alert.setContentText(Utilities.getStringLang("checkout_confirm"));
 
         ButtonType yesButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 //        ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));
@@ -252,7 +246,7 @@ private StackPane fieldBox;
 
     protected void errorDialog(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Check out Book");
+        alert.setTitle(Utilities.getStringLang("check_out_book"));
         alert.setHeaderText("Error Occurred");
         alert.setContentText("There was an error: " + msg );
 
