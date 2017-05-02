@@ -2,7 +2,9 @@ package userinterface.worker;
 
 import Utilities.Utilities;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
 import impresario.IModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -112,6 +114,19 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                         area.setText(splitPhone[0]);
                         phone.setText(splitPhone[1]);
                     }
+                }else if(fEnum == Worker.DATABASE.Password){
+                    JFXPasswordField fPF = new JFXPasswordField();
+                    fPF.setPromptText(str);
+                    field.field = fPF;
+                    fPF.setEditable(enableFields);
+                    fPF.getValidators().add(requiredFieldValidator);
+                    fPF.focusedProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            if(!newValue)
+                                fPF.validate();
+                        }
+                    });
                 }
                 else {
                     JFXTextField fTF = new JFXTextField();

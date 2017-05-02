@@ -109,7 +109,7 @@ public class Rental extends EntityBase implements IView {
 
             } else {
                 successFlag = false;
-                updateStatusMessage = "Book have already been checked out";
+                updateStatusMessage = "Book has already been checked out";
             }
         } else {
             successFlag = false;
