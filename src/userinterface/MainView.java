@@ -5,7 +5,6 @@ import com.jfoenix.controls.JFXSnackbar;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -13,8 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import model.WorkerHolder;
-
-import java.io.File;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -155,9 +152,17 @@ logoutButton.setPrefHeight(40);
             }
         });
 
-        SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
-        menuBook.getItems().addAll(addBook,modifyBook,deleteBook, separatorMenuItem, listBook, checkInBook, checkOutBook);
+        //SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
+        menuBook.getItems().addAll(addBook,modifyBook,deleteBook);
         menuBar.getMenus().add(menuBook);
+
+
+        Menu menuTrans = new Menu(Utilities.getStringLang("transaction"));
+        menuTrans.styleProperty().setValue(style);
+        menuTrans.getItems().addAll(listBook, checkInBook, checkOutBook);
+        menuBar.getMenus().add(menuTrans);
+
+
         // --- Menu Worker
         String cred = (String) ((WorkerHolder)myModel.getState("WorkerHolder")).getState("Credentials");
         if(cred.toLowerCase().trim().equals("administrator") || cred.trim().toLowerCase().equals("administrateur")) {
