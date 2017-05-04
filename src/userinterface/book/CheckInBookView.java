@@ -34,6 +34,7 @@ public class CheckInBookView extends View {
 
         box.setAlignment(Pos.CENTER);
         barcode = new JFXTextField();
+        Utilities.addTextLimiter(barcode, 5);
         barcode.setPromptText(Utilities.getStringLang("barcode"));
         barcode.setLabelFloat(true);
 //        file = new File("resources/images/SUNY_Brockport_Logo.png");

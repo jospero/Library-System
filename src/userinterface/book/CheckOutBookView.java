@@ -60,6 +60,7 @@ private StackPane fieldBox;
         fieldBox = new StackPane();
 
         barcode = new JFXTextField();
+        Utilities.addTextLimiter(barcode, 5);
         barcode.setPromptText("Barcode");
         barcode.setLabelFloat(true);
 
