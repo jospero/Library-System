@@ -55,7 +55,7 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                 Fields field = new Fields();
                 field.label.setText(str);
                 RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator();
-                requiredFieldValidator.setMessage(fieldsStr.get(fEnum)+" must not be empty");
+                requiredFieldValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_not_empty"));
                 if(fEnum == Worker.DATABASE.Credentials){
                     field.field = getCredentialsNode();
                     if(worker.get(row) != null && !worker.get(row).isEmpty()) {
@@ -137,10 +137,10 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                         fTF.setEditable(!modify);
                         NumberValidator numberValidator = new NumberValidator();
                         fTF.getValidators().add(numberValidator);
-                        numberValidator.setMessage(fieldsStr.get(fEnum)+" must be a number");
+                        numberValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_be_num"));
                     } else if (fEnum == Worker.DATABASE.Email){
                         EmailValidator emailValidator = new EmailValidator();
-                        emailValidator.setMessage(fieldsStr.get(fEnum)+" must be in an email format");
+                        emailValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_in_email"));
                         fTF.getValidators().add(emailValidator);
                     }
 

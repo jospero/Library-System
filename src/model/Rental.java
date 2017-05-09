@@ -183,7 +183,7 @@ public class Rental extends EntityBase implements IView {
 
                 if (!exists) {
                     successFlag = false;
-                    updateStatusMessage = "Book has not been checked out";
+                    updateStatusMessage = Utilities.getStringLang("alr_check_out");
                 }
             }
         }

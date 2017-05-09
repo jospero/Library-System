@@ -64,7 +64,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                     if(fEnum == Book.DATABASE.Barcode || fEnum == Book.DATABASE.ISBN || fEnum == Book.DATABASE.YearOfPublication){
                         NumberValidator numberValidator = new NumberValidator();
                         fTF.getValidators().add(numberValidator);
-                        numberValidator.setMessage(fieldsStr.get(fEnum)+" must be a number");
+                        numberValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_be_num"));
                         if(fEnum == Book.DATABASE.YearOfPublication){
                             Utilities.addTextLimiter(fTF, 4);
                         }
@@ -79,10 +79,10 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                     if(fEnum == Book.DATABASE.SuggestedPrice){
                         DoubleValidator doubleValidator = new DoubleValidator();
                         fTF.getValidators().add(doubleValidator);
-                        doubleValidator.setMessage(fieldsStr.get(fEnum)+" must be a decimal");
+                        doubleValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_be_decimal"));
                     }
 
-                    requiredFieldValidator.setMessage(fieldsStr.get(fEnum)+" must not be empty");
+                    requiredFieldValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_not_empty"));
                     fTF.focusedProperty().addListener(new ChangeListener<Boolean>() {
                         @Override
                         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
