@@ -15,6 +15,7 @@ import model.StudentBorrower;
 import model.Worker;
 import userinterface.InformationView;
 import validation.EmailValidator;
+import validation.ExactValidator;
 import validation.NumberValidator;
 import validation.RequiredFieldValidator;
 
@@ -120,10 +121,14 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                     if(studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty())
                         fTF.setText(studentBorrower.get(row));
                      if(fEnum == StudentBorrower.DATABASE.BannerId){
+                         Utilities.addTextLimiter(fTF, 9);
                          fTF.setEditable(!modify);
                          NumberValidator numberValidator = new NumberValidator();
                          fTF.getValidators().add(numberValidator);
                          numberValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_be_num"));
+                         ExactValidator exactValidator = new ExactValidator(9);
+                         exactValidator.setMessage(fieldsStr.get(fEnum)+" : 9 length");
+                         fTF.getValidators().add(exactValidator);
                      } else if (fEnum == StudentBorrower.DATABASE.Email){
                          EmailValidator emailValidator = new EmailValidator();
                          emailValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_in_email"));

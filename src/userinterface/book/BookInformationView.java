@@ -7,11 +7,13 @@ import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.GridPane;
 import model.Book;
 import userinterface.InformationView;
 import validation.DoubleValidator;
+import validation.ExactValidator;
 import validation.NumberValidator;
 import validation.RequiredFieldValidator;
 
@@ -49,6 +51,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
+                field.label.setAlignment(Pos.CENTER_RIGHT);
                 if(fEnum == Book.DATABASE.Condition){
                     field.field = getConditionNode();
                     if(book.get(row) != null && !book.get(row).isEmpty()) {
@@ -59,20 +62,31 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
                     field.field = ta;
                 } else {
                     JFXTextField fTF = new JFXTextField();
+
                     RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator();
                     fTF.getValidators().add(requiredFieldValidator);
                     if(fEnum == Book.DATABASE.Barcode || fEnum == Book.DATABASE.ISBN || fEnum == Book.DATABASE.YearOfPublication){
                         NumberValidator numberValidator = new NumberValidator();
                         fTF.getValidators().add(numberValidator);
                         numberValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_be_num"));
+
                         if(fEnum == Book.DATABASE.YearOfPublication){
                             Utilities.addTextLimiter(fTF, 4);
+                            ExactValidator exactValidator = new ExactValidator(4);
+                            exactValidator.setMessage(fieldsStr.get(fEnum)+" : 4 length");
+                            fTF.getValidators().add(exactValidator);
                         }
                         if(fEnum == Book.DATABASE.Barcode){
                             Utilities.addTextLimiter(fTF, 5);
+                            ExactValidator exactValidator = new ExactValidator(5);
+                            exactValidator.setMessage(fieldsStr.get(fEnum)+" : 5 length");
+                            fTF.getValidators().add(exactValidator);
                         }
                         if(fEnum == Book.DATABASE.ISBN){
                             Utilities.addTextLimiter(fTF, 13);
+                            ExactValidator exactValidator = new ExactValidator(13);
+                            exactValidator.setMessage(fieldsStr.get(fEnum)+" : 13 length");
+                            fTF.getValidators().add(exactValidator);
                         }
 
                     }

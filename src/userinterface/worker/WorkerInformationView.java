@@ -18,6 +18,7 @@ import model.Book;
 import model.Worker;
 import userinterface.InformationView;
 import validation.EmailValidator;
+import validation.ExactValidator;
 import validation.NumberValidator;
 import validation.RequiredFieldValidator;
 
@@ -135,9 +136,13 @@ public abstract class WorkerInformationView extends InformationView<Worker.DATAB
                         fTF.setText(worker.get(row));
                     if(fEnum == Worker.DATABASE.BannerId){
                         fTF.setEditable(!modify);
+                        Utilities.addTextLimiter(fTF, 9);
                         NumberValidator numberValidator = new NumberValidator();
                         fTF.getValidators().add(numberValidator);
                         numberValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_be_num"));
+                        ExactValidator exactValidator = new ExactValidator(9);
+                        exactValidator.setMessage(fieldsStr.get(fEnum)+" : 9 length");
+                        fTF.getValidators().add(exactValidator);
                     } else if (fEnum == Worker.DATABASE.Email){
                         EmailValidator emailValidator = new EmailValidator();
                         emailValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_in_email"));

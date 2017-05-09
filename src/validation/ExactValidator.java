@@ -13,8 +13,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @DefaultProperty("icon")
-public class NumberValidator extends ValidatorBase {
-    public NumberValidator() {
+public class ExactValidator extends ValidatorBase {
+    int length = 0;
+    public ExactValidator(int length) {
+        this.length = length;
     }
 
     protected void eval() {
@@ -27,11 +29,7 @@ public class NumberValidator extends ValidatorBase {
     private void evalTextInputField() {
         TextInputControl textField = (TextInputControl)this.srcControl.get();
 
-        Pattern VALID_NUMBER_REGEX =
-                Pattern.compile("[0-9]+", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = VALID_NUMBER_REGEX.matcher(textField.getText().trim());
-
-        this.hasErrors.set(!matcher.find());
+        this.hasErrors.set(textField.getText().trim().length() != length);
 
     }
 }
