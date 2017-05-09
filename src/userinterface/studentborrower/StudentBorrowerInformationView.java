@@ -48,7 +48,7 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
         Vector<String> studentBorrower = ((StudentBorrower) myModel).getEntryListView();
         for(StudentBorrower.DATABASE fEnum : StudentBorrower.DATABASE.values()){
             RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator();
-            requiredFieldValidator.setMessage(fieldsStr.get(fEnum)+" must not be empty");
+            requiredFieldValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_not_empty"));
             if(fEnum != StudentBorrower.DATABASE.Status && fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
@@ -123,10 +123,10 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                          fTF.setEditable(!modify);
                          NumberValidator numberValidator = new NumberValidator();
                          fTF.getValidators().add(numberValidator);
-                         numberValidator.setMessage(fieldsStr.get(fEnum)+" must be a number");
+                         numberValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_be_num"));
                      } else if (fEnum == StudentBorrower.DATABASE.Email){
                          EmailValidator emailValidator = new EmailValidator();
-                         emailValidator.setMessage(fieldsStr.get(fEnum)+" must be in an email format");
+                         emailValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_in_email"));
                          fTF.getValidators().add(emailValidator);
                      }
 
