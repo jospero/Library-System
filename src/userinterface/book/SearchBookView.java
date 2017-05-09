@@ -1,34 +1,23 @@
 package userinterface.book;
 
 import Utilities.Utilities;
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import model.Book;
 import userinterface.SearchView;
-import userinterface.View;
 
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
-
-import static model.Book.getFields;
 
 /**
  * Created by Sammytech on 3/11/17.
@@ -53,6 +42,7 @@ public class SearchBookView extends SearchView<Book.DATABASE> {
 
     protected GridPane createSearch(){
         barcode = new JFXTextField();
+        Utilities.addTextLimiter(barcode, 5);
         bookTitle = new JFXTextField();
         author = new JFXTextField();
         publisher = new JFXTextField();
