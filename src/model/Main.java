@@ -160,7 +160,16 @@ public class Main implements IView, IModel {
             currentView = ViewFactory.createView("CheckInBookView", rental);
             myViews.put("CheckInBookView", currentView);
 
-       } else if (key.equals("SnackBarErrorMessage")){
+       }else if(key.equals("ListCheckOuts")){
+            myViews.clear();
+            Rental rental = new Rental(myWorkerHolder);
+            rental.subscribe("ViewCancelled", this);
+            currentView = ViewFactory.createView("ListCheckOutsView", rental);
+            myViews.put("ListCheckOutsView", currentView);
+        }
+
+
+       else if (key.equals("SnackBarErrorMessage")){
             message = (String) value;
         }
         myRegistry.updateSubscribers(key, this);

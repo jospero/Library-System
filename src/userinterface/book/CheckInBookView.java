@@ -13,6 +13,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.Book;
+import model.Rental;
 import userinterface.TitleView;
 import userinterface.View;
 
@@ -76,7 +77,9 @@ public class CheckInBookView extends View {
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                CheckInBook();
+                String temp = barcode.getText();
+                //temp.setProperty(Rental.DATABASE.Barcode.name(), barcode.getText().trim());
+                myModel.stateChangeRequest("ProcessCheckIn", temp);
             }
         });
         cancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -86,12 +89,6 @@ public class CheckInBookView extends View {
             }
         });
         return buttonBox;
-    }
-
-    private void CheckInBook() {
-        Properties props = new Properties();
-        props.setProperty(Book.DATABASE.Barcode.name(), barcode.getText().trim());
-        myModel.stateChangeRequest("ProcessCheckIn", props);
     }
 
 
@@ -112,24 +109,23 @@ public class CheckInBookView extends View {
         alert.setHeaderText(Utilities.getStringLang("check_in_book"));
         alert.setContentText(Utilities.getStringLang("checkin_confirm"));
 
-        ButtonType yesButton = new ButtonType(Utilities.getStringLang("yes"));
-        ButtonType noButton = new ButtonType(Utilities.getStringLang("no"));
+        ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 
-        alert.getButtonTypes().setAll(yesButton, noButton);
+        alert.getButtonTypes().setAll(okButton);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == yesButton){
+        if (result.get() == okButton){
 
-        } else if (result.get() == noButton) {
-            myModel.stateChangeRequest("ViewCancelled", null);
-        }
+        } //else if (result.get() == noButton) {
+           // myModel.stateChangeRequest("ViewCancelled", null);
+       // }
     }
 
     protected void errorDialog(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(Utilities.getStringLang("check_in_book"));
-        alert.setHeaderText("Error Occurred");
-        alert.setContentText("There was an error: " + msg );
+        alert.setHeaderText(Utilities.getStringLang("err_occ"));
+        alert.setContentText(msg);
 
         ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 

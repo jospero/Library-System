@@ -127,7 +127,7 @@ logoutButton.setPrefHeight(40);
         listBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-               // myModel.stateChangeRequest("listcheckouts");
+                myModel.stateChangeRequest("ListCheckOuts", "Book");
                 System.out.println("List Book Pressed");
             }
         });
