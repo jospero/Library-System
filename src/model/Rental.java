@@ -1,7 +1,11 @@
 package model;
 
+import Utilities.Utilities;
+import exception.BookCheckInException;
+import exception.InvalidPrimaryKeyException;
 import impresario.IView;
 
+import javax.swing.text.DateFormatter;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,7 +45,7 @@ public class Rental extends EntityBase implements IView {
         dependencies = new Properties();
         dependencies.setProperty("ProcessCheckIn", "UpdateStatusMessage");
         dependencies.setProperty("ProcessCheckOut", "UpdateStatusMessage");
-        dependencies.setProperty("CheckBarcode", "BarcodeSuccessFlag");
+        dependencies.setProperty("CheckBorrowerId", "BorrowerSuccessFlag");
         myRegistry.setDependencies(dependencies);
     }
 
@@ -56,7 +60,7 @@ public class Rental extends EntityBase implements IView {
         System.out.println(key);
         if (key.equals("UpdateStatusMessage") || key.equals("Error"))
             return updateStatusMessage;
-        else if(key.equals("SuccessFlag") || key.equals("BarcodeSuccessFlag")){
+        else if(key.equals("SuccessFlag") || key.equals("BorrowerSuccessFlag")){
             return successFlag;
         } else if(key.equals("SnackBarErrorMessage")){
             return snackBarError;
@@ -67,16 +71,20 @@ public class Rental extends EntityBase implements IView {
     @Override
     public void stateChangeRequest(String key, Object value) {
         if(key.equals("ProcessCheckIn")){
-            String barcode = ((Properties) value).getProperty(DATABASE.Barcode.name());
-            processCheckIn(barcode);
+            processCheckIn((String)value);
         } else if(key.equals("ProcessCheckOut")){
             String barcode = ((Properties) value).getProperty(DATABASE.Barcode.name());
             String bannerId = ((Properties) value).getProperty(DATABASE.BorrowerId.name());
             processCheckOut(barcode, bannerId);
+        } else if (key.equals("CheckBorrowerId")){
+            String borrowerId = ((Properties) value).getProperty(DATABASE.BorrowerId.name());
+            successFlag = checkStudentId(borrowerId);
+
         } else if (key.equals("CheckBarcode")){
-            String barcode = ((Properties) value).getProperty(DATABASE.Barcode.name());
+            String barcode= ((Properties) value).getProperty(DATABASE.Barcode.name());
             successFlag = checkBarcode(barcode);
-        } else if(key.equals("SnackBarErrorMessage")){
+        }
+        else if(key.equals("SnackBarErrorMessage")){
             snackBarError = (String) value;
         }
         System.out.println(key);
@@ -85,6 +93,7 @@ public class Rental extends EntityBase implements IView {
 
     private void processCheckOut(String barcode, String bannerId) {
         if(checkBarcode(barcode) && checkStudentId(bannerId)){
+           //////////////////////////////
             if(!checkIfCheckedOut(barcode)){
                 persistentState = new Properties();
                 persistentState.setProperty(DATABASE.BorrowerId.name(), bannerId);
@@ -105,12 +114,13 @@ public class Rental extends EntityBase implements IView {
                 }
 
             } else {
+                System.out.println("im so lost rn holy shit");
                 successFlag = false;
-                updateStatusMessage = "Book has already been checked out";
+                updateStatusMessage = Utilities.getStringLang("alr_check_out");
             }
         } else {
             successFlag = false;
-            updateStatusMessage = "Invalid Book Barcode or Student Borrower Id";
+            updateStatusMessage = Utilities.getStringLang("inv_bar");
         }
     }
 
@@ -118,6 +128,7 @@ public class Rental extends EntityBase implements IView {
         String query = "SELECT * FROM " + myTableName + " WHERE (" + DATABASE.Barcode.name() + " = " + barcode + ")";
         Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
         if (allDataRetrieved != null) {
+
             for (Properties p : allDataRetrieved) {
                 // copy all the retrieved data into persistent state
                 if (p.getProperty(DATABASE.CheckInDate.name()) == null) {
@@ -134,7 +145,6 @@ public class Rental extends EntityBase implements IView {
         Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
 
         if (allDataRetrieved != null && allDataRetrieved.size() == 1){
-
             Properties prop = allDataRetrieved.get(0);
             System.out.println(allDataRetrieved.get(0));
             return true;
@@ -147,7 +157,6 @@ public class Rental extends EntityBase implements IView {
                 +" = " + bannerId + ")";
         Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
         if (allDataRetrieved != null && allDataRetrieved.size() == 1){
-
             Properties prop = allDataRetrieved.get(0);
 
             return true;
@@ -159,9 +168,9 @@ public class Rental extends EntityBase implements IView {
         if(checkBarcode(barcode)) {
             String query = "SELECT * FROM " + myTableName + " WHERE (" + DATABASE.Barcode.name() + " = " + barcode + ")";
             Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
-
             if (allDataRetrieved != null) {
                 boolean exists = false;
+
                 for (Properties p : allDataRetrieved) {
                     // copy all the retrieved data into persistent state
                     if (p.getProperty(DATABASE.CheckInDate.name()) == null) {
@@ -176,10 +185,11 @@ public class Rental extends EntityBase implements IView {
                     successFlag = false;
                     updateStatusMessage = "Book has not been checked out";
                 }
-            } else {
-                successFlag = false;
-                updateStatusMessage = "Invalid Barcode";
             }
+        }
+        else {
+            successFlag = false;
+            updateStatusMessage = "Invalid Barcode";
         }
     }
 
@@ -189,10 +199,9 @@ public class Rental extends EntityBase implements IView {
         persistentState.setProperty(DATABASE.CheckInWorkerId.name(), (String) myWorkerHolder.getState(Worker.DATABASE.BannerId.name()));
 
         try {
-
             Properties whereClause = new Properties();
-            whereClause.setProperty(DATABASE.Barcode.name(),
-                    persistentState.getProperty(DATABASE.Barcode.name()));
+            whereClause.setProperty(DATABASE.Id.name(),
+                    persistentState.getProperty(DATABASE.Id.name()));
             updatePersistentState(mySchema, persistentState, whereClause);
             successFlag = true;
             updateStatusMessage = "Rental data for Barcode : " + persistentState.getProperty(DATABASE.Barcode.name()) + " updated successfully in database!";

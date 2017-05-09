@@ -41,12 +41,12 @@ public class BookListViewCell extends ListCell<BookTableModel> {
 
     private void configureYearOfPub() {
         yearOfPubLabel = new Label();
-        titleLabel.getStyleClass().add("year");
+        yearOfPubLabel.getStyleClass().add("year");
     }
 
     private void configureAuthor() {
         authorLabel = new Label();
-        titleLabel.getStyleClass().add("author");
+        authorLabel.getStyleClass().add("author");
     }
 
     private void configureTitle() {

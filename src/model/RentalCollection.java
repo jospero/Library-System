@@ -2,6 +2,7 @@ package model;
 
 import exception.InvalidPrimaryKeyException;
 import impresario.IView;
+import userinterface.ViewFactory;
 import userinterface.book.AddBookView;
 
 import java.util.Enumeration;
@@ -27,6 +28,7 @@ public class RentalCollection extends EntityBase implements IView {
     private void setDependencies()
     {
         dependencies = new Properties();
+        dependencies.setProperty("ProcessRental", "UpdateRental");
         dependencies.setProperty("CancelBookList","ResultViewCancelled");
         myRegistry.setDependencies(dependencies);
     }
@@ -79,21 +81,41 @@ public class RentalCollection extends EntityBase implements IView {
 
     @Override
     public void updateState(String key, Object value) {
-
+        stateChangeRequest(key, value);
     }
 
     @Override
     public Object getState(String key) {
+       if(key.equals("Rentals") || key.equals("UpdateRental")){
+           return rentals;
+        }
         return null;
     }
 
     @Override
     public void stateChangeRequest(String key, Object value) {
-
+        if(key.equals("ProcessRental")){
+            try {
+                getRentals();
+            } catch (InvalidPrimaryKeyException e) {
+                e.printStackTrace();
+            }
+        }
+        myRegistry.updateSubscribers(key, this);
     }
 
     @Override
     protected void initializeSchema(String tableName) {
 
+    }
+
+    @Override
+    public void subscribe(String key, IView subscriber) {
+        myRegistry.subscribe(key, subscriber);
+    }
+
+    @Override
+    public void unSubscribe(String key, IView subscriber) {
+        myRegistry.unSubscribe(key, subscriber);
     }
 }

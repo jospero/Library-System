@@ -41,7 +41,7 @@ public class CheckOutBookView extends View {
     private JFXButton backButton;
     private JFXButton submit;
     private JFXButton cancel;
-    private boolean barcodePage = true;
+    private boolean barcodePage = false;
 private StackPane fieldBox;
     public CheckOutBookView(IModel model) {
         super(model, "CheckOutBookView");
@@ -61,11 +61,11 @@ private StackPane fieldBox;
 
         barcode = new JFXTextField();
         Utilities.addTextLimiter(barcode, 5);
-        barcode.setPromptText("Barcode");
+        barcode.setPromptText(Utilities.getStringLang("barcode"));
         barcode.setLabelFloat(true);
 
         studentBorrowerId = new JFXTextField();
-        studentBorrowerId.setPromptText("Student Borrower BannerId");
+        studentBorrowerId.setPromptText(Utilities.getStringLang("sb_bid"));
         studentBorrowerId.setLabelFloat(true);
 
 
@@ -88,9 +88,9 @@ private StackPane fieldBox;
         getChildren().add(box);
 
 
-        studentBorrowerId.translateXProperty().set(1000);
+        barcode.translateXProperty().set(1000);
         myModel.subscribe("UpdateStatusMessage", this);
-        myModel.subscribe("BarcodeSuccessFlag", this);
+        myModel.subscribe("BorrowerSuccessFlag", this);
    //     getButtonBox();
     }
 
@@ -102,7 +102,7 @@ private StackPane fieldBox;
          submit = new JFXButton(Utilities.getStringLang("sub_btn"));
          cancel = new JFXButton(Utilities.getStringLang("cancel_btn"));
          //TODO: BACK TEXT
-         backButton = new JFXButton("Back");
+         backButton = new JFXButton(Utilities.getStringLang("back"));
         backButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -127,9 +127,10 @@ private StackPane fieldBox;
                 temp.setProperty(Rental.DATABASE.Barcode.name(), barcode.getText().trim());
                 temp.setProperty(Rental.DATABASE.BorrowerId.name(), studentBorrowerId.getText().trim());
                 if(barcodePage)
-                    myModel.stateChangeRequest("CheckBarcode", temp);
-                else
                     myModel.stateChangeRequest("ProcessCheckOut", temp);
+
+                else
+                    myModel.stateChangeRequest("CheckBorrowerId", temp);
 
 
 //                slideOut();
@@ -151,50 +152,51 @@ private StackPane fieldBox;
         System.out.println(key + "    " +"the");
         if(key.equals("UpdateStatusMessage")){
             boolean success = (boolean) myModel.getState("SuccessFlag");
+            String msg = (String) myModel.getState("UpdateStatusMessage");
             if(success){
                 confirmDialog();
             } else {
-                errorDialog((String) value);
+                errorDialog(msg);
             }
-        } else if(key.equals("BarcodeSuccessFlag")){
+        } else if(key.equals("BorrowerSuccessFlag")){
             boolean success = (boolean) value;
             if(success){
                 slideOut();
             } else {
-                myModel.stateChangeRequest("SnackBarErrorMessage", "Barcode is Invalid");
+                myModel.stateChangeRequest("SnackBarErrorMessage", "Borrower Id is Invalid");
             }
         }
     }
 
     private void slideOut(){
-        studentBorrowerId.requestFocus();
+        barcode.requestFocus();
         submit.setDisable(true);
         cancel.setDisable(true);
         backButton.setDisable(true);
-        Timeline acceptedBarcode = new Timeline();
-        acceptedBarcode.setCycleCount(1);
-        acceptedBarcode.setAutoReverse(true);
-        final KeyValue kvUp1 = new KeyValue(barcode.translateXProperty(), -fieldBox.getWidth());
-        final KeyValue kvUp2 = new KeyValue(studentBorrowerId.translateXProperty(), 0);
+        Timeline acceptedBorrowerId = new Timeline();
+        acceptedBorrowerId.setCycleCount(1);
+        acceptedBorrowerId.setAutoReverse(true);
+        final KeyValue kvUp1 = new KeyValue(studentBorrowerId.translateXProperty(), -fieldBox.getWidth());
+        final KeyValue kvUp2 = new KeyValue(barcode.translateXProperty(), 0);
 
-        EventHandler onFinishedBarcode = new EventHandler<ActionEvent>() {
+        EventHandler onFinishedBorrowerId = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 backButton.setVisible(true);
                 submit.setDisable(false);
                 cancel.setDisable(false);
                 backButton.setDisable(false);
-                barcodePage = false;
+                barcodePage = true;
             }
         };
 
-        final KeyFrame kfUp = new KeyFrame(Duration.millis(300), onFinishedBarcode, kvUp1, kvUp2);//, kvUp2);//, kvUp3);
-        acceptedBarcode.getKeyFrames().add(kfUp);
+        final KeyFrame kfUp = new KeyFrame(Duration.millis(300), onFinishedBorrowerId, kvUp1, kvUp2);//, kvUp2);//, kvUp3);
+        acceptedBorrowerId.getKeyFrames().add(kfUp);
         EventHandler onFinishedBack= new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 backButton.setVisible(false);
             }
         };
-        acceptedBarcode.play();
+        acceptedBorrowerId.play();
 
     }
 
@@ -205,8 +207,9 @@ private StackPane fieldBox;
         Timeline acceptedBarcode = new Timeline();
         acceptedBarcode.setCycleCount(1);
         acceptedBarcode.setAutoReverse(true);
-        final KeyValue kvUp1 = new KeyValue(barcode.translateXProperty(), 0);
-        final KeyValue kvUp2 = new KeyValue(studentBorrowerId.translateXProperty(), fieldBox.getWidth());
+        final KeyValue kvUp1 = new KeyValue(barcode.translateXProperty(), -fieldBox.getWidth());
+        final KeyValue kvUp2 = new KeyValue(studentBorrowerId.translateXProperty(), 0);
+
 
 
         EventHandler onFinishedBack= new EventHandler<ActionEvent>() {
@@ -215,7 +218,7 @@ private StackPane fieldBox;
                 submit.setDisable(false);
                 cancel.setDisable(false);
                 backButton.setDisable(false);
-                barcodePage = true;
+                barcodePage = false;
             }
         };
         final KeyFrame kfUp = new KeyFrame(Duration.millis(300), onFinishedBack, kvUp1, kvUp2);//, kvUp2);//, kvUp3);
@@ -248,8 +251,8 @@ private StackPane fieldBox;
     protected void errorDialog(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(Utilities.getStringLang("check_out_book"));
-        alert.setHeaderText("Error Occurred");
-        alert.setContentText("There was an error: " + msg );
+        alert.setHeaderText(Utilities.getStringLang("err_occ"));
+        alert.setContentText(msg);
 
         ButtonType okButton = new ButtonType(Utilities.getStringLang("ok_btn"));
 
