@@ -1,10 +1,7 @@
 package model;
 
-import exception.BookCheckInException;
-import exception.InvalidPrimaryKeyException;
 import impresario.IView;
 
-import javax.swing.text.DateFormatter;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -16,12 +16,13 @@ import userinterface.TitleView;
 
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Created by Sammytech on 3/5/17.
  */
 public class AddBookView extends BookInformationView {
-
+    private static final Logger LOGGER = Logger.getLogger( AddBookView.class.getName() );
     public AddBookView(IModel model) {
         super(model, true, "AddBookView");
     }
@@ -90,7 +91,7 @@ public class AddBookView extends BookInformationView {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        System.out.println("Destroyed");
+        LOGGER.info("Destroyed");
     }
 
     protected void confirmDialog(){

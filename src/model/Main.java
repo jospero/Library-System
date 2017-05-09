@@ -1,6 +1,7 @@
 package model;
 
 import event.Event;
+import exception.InvalidPrimaryKeyException;
 import impresario.IModel;
 import impresario.IView;
 import impresario.ModelRegistry;
@@ -54,6 +55,7 @@ public class Main implements IView, IModel {
         dependencies.setProperty("SubViewChange", "ChangeView");
         dependencies.setProperty("ParentView", "ChangeView");
         dependencies.setProperty("CheckIn", "ChangeView");
+        dependencies.setProperty("ListBooks", "ChangeView");
         dependencies.setProperty("SnackBarErrorMessage", "DisplayError");
         myRegistry.setDependencies(dependencies);
     }
@@ -160,7 +162,20 @@ public class Main implements IView, IModel {
             currentView = ViewFactory.createView("CheckInBookView", rental);
             myViews.put("CheckInBookView", currentView);
 
-       } else if (key.equals("SnackBarErrorMessage")){
+       }else if(key.equals("ListBooks")) {
+            myViews.clear();
+            RentalCollection rentalCollection = new RentalCollection();
+            rentalCollection.subscribe("ViewCancelled", this);
+            rentalCollection.subscribe("SnackBarErrorMessage", this);
+            try {
+                rentalCollection.getRentals();
+            } catch (InvalidPrimaryKeyException e) {
+                e.printStackTrace();
+            }
+            currentView = ViewFactory.createView("RentalCollectionView", rentalCollection);
+            myViews.put("RentalCollectionView", currentView);
+
+        } else if (key.equals("SnackBarErrorMessage")){
             message = (String) value;
         }
         myRegistry.updateSubscribers(key, this);

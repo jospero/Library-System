@@ -122,13 +122,25 @@ logoutButton.setPrefHeight(40);
             }
         });
 
+
+
+        //SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
+        menuBook.getItems().addAll(addBook,modifyBook,deleteBook);
+        menuBar.getMenus().add(menuBook);
+
+
+        // --- Menu Worker
+
+        Menu menuTrans = new Menu(Utilities.getStringLang("transaction"));
+        menuTrans.styleProperty().setValue(style);
         MenuItem listBook = new MenuItem(Utilities.getStringLang("list_check_outs"));
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
         listBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-               // myModel.stateChangeRequest("listcheckouts");
-                System.out.println("List Book Pressed");
+                // myModel.stateChangeRequest("listcheckouts");
+                myModel.stateChangeRequest("ListBooks", null);
+                System.out.println("List Books Pressed");
             }
         });
 
@@ -151,21 +163,13 @@ logoutButton.setPrefHeight(40);
                 System.out.println("Check In Book Pressed");
             }
         });
-
-        //SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
-        menuBook.getItems().addAll(addBook,modifyBook,deleteBook);
-        menuBar.getMenus().add(menuBook);
-
-
-        Menu menuTrans = new Menu(Utilities.getStringLang("transaction"));
-        menuTrans.styleProperty().setValue(style);
         menuTrans.getItems().addAll(listBook, checkInBook, checkOutBook);
         menuBar.getMenus().add(menuTrans);
 
 
         // --- Menu Worker
         String cred = (String) ((WorkerHolder)myModel.getState("WorkerHolder")).getState("Credentials");
-        if(cred.toLowerCase().trim().equals("administrator") || cred.trim().toLowerCase().equals("administrateur")) {
+        if(cred.toLowerCase().trim().equals("administrator")) {
             Menu menuWorker = new Menu(Utilities.getStringLang("worker"));
             menuWorker.styleProperty().setValue(style);
             MenuItem addWorker = new MenuItem(Utilities.getStringLang("add_worker"));

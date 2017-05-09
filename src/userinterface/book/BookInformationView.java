@@ -16,6 +16,7 @@ import validation.NumberValidator;
 import validation.RequiredFieldValidator;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import static model.Book.getFields;
 
@@ -24,6 +25,7 @@ import static model.Book.getFields;
  */
 public abstract class BookInformationView extends InformationView<Book.DATABASE> {
 
+    private static final Logger LOGGER = Logger.getLogger( BookInformationView.class.getName() );
 
     public BookInformationView(IModel model, boolean enableFields, String classname) {
         super(model, enableFields, classname);
@@ -41,7 +43,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         GridPane bookInfo =  super.getInformation();
         int row = 0;
         Vector<String> book = ((Book) myModel).getEntryListView();
-        System.out.println(book);
+        LOGGER.info(String.valueOf(book));
         for(Book.DATABASE fEnum : Book.DATABASE.values()){
             if(fEnum != Book.DATABASE.Status && fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
@@ -121,7 +123,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         Properties book = new Properties();
         for(Book.DATABASE fieldsEnum: fieldsList.keySet()){
             if(fieldsList.get(fieldsEnum).field instanceof JFXTextField){
-                System.out.println(fieldsEnum.name());
+                LOGGER.info(fieldsEnum.name());
                 valid = ((JFXTextField) fieldsList.get(fieldsEnum).field).validate() && valid;
                 String str = ((JFXTextField) fieldsList.get(fieldsEnum).field).getText();
                 book.setProperty(fieldsEnum.name(), str);
@@ -137,7 +139,7 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         if(!valid){
             book.clear();
         }
-        System.out.println(book);
+        LOGGER.info(String.valueOf(book));
         return book;
     }
 
