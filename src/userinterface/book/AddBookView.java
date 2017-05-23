@@ -1,6 +1,7 @@
 package userinterface.book;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXButton;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,12 +16,13 @@ import userinterface.TitleView;
 
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Created by Sammytech on 3/5/17.
  */
 public class AddBookView extends BookInformationView {
-
+    private static final Logger LOGGER = Logger.getLogger( AddBookView.class.getName() );
     public AddBookView(IModel model) {
         super(model, true, "AddBookView");
     }
@@ -55,15 +57,19 @@ public class AddBookView extends BookInformationView {
     @Override
     protected HBox getButtonBox() {
         HBox buttonBox = new HBox();
-        Button submit = new Button(Utilities.getStringLang("sub_btn"));
-        Button cancel = new Button(Utilities.getStringLang("cancel_btn"));
-
+        JFXButton submit = new JFXButton(Utilities.getStringLang("sub_btn"));
+        JFXButton cancel = new JFXButton(Utilities.getStringLang("cancel_btn"));
+        submit.getStyleClass().add("button-raised");
+        submit.setId("accept");
+        cancel.getStyleClass().add("button-raised");
+        cancel.setId("cancel");
         buttonBox.getChildren().add(submit);
         buttonBox.getChildren().add(cancel);
 
         cancel.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+//                myModel.stateChangeRequest("Error", "Everything is wrong");
                 myModel.stateChangeRequest("AddBookCancelled", null);
             }
         });
@@ -85,7 +91,7 @@ public class AddBookView extends BookInformationView {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        System.out.println("Destroyed");
+        LOGGER.info("Destroyed");
     }
 
     protected void confirmDialog(){

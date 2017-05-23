@@ -3,6 +3,9 @@ package Utilities;
 
 // system imports
 import common.PropertyFile;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TextField;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,8 +20,8 @@ import java.util.regex.Pattern;
 public class Utilities
 {
 
-	private static String language ="";
-	private static String country ="";
+	private static String language;
+	private static String country;
 
 
 	private static Locale currentLocale;
@@ -333,36 +336,71 @@ public class Utilities
 			//validating phone number with extension length from 3 to 5
 		else if(phoneNo.matches("\\d{3}-\\d{3}-\\d{4}\\s(x|(ext))\\d{3,5}")) return true;
 			//validating phone number where area code is in braces ()
-		else if(phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}")) return true;
+//		else if(phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}")) return true;
 			//return false if nothing matches the input
 		else return false;
 	}
 
 	public static String getStringLang(String key) {
-		if (props == null) {
-			props = new PropertyFile("langConfig.ini");
-		}
-		language = props.getProperty("lang");
-		country = props.getProperty("country");
-		currentLocale = new Locale(language, country);
-		String result;
-		try {
-			if(messages == null) {
-				messages = ResourceBundle.getBundle("MessagesBundle", currentLocale, new UTF8Control());
-			}
-			result = convertToTitleCase(messages.getString(key));
-//			result = messages.getString(key);
-		} catch (MissingResourceException ex){
-			result = "Shit aint right";
-		}
+		String result = convertToTitleCase(getStringNorm(key));
 		return result.trim();
 
 	}
+
+	public static String getStringNorm(String key) {
+		if (props == null) {
+			props = new PropertyFile("langConfig.ini");
+		}
+		if(language == null)
+			language = props.getProperty("lang");
+		if(country == null)
+			country = props.getProperty("country");
+		if(currentLocale == null)
+			currentLocale = new Locale(language, country);
+
+		return getStringNorm(key, currentLocale);
+	}
+
+	public static String getStringInEng(String key) {
+		Locale locale = new Locale("en", "US");
+		return convertToTitleCase(getStringNorm(key, locale)).trim();
+	}
+
+	public static String getStringNorm(String key, Locale locale) {
+		String result;
+		try {
+			if(messages == null || !messages.getLocale().equals(locale)) {
+				messages = ResourceBundle.getBundle("MessagesBundle", locale,
+						new UTF8Control());
+			}
+			result = messages.getString(key);
+		} catch (MissingResourceException ex){
+			result = "Shit aint right";
+		}
+//		if(!currentLocale.equals(locale)){
+//			messages = ResourceBundle.getBundle("MessagesBundle", currentLocale, new UTF8Control());
+//		}
+		return result;
+	}
+
+
 	public static boolean validateEmail(String email){
 		Pattern VALID_Email_ADDRESS_REGEX =
 				Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 		Matcher matcher = VALID_Email_ADDRESS_REGEX.matcher(email);
 		return matcher.find();
+	}
+
+	public static void addTextLimiter(final TextField tf, final int maxLength) {
+		tf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+				if (tf.getText().length() > maxLength) {
+					String s = tf.getText().substring(0, maxLength);
+					tf.setText(s);
+				}
+			}
+		});
 	}
 
 

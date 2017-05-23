@@ -1,21 +1,17 @@
 package userinterface;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXSnackbar;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import model.WorkerHolder;
-
-import java.io.File;
 
 /**
  * Created by Sammytech on 3/5/17.
@@ -23,13 +19,12 @@ import java.io.File;
 public class MainView extends View {
     private Group mainView;
     private VBox container;
-
+    private ScrollPane sp;
+    private JFXSnackbar bar;
     public MainView(IModel model) {
         super(model, "MainView");
-        File file = new File("resources/css/common.css");
-        this.getStylesheets().add(file.toURI().toString());
-        file = new File("resources/css/main.css");
-        this.getStylesheets().add(file.toURI().toString());
+        String css = this.getClass().getResource("/resources/css/main.css").toExternalForm();
+        this.getStylesheets().add(css);
         container = new VBox();
 //        container.setPrefWidth(WIDTH);
 
@@ -38,7 +33,7 @@ public class MainView extends View {
         menu.setMaxWidth(Double.MAX_VALUE);
         menu.setPrefHeight(40);
         final ImageView imageView = new ImageView(
-                new Image(new File("resources/images/logout.png").toURI().toString())
+                new Image(this.getClass().getClassLoader().getResourceAsStream("resources/images/logout.png"))
         );
         imageView.setPreserveRatio(true);
         imageView.setFitWidth(20);
@@ -63,11 +58,34 @@ logoutButton.setPrefHeight(40);
             }
         });
 
+        sp = new ScrollPane();
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         swapContentView((View) myModel.getState("ChangeView"));
-//        container.getChildren().add(mainView);
+
+
+//        sp.getStyleClass().add("page-scroll");
+
+
+
+
+//        container.getChildren().add(sp);
+
+        // MessageView
+        AnchorPane pane = new AnchorPane();
+        pane.setPrefHeight(60);
+        pane.setPrefWidth(container.getPrefWidth());
+        bar = new JFXSnackbar(pane);
+        pane.setId("message");
+        pane.setPickOnBounds(false);
+//        container.getChildren().add(pane);
+//        container.setStyle("-fx-background-color: #2aff52");
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(sp,  pane);
+        container.getChildren().add(stackPane);
         getChildren().add(container);
 
         myModel.subscribe("ChangeView", this);
+        myModel.subscribe("DisplayError",this);
     }
 
     private MenuBar createMenu(){
@@ -104,12 +122,25 @@ logoutButton.setPrefHeight(40);
             }
         });
 
+
+
+        //SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
+        menuBook.getItems().addAll(addBook,modifyBook,deleteBook);
+        menuBar.getMenus().add(menuBook);
+
+
+        // --- Menu Worker
+
+        Menu menuTrans = new Menu(Utilities.getStringLang("transaction"));
+        menuTrans.styleProperty().setValue(style);
         MenuItem listBook = new MenuItem(Utilities.getStringLang("list_check_outs"));
 //        addBook.setAccelerator(KeyCombination.keyCombination("Ctrl+A"));
         listBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
-                System.out.println("List Book Pressed");
+                // myModel.stateChangeRequest("listcheckouts");
+                myModel.stateChangeRequest("ListBooks", null);
+                System.out.println("List Books Pressed");
             }
         });
 
@@ -118,6 +149,7 @@ logoutButton.setPrefHeight(40);
         checkOutBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
+                myModel.stateChangeRequest("CheckOut", "Book");
                 System.out.println("Check out Book Pressed");
             }
         });
@@ -127,16 +159,17 @@ logoutButton.setPrefHeight(40);
         checkInBook.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
 //                vbox.setVisible(false);
+                myModel.stateChangeRequest("CheckIn", "Book");
                 System.out.println("Check In Book Pressed");
             }
         });
+        menuTrans.getItems().addAll(listBook, checkInBook, checkOutBook);
+        menuBar.getMenus().add(menuTrans);
 
-        SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
-        menuBook.getItems().addAll(addBook,modifyBook,deleteBook, separatorMenuItem, listBook, checkInBook, checkOutBook);
-        menuBar.getMenus().add(menuBook);
+
         // --- Menu Worker
         String cred = (String) ((WorkerHolder)myModel.getState("WorkerHolder")).getState("Credentials");
-        if(cred.toLowerCase().trim().equals("administrator") || cred.trim().toLowerCase().equals("administrateur")) {
+        if(cred.toLowerCase().trim().equals("administrator")) {
             Menu menuWorker = new Menu(Utilities.getStringLang("worker"));
             menuWorker.styleProperty().setValue(style);
             MenuItem addWorker = new MenuItem(Utilities.getStringLang("add_worker"));
@@ -209,25 +242,38 @@ logoutButton.setPrefHeight(40);
         return menuBar;
     }
 
-    private void addBook() {
-
-    }
 
     @Override
     public void updateState(String key, Object value) {
         if(key.equals("ChangeView")){
             swapContentView((View) value);
+        } else if(key.equals("DisplayError")){
+            System.out.println(value);
+            displayErrorMessage((String) value);
         }
     }
 
     private void swapContentView(View content){
-        if(mainView != null){
-            container.getChildren().remove(mainView);
-        }
+//        if(mainView != null){
+//            container.getChildren().remove(mainView);
+//        }
         mainView = content;
         mainView.getChildren().get(0).getStyleClass().add("page");
-        container.getChildren().add(mainView);
-//        ((View)mainView).ft.playFromStart();
+        sp.getStyleClass().add("page-scroll");
+        sp.setContent(mainView);
+//        sp.setPrefHeight();
 
+        sp.setFitToWidth(true);
+        sp.setFitToHeight(true);
+
+    }
+
+    /**
+     * Display error message
+     */
+    //----------------------------------------------------------
+    public void displayErrorMessage(String message)
+    {
+        bar.show(message, 2500);
     }
 }

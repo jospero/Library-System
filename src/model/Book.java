@@ -1,25 +1,20 @@
 package model;
 
-import Utilities.Utilities;
 import exception.InvalidPrimaryKeyException;
 import impresario.IView;
 
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 import static Utilities.Utilities.getStringLang;
 
 public class Book extends EntityBase implements IView {
 
 	public enum DATABASE{
-		Barcode, Title, Authors, Discipline, Publisher, YearOfPublication, ISBN, Condition, SuggestedPrice, Notes, Status
+		Barcode, Title,Discipline, Authors, Publisher, YearOfPublication, ISBN, Condition, SuggestedPrice, Notes, Status
 	}
 
 	private static final String myTableName = "Book";
-
 	protected Properties dependencies;
 
 	// GUI Components
@@ -31,6 +26,11 @@ public class Book extends EntityBase implements IView {
 		super(myTableName);
 
 		setDependencies();
+		retreive(Barcode);
+
+	}
+
+	public void retreive(String Barcode) throws InvalidPrimaryKeyException{
 		String query = "SELECT * FROM " + myTableName + " WHERE (Barcode = " + Barcode + ")";
 
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
@@ -44,7 +44,7 @@ public class Book extends EntityBase implements IView {
 			if (size != 1)
 			{
 				throw new InvalidPrimaryKeyException("Multiple books matching id : "
-					+ Barcode + " found.");
+						+ Barcode + " found.");
 			}
 			else
 			{
@@ -60,7 +60,7 @@ public class Book extends EntityBase implements IView {
 		{
 //		    bookErrorMessage="No book matching id : " + Barcode + " found.";
 			throw new InvalidPrimaryKeyException("No book matching id : "
-				+ Barcode + " found.");
+					+ Barcode + " found.");
 		}
 	}
 
@@ -96,7 +96,7 @@ public class Book extends EntityBase implements IView {
 	//----------------------------------------------------------
 	public Object getState(String key)
 	{
-		if (key.equals("UpdateStatusMessage"))
+		if (key.equals("UpdateStatusMessage") || key.equals("Error"))
 			return updateStatusMessage;
 		else if(key.equals("SuccessFlag")){
 		    return successFlag;
@@ -112,9 +112,13 @@ public class Book extends EntityBase implements IView {
         } else if(key.equals("ProcessModifyBook")){
 			processModifyBook((Properties) value);
 		}
+		else if(key.equals("Error")){
+			updateStatusMessage = (String) value;
+		}
 	    myRegistry.updateSubscribers(key, this);
 	}
-	
+
+
 	private void setDependencies()
 	{
 		dependencies = new Properties();
@@ -122,6 +126,7 @@ public class Book extends EntityBase implements IView {
 		dependencies.setProperty("ModifyBookCancelled","ViewCancelled");
         dependencies.setProperty("ProcessNewBook","UpdateStatusMessage");
         dependencies.setProperty("ProcessModifyBook","UpdateStatusMessage");
+		dependencies.setProperty("ProcessCheckOutBook","UpdateStatusMessage");
 		myRegistry.setDependencies(dependencies);
 	}
 
@@ -171,6 +176,7 @@ public class Book extends EntityBase implements IView {
 		} catch (SQLException e) {
 			successFlag = false;
 			updateStatusMessage = e.getMessage();
+//			myRegistry.updateSubscribers("Error", this);
 		}
 
 	}
@@ -225,6 +231,7 @@ public class Book extends EntityBase implements IView {
 		modifyBook();
 	}
 
+
     private void processNewBookHelper(Properties props){
         persistentState = new Properties();
         Enumeration allKeys = props.propertyNames();
@@ -267,4 +274,6 @@ public class Book extends EntityBase implements IView {
 	public void updateState(String key, Object value) {
 		stateChangeRequest(key, value);
 	}
+
+
 }

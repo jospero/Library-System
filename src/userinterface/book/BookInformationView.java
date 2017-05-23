@@ -1,18 +1,24 @@
 package userinterface.book;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
-import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.GridPane;
 import model.Book;
 import userinterface.InformationView;
+import validation.DoubleValidator;
+import validation.ExactValidator;
+import validation.NumberValidator;
+import validation.RequiredFieldValidator;
 
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
+import java.util.logging.Logger;
 
 import static model.Book.getFields;
 
@@ -21,6 +27,7 @@ import static model.Book.getFields;
  */
 public abstract class BookInformationView extends InformationView<Book.DATABASE> {
 
+    private static final Logger LOGGER = Logger.getLogger( BookInformationView.class.getName() );
 
     public BookInformationView(IModel model, boolean enableFields, String classname) {
         super(model, enableFields, classname);
@@ -38,26 +45,68 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         GridPane bookInfo =  super.getInformation();
         int row = 0;
         Vector<String> book = ((Book) myModel).getEntryListView();
+        LOGGER.info(String.valueOf(book));
         for(Book.DATABASE fEnum : Book.DATABASE.values()){
-
-            if(fieldsStr.containsKey(fEnum)){
+            if(fEnum != Book.DATABASE.Status && fieldsStr.containsKey(fEnum)){
                 String str = fieldsStr.get(fEnum);
                 Fields field = new Fields();
                 field.label.setText(str);
+                field.label.setAlignment(Pos.CENTER_RIGHT);
                 if(fEnum == Book.DATABASE.Condition){
                     field.field = getConditionNode();
-                    if(book.get(row) != null && !book.get(row).isEmpty())
-                        ((ComboBox)field.field).setValue(book.get(row));
-                } else if(fEnum == Book.DATABASE.Status){
-                    field.field = getStatusNode();
-                    if(book.get(row) != null && !book.get(row).isEmpty())
-                        ((ComboBox)field.field).setValue(book.get(row));
+                    if(book.get(row) != null && !book.get(row).isEmpty()) {
+                        ((JFXComboBox<Condition>) field.field).getSelectionModel().select(Condition.getConditionIndex(book.get(row)));
+                    }
                 } else if(fEnum == Book.DATABASE.Notes) {
-                    TextArea ta = new TextArea();
+                    JFXTextArea ta = new JFXTextArea();
                     field.field = ta;
                 } else {
-                    TextField fTF = new TextField();
+                    JFXTextField fTF = new JFXTextField();
+
+                    RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator();
+                    fTF.getValidators().add(requiredFieldValidator);
+                    if(fEnum == Book.DATABASE.Barcode || fEnum == Book.DATABASE.ISBN || fEnum == Book.DATABASE.YearOfPublication){
+                        NumberValidator numberValidator = new NumberValidator();
+                        fTF.getValidators().add(numberValidator);
+                        numberValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_be_num"));
+
+                        if(fEnum == Book.DATABASE.YearOfPublication){
+                            Utilities.addTextLimiter(fTF, 4);
+                            ExactValidator exactValidator = new ExactValidator(4);
+                            exactValidator.setMessage(fieldsStr.get(fEnum)+" : 4 length");
+                            fTF.getValidators().add(exactValidator);
+                        }
+                        if(fEnum == Book.DATABASE.Barcode){
+                            Utilities.addTextLimiter(fTF, 5);
+                            ExactValidator exactValidator = new ExactValidator(5);
+                            exactValidator.setMessage(fieldsStr.get(fEnum)+" : 5 length");
+                            fTF.getValidators().add(exactValidator);
+                        }
+                        if(fEnum == Book.DATABASE.ISBN){
+                            Utilities.addTextLimiter(fTF, 13);
+                            ExactValidator exactValidator = new ExactValidator(13);
+                            exactValidator.setMessage(fieldsStr.get(fEnum)+" : 13 length");
+                            fTF.getValidators().add(exactValidator);
+                        }
+
+                    }
+                    if(fEnum == Book.DATABASE.SuggestedPrice){
+                        DoubleValidator doubleValidator = new DoubleValidator();
+                        fTF.getValidators().add(doubleValidator);
+                        doubleValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_be_decimal"));
+                    }
+
+                    requiredFieldValidator.setMessage(fieldsStr.get(fEnum)+" " + Utilities.getStringLang("must_not_empty"));
+                    fTF.focusedProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            if(!newValue)
+                                fTF.validate();
+                        }
+                    });
+
                     fTF.setPromptText(str);
+//                    fTF.setLabelFloat(true);
                     fTF.setEditable(enableFields);
                     if(fEnum == Book.DATABASE.Barcode){
                         fTF.setEditable(!modify);
@@ -75,88 +124,86 @@ public abstract class BookInformationView extends InformationView<Book.DATABASE>
         return bookInfo;
     }
 
-    private void error(Node n){
-        if(!n.getStyleClass().contains("error")){
-            n.getStyleClass().add("error");
+    public static boolean validate(JFXTextField... textFields){
+        boolean valid = true;
+        for(JFXTextField jtf : textFields){
+            valid = valid && jtf.validate();
         }
+        return valid;
     }
 
     final public Properties validateBook(){
+        boolean valid = true;
         Properties book = new Properties();
-        boolean errorFound = false;
-        System.out.println("Checking");
         for(Book.DATABASE fieldsEnum: fieldsList.keySet()){
-             if(fieldsList.get(fieldsEnum).field instanceof TextField || fieldsList.get(fieldsEnum).field instanceof TextArea) {
-                 String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
-                 if (str.isEmpty() && fieldsEnum != Book.DATABASE.Notes) {
-                     error(fieldsList.get(fieldsEnum).field);
-                     if (!errorFound) {
-                         errorFound = true;
-                         book = new Properties();
-                     }
-                 } else if (fieldsEnum == Book.DATABASE.Barcode || fieldsEnum == Book.DATABASE.YearOfPublication ||
-                         fieldsEnum == Book.DATABASE.ISBN) {
-                     if (str.matches("[0-9]+")) {
-                         fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
-                         if (!errorFound) {
-                             book.setProperty(fieldsEnum.name(), str);
-                         }
-                     } else {
-                         error(fieldsList.get(fieldsEnum).field);
-                         if (!errorFound) {
-                             errorFound = true;
-                             book = new Properties();
-                         }
-                     }
-                 } else if (fieldsEnum == Book.DATABASE.SuggestedPrice){
-                     try {
-                         double i = Double.parseDouble(str);
-                         fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
-                         if (!errorFound) {
-                             book.setProperty(fieldsEnum.name(), str);
-                         }
-                     } catch (NumberFormatException ex) {
-                         error(fieldsList.get(fieldsEnum).field);
-                         if (!errorFound) {
-                             errorFound = true;
-                             book = new Properties();
-                         }
-                     }
-                }
-                 else {
-                     fieldsList.get(fieldsEnum).field.getStyleClass().removeAll("error");
-                     if(!errorFound){
-                        book.setProperty(fieldsEnum.name(), str);
-                    }
-                 }
-             } else {
-                 if(!errorFound) {
-                     String str = ((ComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem().toString();
-                     book.setProperty(fieldsEnum.name(), str);
-                 }
-             }
+            if(fieldsList.get(fieldsEnum).field instanceof JFXTextField){
+                LOGGER.info(fieldsEnum.name());
+                valid = ((JFXTextField) fieldsList.get(fieldsEnum).field).validate() && valid;
+                String str = ((JFXTextField) fieldsList.get(fieldsEnum).field).getText();
+                book.setProperty(fieldsEnum.name(), str);
+            } else if(fieldsList.get(fieldsEnum).field instanceof JFXComboBox){
+                Condition cond = (Condition) ((JFXComboBox) fieldsList.get(fieldsEnum).field).getSelectionModel().getSelectedItem();
+                String str = Utilities.getStringInEng(cond.key);
+                book.setProperty(fieldsEnum.name(), str);
+            } else{
+                String str = ((TextInputControl) fieldsList.get(fieldsEnum).field).getText();
+                book.setProperty(fieldsEnum.name(), str);
+            }
         }
-        System.out.println(book.toString());
+        if(!valid){
+            book.clear();
+        }
+        LOGGER.info(String.valueOf(book));
         return book;
     }
-
 
     private String Databasify(String field){
         return field.replaceAll("[^a-zA-Z0-9]", "");
     }
-    private ComboBox getConditionNode(){
-        ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll(Utilities.getStringLang("condgood"), Utilities.getStringLang("conddmg"));
+
+    private JFXComboBox<Condition> getConditionNode(){
+        JFXComboBox<Condition> comboBox = new JFXComboBox<>();
+        Map<String, String> cond = Condition.getConditions();
+        for(Map.Entry<String, String> entry: cond.entrySet()){
+            Condition temp = new Condition(Utilities.getStringLang(entry.getValue()), entry.getValue());
+            comboBox.getItems().add(temp);
+        }
         comboBox.getSelectionModel().select(0);
         return comboBox;
     }
 
-    private ComboBox getStatusNode(){
-        ComboBox comboBox = new ComboBox();
-        comboBox.getItems().addAll(Utilities.getStringLang("statusact"), Utilities.getStringLang("statusinact"));
-        comboBox.getSelectionModel().select(0);
-        return comboBox;
+    private static class Condition{
+        private static final Map<String, String> conditionList;
+        static {
+            Map<String, String> map = new LinkedHashMap<>();
+            map.put("good","condgood");
+            map.put("damaged","conddmg");
+            conditionList = Collections.unmodifiableMap(map);
+        }
+
+        String value;
+        String key;
+
+        public Condition(String value, String key) {
+            this.value = value;
+            this.key = key;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        public static Map<String, String> getConditions(){
+            return conditionList;
+        }
+        public static int getConditionIndex(String condition){
+
+            return new ArrayList<String>(conditionList.keySet()).indexOf(condition.toLowerCase());
+        }
+
     }
+
 
 //    abstract void clearFields();
 

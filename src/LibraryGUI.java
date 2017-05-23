@@ -9,6 +9,7 @@ import model.Login;
 import userinterface.MainStageContainer;
 import userinterface.WindowPosition;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -35,9 +36,10 @@ public class LibraryGUI extends Application
         // Create the top-level container (main frame) and add contents to it.
         MainStageContainer.setStage(primaryStage, "EOP Login");
         mainStage = MainStageContainer.getInstance();
-        mainStage.getIcons().add(new Image("resources/images/shield.png"));
+        mainStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/resources/images/shield.png")));
         try {
-            //com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
+            URL url = this.getClass().getResource("/resources/images/shield.png");
+//            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon(url).getImage());
         } catch (Exception e) {
             // Won't work on Windows or Linux.
         }
@@ -53,11 +55,12 @@ public class LibraryGUI extends Application
         try
         {
             myLogin = new Login();
+
         }
         catch(Exception exc)
         {
             System.err.println("LIBRARY - could not create Login!");
-            new Event(Event.getLeafLevelClassName(this), "Login.<init>", "Unable to create Librarian object", Event.ERROR);
+            new Event(Event.getLeafLevelClassName(this), "Login.<init>", exc+"Unable to create Librarian object" + exc.getMessage() +"  what", Event.ERROR);
             exc.printStackTrace();
         }
 

@@ -10,6 +10,7 @@ import userinterface.ViewFactory;
 
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Vector;
 
 /**
  * Created by Sammytech on 3/11/17.
@@ -20,6 +21,8 @@ public class SearchStudentBorrower implements IView, IModel {
     protected Properties dependencies;
     protected ModelRegistry myRegistry;
     protected ArrayList<View> nextView;
+    private StudentBorrowerCollection studentBorrowerCollection;
+    private int selectedStudentBorrower = -1;
     public SearchStudentBorrower(SearchFor searchFor) {
         this.searchFor = searchFor;
         nextView = new ArrayList<>();
@@ -36,11 +39,10 @@ public class SearchStudentBorrower implements IView, IModel {
     protected void setDependencies()
     {
         dependencies = new Properties();
-        dependencies.setProperty("ProcessSearch", "SubViewChange");
-        dependencies.setProperty("ViewStudentBorrowerCancelled", "SubViewChange");
-        dependencies.setProperty("ResultViewCancelled", "ParentView");
-        dependencies.setProperty("SearchStudentBorrowerCancelled", "ViewCancelled");
-        dependencies.setProperty("ViewStudentBorrower", "SubViewChange");
+        dependencies.setProperty("ProcessSearch", "UpdateSearch");
+        dependencies.setProperty("DetailViewCancelled", "ParentView");
+        dependencies.setProperty("SearchCancelled", "ViewCancelled");
+        dependencies.setProperty("View", "SubViewChange");
         myRegistry.setDependencies(dependencies);
     }
 
@@ -56,6 +58,9 @@ public class SearchStudentBorrower implements IView, IModel {
             return nextView.get(nextView.size()-1);
         } if(key.equals("ParentView")){
             return "SearchStudentBorrowerView";
+        } if(key.equals("StudentBorrowers") || key.equals("UpdateSearch")){
+            if(studentBorrowerCollection != null)
+                return studentBorrowerCollection.getState("StudentBorrowers");
         }
         return null;
     }
@@ -74,23 +79,27 @@ public class SearchStudentBorrower implements IView, IModel {
     public void stateChangeRequest(String key, Object value) {
         System.out.println("SCR "+ key);
         if(key.equals("ProcessSearch")){
-            StudentBorrowerCollection studentBorrowerCollection = new StudentBorrowerCollection();
+            studentBorrowerCollection = new StudentBorrowerCollection();
             try {
                 studentBorrowerCollection.findBooksCriteria((Properties) value);
             } catch (InvalidPrimaryKeyException e) {
                 e.printStackTrace();
             }
-            studentBorrowerCollection.subscribe("ResultViewCancelled", this);
-            studentBorrowerCollection.subscribe("ViewStudentBorrower", this);
-            nextView.add(studentBorrowerCollection.createView());
-        } else if(key.equals("ViewStudentBorrower")){
+        } else if(key.equals("View")){
             if(searchFor == SearchFor.MODIFY){
-                StudentBorrower studentBorrower = (StudentBorrower) value;
-                studentBorrower.subscribe("ViewStudentBorrowerCancelled", this);
-                studentBorrower.subscribe("ResultViewCancelled", this);
+                selectedStudentBorrower = (int) value;
+                StudentBorrower studentBorrower = ((Vector<StudentBorrower>)studentBorrowerCollection.
+                        getState("StudentBorrowers")).get(selectedStudentBorrower);
+                studentBorrower.subscribe("DetailViewCancelled", this);
                 nextView.add(ViewFactory.createView("ModifyStudentBorrowerView", studentBorrower));
             }
-        } else if(key.equals("ViewStudentBorrowerCancelled")){
+        } else if(key.equals("DetailViewCancelled")){
+            StudentBorrower studentBorrower = ((Vector<StudentBorrower>)studentBorrowerCollection.
+                    getState("StudentBorrowers")).get(selectedStudentBorrower);
+            studentBorrower.unSubscribe("DetailViewCancelled", this);
+            if(value != null && (boolean)value){
+                myRegistry.updateSubscribers("UpdateSearch", this);
+            }
             nextView.remove(nextView.size()-1);
         }
         myRegistry.updateSubscribers(key, this);

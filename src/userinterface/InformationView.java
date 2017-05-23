@@ -1,5 +1,6 @@
 package userinterface;
 
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,12 +14,13 @@ import userinterface.book.BookInformationView;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 /**
  * Created by Sammytech on 3/24/17.
  */
 public abstract class InformationView<T> extends View {
-
+    private static final Logger LOGGER = Logger.getLogger( InformationView.class.getName() );
     public class Fields{
         public Label label = new Label();
         public Node field;
@@ -49,6 +51,7 @@ public abstract class InformationView<T> extends View {
 
         box.getChildren().add(buttonBox);
 
+
         getChildren().add(box);
 
         myModel.subscribe("UpdateStatusMessage", this);
@@ -57,7 +60,7 @@ public abstract class InformationView<T> extends View {
     protected GridPane getInformation(){
         GridPane info = new GridPane();
         info.setHgap(20);
-        info.setVgap(10);
+        info.setVgap(30);
         info.setPadding(new Insets(0, 10, 0, 10));
         ColumnConstraints col1 = new ColumnConstraints();
         col1.setPercentWidth(40);
@@ -79,13 +82,19 @@ public abstract class InformationView<T> extends View {
             ((TextInputControl) n).setText("");
         } else if (n instanceof ComboBox){
             ((ComboBox) n).getSelectionModel().select(0);
+        } else if (n instanceof  HBox){
+            JFXTextField node1 = (JFXTextField) ((HBox) n).getChildren().get(0);
+            JFXTextField node2 = (JFXTextField) ((HBox) n).getChildren().get(1);
+            node1.setText("");
+            node2.setText("");
         } else {
             ((DatePicker) n).setValue(LocalDate.now());
         }
     }
     @Override
     public void updateState(String key, Object value) {
-        System.out.println(key);
+        LOGGER.info("key");
+
         if(key.equals("UpdateStatusMessage")){
             boolean success = (boolean) myModel.getState("SuccessFlag");
             if(success){

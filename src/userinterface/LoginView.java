@@ -1,6 +1,10 @@
 package userinterface;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXSnackbar;
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,20 +30,20 @@ import java.util.Properties;
 
 
 public class LoginView extends View{
-    private TextField bannerId;
-    private PasswordField password;
-    private MessageView statusLog;
-
+    private JFXTextField bannerId;
+    private JFXPasswordField password;
+    private JFXSnackbar bar;
     public LoginView(IModel model) {
         super(model, "LoginView");
-        File file = new File("resources/css/login.css");
-        this.getStylesheets().add(file.toURI().toString());
+        String css = this.getClass().getResource("/resources/css/login.css").toExternalForm();
+        this.getStylesheets().add(css);
         VBox container = new VBox();
-        container.setPadding(new Insets(40));
-        container.setSpacing(15);
+        container.setPadding(new Insets(40,40,0,40));
+        container.setSpacing(25);
         HBox title = TitleView.createTitle(Utilities.getStringLang("brockport_library"));
         title.setSpacing(30);
-        ImageView lock = new ImageView(new File("resources/images/lock-icon.png").toURI().toString());
+//        ImageView lock = new ImageView(new File("resources/images/lock-icon.png").toURI().toString());
+        ImageView lock = new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("resources/images/lock-icon.png")));
         lock.setFitWidth(80);
         lock.setPreserveRatio(true);
         title.getChildren().add(lock);
@@ -50,25 +54,28 @@ public class LoginView extends View{
 
         //  Fields
         VBox fields = new VBox();
-        fields.setSpacing(10);
+        fields.setSpacing(50);
         //  BannerId
-        Label userLabel = new Label(Utilities.getStringLang("bid"));
+//        Label userLabel = new Label(Utilities.getStringLang("bid"));
 
-        bannerId = new TextField();
+        bannerId = new JFXTextField();
         bannerId.setPromptText(Utilities.getStringLang("bid"));
-        bannerId.setId("bannerIdtf");
-        bannerId.getStyleClass().add("textfield");
+        bannerId.setLabelFloat(true);
+//        bannerId.setId("bannerIdtf");
+//        bannerId.getStyleClass().add("textfield");
         bannerId.setPadding(new Insets(10,0, 10,40));
         bannerId.setPrefHeight(40);
-        fields.getChildren().addAll(userLabel, bannerId);
+//        fields.getChildren().addAll(userLabel, bannerId);
+        fields.getChildren().addAll(bannerId);
 
         // Password
-        Label passwordLabel = new Label(Utilities.convertToTitleCase(Utilities.getStringLang("login_pass")));
+//        Label passwordLabel = new Label(Utilities.convertToTitleCase(Utilities.getStringLang("login_pass")));
 
-        password = new PasswordField();
+        password = new JFXPasswordField();
         password.setPromptText(Utilities.convertToTitleCase(Utilities.getStringLang("login_pass")));
-        password.getStyleClass().add("textfield");
-        password.setId("passwordtf");
+        password.setLabelFloat(true);
+//        password.getStyleClass().add("textfield");
+//        password.setId("passwordtf");
         password.setPadding(new Insets(10,0, 10,40));
         password.setPrefHeight(40);
 
@@ -78,15 +85,16 @@ public class LoginView extends View{
                 processLogin();
             }
         });
-        fields.getChildren().addAll(passwordLabel, password);
+        fields.getChildren().addAll(password);
 
         container.getChildren().addAll(title, fields);
         // Login Button
         HBox buttonContainer = new HBox();
         buttonContainer.setPrefHeight(60);
         buttonContainer.setPadding(new Insets(10,0,0,0));
-        Button loginButton = new Button(Utilities.getStringLang("login_btn"));
+        JFXButton loginButton = new JFXButton(Utilities.getStringLang("login_btn"));
         loginButton.setFont(Font.font("Verdana", FontWeight.BOLD, 18));
+        loginButton.getStyleClass().add("button-raised");
         loginButton.setMaxWidth(Double.MAX_VALUE);
         loginButton.setPrefWidth(buttonContainer.getPrefWidth());
         loginButton.setMaxHeight(buttonContainer.getPrefHeight());
@@ -96,6 +104,7 @@ public class LoginView extends View{
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+
                 processLogin();
             }
         });
@@ -103,8 +112,11 @@ public class LoginView extends View{
         container.getChildren().add(buttonContainer);
 
         // MessageView
-        container.getChildren().add(createStatusLog("            "));
-
+        AnchorPane pane = new AnchorPane();
+        pane.setPrefHeight(60);
+        pane.setPrefWidth(container.getPrefWidth());
+        bar = new JFXSnackbar(pane);
+        container.getChildren().add(pane);
         getChildren().add(container);
 
         myModel.subscribe("LoginError", this);
@@ -140,15 +152,6 @@ public class LoginView extends View{
             displayErrorMessage((String) value);
         }
     }
-    // Create the status log field
-    //-------------------------------------------------------------
-    private MessageView createStatusLog(String initialMessage)
-    {
-
-        statusLog = new MessageView(initialMessage);
-
-        return statusLog;
-    }
 
     /**
      * Display error message
@@ -156,15 +159,8 @@ public class LoginView extends View{
     //----------------------------------------------------------
     public void displayErrorMessage(String message)
     {
-        statusLog.displayErrorMessage(message);
+        bar.show(message, 5000);
+        bannerId.requestFocus();
     }
 
-    /**
-     * Clear error message
-     */
-    //----------------------------------------------------------
-    public void clearErrorMessage()
-    {
-        statusLog.clearErrorMessage();
-    }
 }

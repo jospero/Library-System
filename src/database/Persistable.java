@@ -532,6 +532,7 @@ abstract public class Persistable
 			while (theResultSet.next() == true)
 			{
 				Properties thisRow = new Properties();
+
 				for (int cnt = 1; cnt <= numRSColumns; cnt++)
 				{
 					String theColumnName = (String)namesRSColumns.elementAt(cnt-1);
@@ -541,11 +542,15 @@ abstract public class Persistable
 					// put it into the Properties object
 					if (theColumnValue != null)
 					{
-						thisRow.setProperty(theColumnName, theColumnValue);
+						if(thisRow.containsKey(theColumnName)){
+							thisRow.setProperty(theColumnName+"ff", theColumnValue);
+						}else {
+							thisRow.setProperty(theColumnName, theColumnValue);
+						}
 					}
 				}
 				resultSetToReturn.addElement(thisRow);
-			}			
+			}
 
 			if (theResultSet != null)
 				theResultSet.close();	

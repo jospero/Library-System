@@ -1,152 +1,41 @@
 package userinterface.studentborrower;
 
+import Utilities.Utilities;
+import com.jfoenix.controls.JFXTextField;
 import impresario.IModel;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.TextAlignment;
+import javafx.util.Callback;
 import model.StudentBorrower;
-import model.Worker;
-import userinterface.View;
+import userinterface.SearchView;
 
+
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
-
-import static model.StudentBorrower.getFields;
-import Utilities.Utilities;
+import java.util.Vector;
 
 /**
  * Created by Sammytech on 3/11/17.
  */
-public class SearchStudentBorrowerView extends View {
+public class SearchStudentBorrowerView extends SearchView<StudentBorrower.DATABASE> {
 
-    TextField firstName = new TextField();
-    TextField lastName = new TextField();
-    TextField phone = new TextField();
-    TextField email = new TextField();
+    JFXTextField firstName;
+    JFXTextField lastName;
+    JFXTextField phone;
+    JFXTextField email;
+    private static final int MAX_COLUMN = 2;
 
     public SearchStudentBorrowerView(IModel model) {
         super(model, "SearchStudentBorrowerView");
 
-        VBox root = new VBox();
-//        root.setFillWidth(true);
-        root.setAlignment(Pos.CENTER);
-
-        HashMap<StudentBorrower.DATABASE, String> fields = getFields();
-
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(0,60,0,60));
-        grid.setHgap(30);
-        grid.setVgap(10);
-//        grid.setStyle("-fx-background-color: #580e7a");
-
-//        HBox title = TitleView.createTitle("Enter StudentBorrower Information");
-//        title.setStyle("-fx-background-color:#0c7a79");
-//        GridPane.setHgrow(title, Priority.ALWAYS);
-        Label title = new Label(Utilities.getStringLang("borrow_mod_conf_label").toUpperCase());
-        title.setWrapText(true);
-        title.setAlignment(Pos.CENTER);
-        title.setLineSpacing(4);
-        title.setTextAlignment(TextAlignment.CENTER);
-        title.setPrefWidth(Double.MAX_VALUE);
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        title.setPadding(new Insets(0,0,20,0));
-        title.setAlignment(Pos.CENTER);
-        grid.add(title,0,0,2,1);
-
-//        String barcodeStr = "First Name";
-//        Label barcodeLabel = new Label(barcodeStr);
-//        barcode.setPromptText(barcodeStr);
-//        grid.add(barcodeLabel, 0, 1);
-//        grid.add(barcode, 1, 1);
-
-//        VBox oneFieldHead = new VBox();
-//        Label oneFieldOr = new Label("OR");
-//        Label oneFieldText = new Label("(ENTER AT LEAST ONE FIELD)");
-//
-//        oneFieldOr.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-//        oneFieldText.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-//        oneFieldHead.setPadding(new Insets(20,0,20,0));
-//        oneFieldHead.setAlignment(Pos.CENTER);
-//
-//        oneFieldHead.getChildren().add(oneFieldOr);
-//        oneFieldHead.getChildren().add(oneFieldText);
-//
-//        grid.add(oneFieldHead,0,2,2,1);
-
-        int row = 1;
-        String firstnameStr = fields.get(StudentBorrower.DATABASE.FirstName);
-        Label firsnameLabel = new Label(firstnameStr);
-        firstName.setPromptText(firstnameStr);
-        grid.add(firsnameLabel, 0, row);
-        grid.add(firstName, 1, row);
-
-        row++;
-        String lastnameStr = fields.get(StudentBorrower.DATABASE.LastName);
-        Label lastnameLabel = new Label(lastnameStr);
-        lastName.setPromptText(lastnameStr);
-        grid.add(lastnameLabel, 0, row);
-        grid.add(lastName, 1, row);
-
-        row++;
-        String phoneStr = fields.get(StudentBorrower.DATABASE.Phone);
-        Label phoneLabal = new Label(phoneStr);
-        phone.setPromptText(phoneStr);
-        grid.add(phoneLabal, 0, row);
-        grid.add(phone, 1, row);
-
-        row++;
-        String emailStr = fields.get(StudentBorrower.DATABASE.Email);
-        Label emailLabel = new Label(emailStr);
-        email.setPromptText(emailStr);
-        grid.add(emailLabel, 0, row);
-        grid.add(email, 1, row);
-
-
-        row++;
-        HBox buttonPane = new HBox();
-        buttonPane.setSpacing(30);
-        buttonPane.setPadding(new Insets(22));
-        buttonPane.setAlignment(Pos.CENTER);
-        Button searchButton = new Button(Utilities.getStringLang("sub_btn"));
-        Button cancelButton = new Button(Utilities.getStringLang("cancel_btn"));
-
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-//                MainStageContainer.getInstance().close();
-//                MainStageContainer.setStage(new Stage(), "Here");
-//                MainStageContainer.getInstance().show();
-                myModel.stateChangeRequest("SearchStudentBorrowerCancelled", null);
-            }
-        });
-
-        searchButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                processSearch();
-
-            }
-        });
-        buttonPane.getChildren().addAll(searchButton, cancelButton);
-
-        grid.add(buttonPane, 0, row, 2, 1);
-
-        root.getChildren().add(grid);
-        getChildren().add(root);
-
     }
 
-    private Properties validateSearch(){
+    protected Properties validateSearch(){
         Properties search = new Properties();
         String firstNameStr = firstName.getText();
         String lastNameStr = lastName.getText();
@@ -156,29 +45,99 @@ public class SearchStudentBorrowerView extends View {
 //Error
         } else{
             if(!firstNameStr.trim().isEmpty()){
-                search.setProperty(Worker.DATABASE.FirstName.name(), firstNameStr);
+                search.setProperty(StudentBorrower.DATABASE.FirstName.name(), firstNameStr);
             }
             if(!lastNameStr.trim().isEmpty()){
-                search.setProperty(Worker.DATABASE.LastName.name(), lastNameStr);
+                search.setProperty(StudentBorrower.DATABASE.LastName.name(), lastNameStr);
             }
             if(!phoneStr.trim().isEmpty() && Utilities.validatePhoneNumber(phoneStr)){
-                search.setProperty(Worker.DATABASE.Phone.name(), phoneStr);
+                search.setProperty(StudentBorrower.DATABASE.Phone.name(), phoneStr);
             }
             if(!emailStr.trim().isEmpty()){
-                search.setProperty(Worker.DATABASE.Email.name(), emailStr);
+                search.setProperty(StudentBorrower.DATABASE.Email.name(), emailStr);
             }
         }
         return search;
     }
-    private void processSearch() {
-        Properties prop = validateSearch();
-        if(prop.size() > 0) {
-            myModel.stateChangeRequest("ProcessSearch", prop);
+
+    @Override
+    protected HashMap<StudentBorrower.DATABASE, String> getFields() {
+        return StudentBorrower.getFields();
+    }
+
+    @Override
+    protected ListView getSearchResult() {
+        ListView<StudentBorrowerTableModel> listView = new ListView<>();
+        listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        listView.setCellFactory(new Callback<ListView<StudentBorrowerTableModel>, ListCell<StudentBorrowerTableModel>>() {
+            @Override
+            public ListCell<StudentBorrowerTableModel> call(ListView<StudentBorrowerTableModel> param) {
+                return new StudentBorrowerListViewCell();
+            }
+        });
+        tableData = FXCollections.observableArrayList();
+        listView.prefHeightProperty().bind(Bindings.size(tableData).multiply(StudentBorrowerListViewCell.getCustomHeight()+ 10));
+        return listView;
+    }
+
+    @Override
+    protected void insertDataToTable(Enumeration entries) {
+
+        while (entries.hasMoreElements())
+        {
+            StudentBorrower nextBook = (StudentBorrower) entries.nextElement();
+            Vector<String> view = nextBook.getEntryListView();
+
+            // add this list entry to the list
+            StudentBorrowerTableModel nextRowData = new StudentBorrowerTableModel(view);
+            tableData.add(nextRowData);
+
         }
     }
 
     @Override
-    public void updateState(String key, Object value) {
-
+    protected int getMaxColumn() {
+        return MAX_COLUMN;
     }
+
+    @Override
+    protected GridPane createSearch() {
+        firstName = new JFXTextField();
+        lastName = new JFXTextField();
+        phone = new JFXTextField();
+        email = new JFXTextField();
+
+        GridPane grid = new GridPane();
+
+        int line = 0;
+        int row = line / MAX_COLUMN;
+        int col = line % MAX_COLUMN;
+        String firstNameStr = fields.get(StudentBorrower.DATABASE.FirstName);
+        setupField(firstName, firstNameStr);
+        grid.add(firstName, col, row,1,1);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String lastNameStr = fields.get(StudentBorrower.DATABASE.LastName);
+        setupField(lastName, lastNameStr);
+        grid.add(lastName, col, row,1,1);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String phoneStr = fields.get(StudentBorrower.DATABASE.Phone);
+        setupField(phone, phoneStr);
+        grid.add(phone, col, row);
+
+        line++;
+        row = line / MAX_COLUMN;
+        col = line % MAX_COLUMN;
+        String emailStr = fields.get(StudentBorrower.DATABASE.Email);
+        setupField(email, emailStr);
+        grid.add(email, col, row);
+
+        return grid;
+    }
+
 }

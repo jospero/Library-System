@@ -47,8 +47,8 @@ public abstract class View extends Group
 	public View(IModel model, String classname)
 	{
 		myModel = model;
-		File file = new File("resources/css/common.css");
-		this.getStylesheets().add(file.toURI().toString());
+		String css = this.getClass().getResource("/resources/css/common.css").toExternalForm();
+		this.getStylesheets().add(css);
 
 		myRegistry = new ControlRegistry(classname);
 

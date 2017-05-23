@@ -11,6 +11,7 @@ import userinterface.ViewFactory;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Vector;
 
 /**
  * Created by Sammytech on 3/11/17.
@@ -21,7 +22,8 @@ public class SearchBook implements IView, IModel {
     protected Properties dependencies;
     protected ModelRegistry myRegistry;
     protected ArrayList<View> nextView;
-
+    private BookCollection bookCollection;
+    private int selectedBook = -1;
     public SearchBook(SearchFor searchFor) {
         this.searchFor = searchFor;
         nextView = new ArrayList<>();
@@ -38,11 +40,10 @@ public class SearchBook implements IView, IModel {
     protected void setDependencies()
     {
         dependencies = new Properties();
-        dependencies.setProperty("ProcessSearch", "SubViewChange");
-        dependencies.setProperty("ViewBookCancelled", "SubViewChange");
-        dependencies.setProperty("ResultViewCancelled", "ParentView");
-        dependencies.setProperty("SearchBookCancelled", "ViewCancelled");
-        dependencies.setProperty("ViewBook", "SubViewChange");
+        dependencies.setProperty("ProcessSearch", "UpdateSearch");
+        dependencies.setProperty("DetailViewCancelled", "ParentView");
+        dependencies.setProperty("SearchCancelled", "ViewCancelled");
+        dependencies.setProperty("View", "SubViewChange");
         myRegistry.setDependencies(dependencies);
     }
 
@@ -58,6 +59,9 @@ public class SearchBook implements IView, IModel {
             return nextView.get(nextView.size()-1);
         } if(key.equals("ParentView")){
             return "SearchBookView";
+        } if(key.equals("Books") || key.equals("UpdateSearch")){
+            if(bookCollection != null)
+                return bookCollection.getState("Books");
         }
         return null;
     }
@@ -76,7 +80,7 @@ public class SearchBook implements IView, IModel {
     public void stateChangeRequest(String key, Object value) {
         System.out.println("SCR "+ key);
         if(key.equals("ProcessSearch")){
-            BookCollection bookCollection = new BookCollection();
+            bookCollection = new BookCollection();
             Properties props = (Properties) value;
             if(props.contains("barcode")) {
                 try {
@@ -91,18 +95,21 @@ public class SearchBook implements IView, IModel {
                     e.printStackTrace();
                 }
             }
-            bookCollection.subscribe("ResultViewCancelled", this);
-            bookCollection.subscribe("ViewBook", this);
-            nextView.add(bookCollection.createView());
-        } else if(key.equals("ViewBook")){
+        } else if(key.equals("View")){
             if(searchFor == SearchFor.MODIFY){
-                Book book = (Book) value;
-                book.subscribe("ViewBookCancelled", this);
-                book.subscribe("ResultViewCancelled", this);
+                selectedBook = (int) value;
+                Book book = ((Vector<Book>)bookCollection.getState("Books")).get(selectedBook);
+                book.subscribe("DetailViewCancelled", this);
                 nextView.add(ViewFactory.createView("ModifyBookView", book));
             }
-        } else if(key.equals("ViewBookCancelled")){
+        } else if(key.equals("DetailViewCancelled")){
+            Book book = ((Vector<Book>)bookCollection.getState("Books")).get(selectedBook);
+            book.unSubscribe("DetailViewCancelled", this);
+            if(value != null && (boolean)value){
+                myRegistry.updateSubscribers("UpdateSearch", this);
+            }
             nextView.remove(nextView.size()-1);
+
         }
         myRegistry.updateSubscribers(key, this);
 

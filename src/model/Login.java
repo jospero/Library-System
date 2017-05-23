@@ -1,6 +1,7 @@
 package model;
 
 import Utilities.Utilities;
+import com.jfoenix.controls.JFXDecorator;
 import event.Event;
 import exception.InvalidLoginException;
 import impresario.IModel;
@@ -55,8 +56,13 @@ public class Login implements IView, IModel {
         setDependencies();
 
         // Set up the initial view
-        createAndShowLoginView();
-//        createAndShowMainView();
+//        createAndShowLoginView();
+        createTestHolder();
+        createAndShowMainView();
+    }
+
+    private void createTestHolder() {
+        myWorkerHolder = new WorkerHolder();
     }
 
 
@@ -74,7 +80,7 @@ public class Login implements IView, IModel {
         Scene currentScene = myViews.get("LoginView");
         myStage.getIcons().add(new Image("resources/images/shield.png"));
 //        try {
-            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
+//            com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("resources/images/shield.png").getImage());
 //        } catch (Exception e) {
 //            // Won't work on Windows or Linux.
 //        }

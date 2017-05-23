@@ -1,6 +1,7 @@
 package model;
 
 import event.Event;
+import exception.InvalidPrimaryKeyException;
 import impresario.IModel;
 import impresario.IView;
 import impresario.ModelRegistry;
@@ -12,7 +13,6 @@ import userinterface.ViewFactory;
 import userinterface.WindowPosition;
 
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -29,7 +29,7 @@ public class Main implements IView, IModel {
 
     private View currentView;
     private WorkerHolder myWorkerHolder;
-
+    private String message;
     public Main(WorkerHolder workerHolder){
         myStage = MainStageContainer.getInstance();
         myViews = new Hashtable<String, View>();
@@ -48,11 +48,15 @@ public class Main implements IView, IModel {
         dependencies = new Properties();
         dependencies.setProperty("Add", "ChangeView");
         dependencies.setProperty("Modify", "ChangeView");
+        dependencies.setProperty("CheckOut", "ChangeView");
         dependencies.setProperty("Delete", "ChangeView");
         dependencies.setProperty("Welcome", "ChangeView");
         dependencies.setProperty("ViewCancelled", "ChangeView");
         dependencies.setProperty("SubViewChange", "ChangeView");
         dependencies.setProperty("ParentView", "ChangeView");
+        dependencies.setProperty("CheckIn", "ChangeView");
+        dependencies.setProperty("ListBooks", "ChangeView");
+        dependencies.setProperty("SnackBarErrorMessage", "DisplayError");
         myRegistry.setDependencies(dependencies);
     }
     @Override
@@ -66,6 +70,8 @@ public class Main implements IView, IModel {
             return currentView;
         } else if(key.equals("WorkerHolder")){
             return myWorkerHolder;
+        } else if(key.equals("DisplayError")){
+            return message;
         }
         return null;
     }
@@ -98,11 +104,15 @@ public class Main implements IView, IModel {
             if(model != null && myViews.get(viewName) == null){
                 myViews.clear();
                 model.subscribe("ViewCancelled", this);
+                model.subscribe("Error", this);
                 currentView = ViewFactory.createView(viewName, model);
                 myViews.put(viewName, currentView);
             }
         } else if (key.equals("Modify") || key.equals("Delete")) {
             SearchFor search;
+            if (key.equals("CheckOut")) {
+                search = SearchFor.CheckOut;
+            }
             if(key.equals("Modify"))
                 search = SearchFor.MODIFY;
             else
@@ -124,6 +134,7 @@ public class Main implements IView, IModel {
                 searchModel.subscribe("SubViewChange", this);
                 searchModel.subscribe("ParentView", this);
                 searchModel.subscribe("ViewCancelled", this);
+                searchModel.subscribe("Error", this);
                 currentView = ViewFactory.createView(viewName, searchModel);
                 myViews.put(viewName, currentView);
             }
@@ -135,8 +146,38 @@ public class Main implements IView, IModel {
             currentView = (View) value;
         } else if(key.equals("ParentView")){
             currentView = myViews.get(value);
-        }
+        } else if (key.equals("CheckOut")) {
+            myViews.clear();
+            Rental rental = new Rental(myWorkerHolder);
+            rental.subscribe("ViewCancelled", this);
+            rental.subscribe("SnackBarErrorMessage", this);
+            currentView = ViewFactory.createView("CheckOutBookView", rental);
+            myViews.put("CheckOutBookView", currentView);
+        }else if(key.equals("CheckIn")) {
 
+            myViews.clear();
+            Rental rental = new Rental(myWorkerHolder);
+            rental.subscribe("ViewCancelled", this);
+            rental.subscribe("SnackBarErrorMessage", this);
+            currentView = ViewFactory.createView("CheckInBookView", rental);
+            myViews.put("CheckInBookView", currentView);
+
+       }else if(key.equals("ListBooks")) {
+            myViews.clear();
+            RentalCollection rentalCollection = new RentalCollection();
+            rentalCollection.subscribe("ViewCancelled", this);
+            rentalCollection.subscribe("SnackBarErrorMessage", this);
+            try {
+                rentalCollection.getRentals();
+            } catch (InvalidPrimaryKeyException e) {
+                e.printStackTrace();
+            }
+            currentView = ViewFactory.createView("RentalCollectionView", rentalCollection);
+            myViews.put("RentalCollectionView", currentView);
+
+        } else if (key.equals("SnackBarErrorMessage")){
+            message = (String) value;
+        }
         myRegistry.updateSubscribers(key, this);
 
     }
