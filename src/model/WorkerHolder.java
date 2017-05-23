@@ -15,6 +15,14 @@ import java.util.Vector;
  */
 public class WorkerHolder extends EntityBase implements IView {
     private static final String myTableName = "Worker";
+    public WorkerHolder(){
+        super(myTableName);
+        persistentState = new Properties();
+        persistentState.setProperty("FirstName", "Sammy");
+        persistentState.setProperty("LastName", "Babs");
+        persistentState.setProperty("Credentials", "administrator");
+
+    }
     public WorkerHolder(Properties props) throws InvalidLoginException {
         super(myTableName);
 

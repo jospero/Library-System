@@ -56,8 +56,13 @@ public class Login implements IView, IModel {
         setDependencies();
 
         // Set up the initial view
-        createAndShowLoginView();
-//        createAndShowMainView();
+//        createAndShowLoginView();
+        createTestHolder();
+        createAndShowMainView();
+    }
+
+    private void createTestHolder() {
+        myWorkerHolder = new WorkerHolder();
     }
 
 

@@ -37,7 +37,7 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
     }
 
 
-
+    private static final  DateTimeFormatter dbformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @Override
     protected void setupFields() {
         fieldsStr = getFields();
@@ -62,8 +62,6 @@ public abstract class StudentBorrowerInformationView extends InformationView<Stu
                     if(modify) {
                         LocalDate localDate;
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.getStringNorm("dateFormat"));
-
-                        DateTimeFormatter dbformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                         if (studentBorrower.get(row) != null && !studentBorrower.get(row).isEmpty()) {
                             localDate = LocalDate.parse(studentBorrower.get(row), dbformatter);
                         } else {
